@@ -1,11 +1,11 @@
-﻿using DotNnetcoreCleanArchitecture.Domain.Events;
+﻿using DaprCleanArchitecture.Domain.Events;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace DotNnetcoreCleanArchitecture.Domain.Abstracts
+namespace DaprCleanArchitecture.Domain.Common
 {
     public abstract class Entity : Base<Entity>
     {

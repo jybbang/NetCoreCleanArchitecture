@@ -1,8 +1,7 @@
-﻿using DotNnetcoreCleanArchitecture.Domain.Abstracts;
-using System;
+﻿using DaprCleanArchitecture.Domain.Common;
 using System.Runtime.CompilerServices;
 
-namespace DotNnetcoreCleanArchitecture.Domain.Events
+namespace DaprCleanArchitecture.Domain.Events
 {
     public sealed class PropertyChangedEvent<T> : DomainEvent
     {

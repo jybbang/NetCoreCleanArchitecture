@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
-namespace DotNnetcoreCleanArchitecture.Domain.Abstracts
+namespace DaprCleanArchitecture.Domain.Common
 {
     public abstract class DomainEvent
     {
@@ -17,7 +16,7 @@ namespace DotNnetcoreCleanArchitecture.Domain.Abstracts
 
         public DateTimeOffset CreatedAt { get; } = DateTimeOffset.UtcNow;
 
-        public string AppName { get; } = nameof(DotNnetcoreCleanArchitecture);
+        public string AppName { get; } = nameof(DaprCleanArchitecture);
 
         public string Topic { get; init; }
 

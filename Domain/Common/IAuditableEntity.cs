@@ -16,7 +16,7 @@
 
 using System;
 
-namespace DotNnetcoreCleanArchitecture.Domain.Abstracts
+namespace DaprCleanArchitecture.Domain.Common
 {
     public interface IAuditableEntity
     {

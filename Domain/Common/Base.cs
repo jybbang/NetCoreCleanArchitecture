@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DotNnetcoreCleanArchitecture.Domain.Abstracts
+namespace DaprCleanArchitecture.Domain.Common
 {
     public abstract class Base<T> : IEquatable<Base<T>>, ICloneable
     {

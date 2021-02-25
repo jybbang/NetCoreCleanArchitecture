@@ -1,9 +1,9 @@
-﻿using DotNnetcoreCleanArchitecture.Domain.Abstracts;
-using DotNnetcoreCleanArchitecture.Domain.Events;
-using DotNnetcoreCleanArchitecture.Domain.ValueObjects;
+﻿using DaprCleanArchitecture.Domain.Common;
+using DaprCleanArchitecture.Domain.Events;
+using DaprCleanArchitecture.Domain.ValueObjects;
 using System;
 
-namespace DotNnetcoreCleanArchitecture.Domain.Entities
+namespace DaprCleanArchitecture.Domain.Entities
 {
     public class TodoItem : EntityHasDomainEvent, IAuditableEntity
     {

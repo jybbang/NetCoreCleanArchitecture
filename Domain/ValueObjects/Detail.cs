@@ -1,7 +1,6 @@
-﻿using DotNnetcoreCleanArchitecture.Domain.Abstracts;
-using System.Collections.Generic;
+﻿using DaprCleanArchitecture.Domain.Common;
 
-namespace DotNnetcoreCleanArchitecture.Domain.ValueObjects
+namespace DaprCleanArchitecture.Domain.ValueObjects
 {
     public record Detail(string Title, string Description, string Colour) : ValueObject;
 }

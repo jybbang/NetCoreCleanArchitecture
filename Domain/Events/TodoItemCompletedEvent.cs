@@ -1,8 +1,7 @@
-﻿using DotNnetcoreCleanArchitecture.Domain.Abstracts;
-using DotNnetcoreCleanArchitecture.Domain.Entities;
-using System;
+﻿using DaprCleanArchitecture.Domain.Common;
+using DaprCleanArchitecture.Domain.Entities;
 
-namespace DotNnetcoreCleanArchitecture.Domain.Events
+namespace DaprCleanArchitecture.Domain.Events
 {
     public sealed class TodoItemCompletedEvent : DomainEvent
     {
