@@ -1,43 +1,48 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DaprCleanArchitecture.Domain.Common
 {
-    public abstract class DomainEvent
+    public abstract class DomainEvent : Base<DomainEvent>
     {
-        protected DomainEvent(Entity sender, long version)
+        protected DomainEvent(Entity source, long version, string subject)
         {
-            Topic = $"{AppName}/{EntityName}";
-            EntityName = sender.GetType().Name;
-            EntityId = sender.Id;
-            Version = version;
+            Type = source.GetType().Name;
+            Source = source.Id;
+            SourceVersion = version;
+            Subject = subject;
+            Topic = $"{Type}/{Subject}";
         }
 
         public Guid Id { get; } = Guid.NewGuid();
 
-        public DateTimeOffset CreatedAt { get; } = DateTimeOffset.UtcNow;
+        public string Topic { get; }
 
-        public string AppName { get; } = nameof(DaprCleanArchitecture);
+        public string Type { get; }
 
-        public string Topic { get; init; }
+        public Guid Source { get; }
 
-        public Guid EntityId { get; }
+        public long SourceVersion { get; }
 
-        public long Version { get; }
-
-        public string EntityName { get; }
+        public string Subject { get; }
 
         public bool CanPublishWithSaveChanges { get; init; } = true;
 
         public bool IsPublished { get; private set; }
 
-        public DateTimeOffset PublishedAt { get; private set; }
+        public DateTimeOffset Time { get; private set; }
 
         public DomainEvent Publising(DateTimeOffset timestamp = default)
         {
             IsPublished = true;
-            PublishedAt = timestamp == default ? DateTimeOffset.UtcNow : timestamp;
+            Time = timestamp == default ? DateTimeOffset.UtcNow : timestamp;
 
             return this;
+        }
+
+        protected sealed override IEnumerable<object> Equals()
+        {
+            yield return Id;
         }
     }
 }

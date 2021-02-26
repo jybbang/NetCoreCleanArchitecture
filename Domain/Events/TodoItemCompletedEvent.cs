@@ -5,10 +5,9 @@ namespace DaprCleanArchitecture.Domain.Events
 {
     public sealed class TodoItemCompletedEvent : DomainEvent
     {
-        public TodoItemCompletedEvent(Entity sender, long version, TodoItem todoItem)
-            : base(sender, version)
+        public TodoItemCompletedEvent(Entity source, long version, TodoItem todoItem)
+            : base(source, version, nameof(TodoItemCompletedEvent))
         {
-            Topic = $"{Topic}/{nameof(TodoItemCompletedEvent)}";
             TodoItem = todoItem;
         }
 

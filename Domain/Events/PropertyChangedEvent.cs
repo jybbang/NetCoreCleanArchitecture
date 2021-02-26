@@ -5,13 +5,12 @@ namespace DaprCleanArchitecture.Domain.Events
 {
     public sealed class PropertyChangedEvent<T> : DomainEvent
     {
-        public PropertyChangedEvent(Entity sender, long version, T oldState, T newState, [CallerMemberName] string propertyName = default)
-            : base(sender, version)
+        public PropertyChangedEvent(Entity source, long version, T oldState, T newState, [CallerMemberName] string propertyName = default)
+            : base(source, version, $"{propertyName}PropertyChangedEvent")
         {
-            Topic = $"{Topic}/{propertyName}ChangedEvent";
+            PropertyName = propertyName;
             OldState = oldState;
             NewState = newState;
-            PropertyName = propertyName;
         }
 
         public string PropertyName { get; }
