@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>NetCoreCleanArchitecture.Persistence.EFCore</AssemblyName>
+    <RootNamespace>NetCoreCleanArchitecture.Persistence.Common</RootNamespace>
+    <Authors>Junyoung Bang</Authors>
+    <Company>Junyoung Bang</Company>
+    <PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
+    <PackageId>NetCoreCleanArchitecture.Persistence.EFCore</PackageId>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="EntityFrameworkCore.Exceptions.Sqlite" Version="3.1.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.3" />
+	</ItemGroup>
+	
+  <ItemGroup>
+	  <ProjectReference Include="..\..\Application\Application.csproj" />
+  </ItemGroup>
+
+</Project>

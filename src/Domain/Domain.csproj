@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>NetCoreCleanArchitecture.Domain</RootNamespace>
+    <PackageId>NetCoreCleanArchitecture.Domain</PackageId>
+    <Authors>Junyoung Bang</Authors>
+    <Company>Junyoung Bang</Company>
+    <Product>NetCoreCleanArchitecture.Domain</Product>
+    <PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
+    <AssemblyName>NetCoreCleanArchitecture.Domain</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="ValueObjects\" />
+  </ItemGroup>
+
+</Project>

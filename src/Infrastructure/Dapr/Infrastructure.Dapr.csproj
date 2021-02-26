@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<RootNamespace>NetCoreCleanArchitecture.Infrastructure.Dapr</RootNamespace>
+		<PackageId>NetCoreCleanArchitecture.Infrastructure.Dapr</PackageId>
+		<Authors>Junyoung Bang</Authors>
+		<Product>NetCoreCleanArchitecture.Infrastructure.Dapr</Product>
+		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
+		<Version>1.0.0</Version>
+		<AssemblyName>NetCoreCleanArchitecture.Infrastructure.Dapr</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Dapr.Client" Version="1.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Application\Application.csproj" />
+	</ItemGroup>
+
+</Project>

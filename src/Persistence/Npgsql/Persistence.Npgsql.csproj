@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<RootNamespace>NetCoreCleanArchitecture.Persistence.Npgsql</RootNamespace>
+		<Authors>Junyoung Bang</Authors>
+		<Product>NetCoreCleanArchitecture.Infrastructure.Npgsql</Product>
+		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
+		<AssemblyName>NetCoreCleanArchitecture.Persistence.Npgsql</AssemblyName>
+		<PackageId>NetCoreCleanArchitecture.Persistence.Npgsql</PackageId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.2" />
+		<PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="3.1.4" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\EFCore\Persistence.EFCore.csproj" />
+	</ItemGroup>
+	
+</Project>
