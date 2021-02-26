@@ -40,25 +40,37 @@ jobs:
         run: dotnet test --no-restore --verbosity normal
        
       - name: Domain-Pack
-        run: dotnet pack --no-build --configuration Release src/DaprCleanArchitecture.Domain/DaprCleanArchitecture.Domain.csproj --output .        
+        run: dotnet pack --no-build --configuration Release src/Domain/Domain.csproj --output .        
           
       - name: Application-Pack
-        run: dotnet pack --no-build --configuration Release src/DaprCleanArchitecture.Application/DaprCleanArchitecture.Application.csproj --output .  
+        run: dotnet pack --no-build --configuration Release src/Application/Application.csproj --output .  
         
-      - name: Infrastructure-Pack
-        run: dotnet pack --no-build --configuration Release src/DaprCleanArchitecture.Infrastructure/DaprCleanArchitecture.Infrastructure.csproj --output .     
+      - name: Infrastructure.Dapr-Pack
+        run: dotnet pack --no-build --configuration Release src/Infrastructure/Dapr/Infrastructure.Dapr.csproj --output .     
         
-      - name: Hosting-Pack
-        run: dotnet pack --no-build --configuration Release src/DaprCleanArchitecture.Hosting/DaprCleanArchitecture.Hosting.csproj --output .
+      - name: EFCore-Pack
+        run: dotnet pack --no-build --configuration Release src/Persistence/EFCore/Persistence.EFCore.csproj --output .    
+        
+      - name: Npgsql-Pack
+        run: dotnet pack --no-build --configuration Release src/Persistence/Npgsql/Persistence.Npgsql.csproj --output .    
+        
+      - name: WebHosting-Pack
+        run: dotnet pack --no-build --configuration Release src/WebHosting/WebHosting.csproj --output .
     
       - name: Domain-PushNuget
-        run: dotnet nuget push DaprCleanArchitecture.Domain.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
+        run: dotnet nuget push *.Domain.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
                   
       - name: Application-PushNuget
-        run: dotnet nuget push DaprCleanArchitecture.Application.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
+        run: dotnet nuget push *.Application.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
                   
-      - name: Infrastructure-PushNuget
-        run: dotnet nuget push DaprCleanArchitecture.Infrastructure.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
+      - name: Infrastructure.Dapr-PushNuget
+        run: dotnet nuget push *.Infrastructure.Dapr.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
         
-      - name: Hosting-PushNuget
-        run: dotnet nuget push DaprCleanArchitecture.Hosting.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
+      - name: EFCore-PushNuget
+        run: dotnet nuget push *.Persistence.EFCore.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate        
+        
+      - name: Npgsql-PushNuget
+        run: dotnet nuget push *.Persistence.Npgsql.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate        
+        
+      - name: WebHosting-PushNuget
+        run: dotnet nuget push *.WebHosting.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
