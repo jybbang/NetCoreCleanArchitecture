@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using DaprCleanArchitecture.Application.Dtos;
-using DaprCleanArchitecture.Domain.Entities;
 using System;
 
 namespace DaprCleanArchitecture.Infrastructure.Mappers
@@ -10,8 +8,6 @@ namespace DaprCleanArchitecture.Infrastructure.Mappers
         public MappingProfile()
         {
             CreateMap<DateTimeOffset, DateTime>().ConvertUsing(x => x.UtcDateTime);
-
-            CreateMap<TodoItem, TodoItemDto>();
         }
     }
 }

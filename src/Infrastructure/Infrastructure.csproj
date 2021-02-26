@@ -7,7 +7,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-		<PackageReference Include="Dapr.AspNetCore" Version="1.0.0" />
+		<PackageReference Include="Dapr.Client" Version="1.0.0" />
 		<PackageReference Include="EntityFrameworkCore.Exceptions.Sqlite" Version="3.1.4" />
 		<PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="3.1.4" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.3" />

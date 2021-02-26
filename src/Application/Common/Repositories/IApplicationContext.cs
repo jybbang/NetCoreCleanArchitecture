@@ -1,4 +1,4 @@
-﻿using DaprCleanArchitecture.Domain.Entities;
+﻿using DaprCleanArchitecture.Domain.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,9 +6,9 @@ namespace DaprCleanArchitecture.Application.Common.Repositories
 {
     public interface IApplicationContext
     {
-        ICommandRepository<TodoItem> TodoItemCommands { get; }
+        ICommandRepository<TEntity> CommandSet<TEntity>() where TEntity : Entity;
 
-        IQueryRepository<TodoItem> TodoItemQueries { get; }
+        IQueryRepository<TEntity> QuerySet<TEntity>() where TEntity : Entity;
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

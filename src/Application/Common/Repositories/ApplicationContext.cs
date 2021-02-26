@@ -1,7 +1,6 @@
 ﻿using DaprCleanArchitecture.Application.Common.EventSources;
 using DaprCleanArchitecture.Application.Common.Interfaces;
 using DaprCleanArchitecture.Domain.Common;
-using DaprCleanArchitecture.Domain.Entities;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -22,21 +21,19 @@ namespace DaprCleanArchitecture.Application.Common.Repositories
             IUnitOfWork unitOfWork,
             IApplicationEventSource eventSource,
             ICurrentUserService currentUser,
-            IDateTimeCache dateTimeCache,
-            ICommandRepository<TodoItem> todoItemCommands,
-            IQueryRepository<TodoItem> todoItemQueries)
+            IDateTimeCache dateTimeCache)
         {
             _unitOfWork = unitOfWork;
             _eventSource = eventSource;
             _currentUser = currentUser;
             _dateTimeCache = dateTimeCache;
-            TodoItemCommands = todoItemCommands;
-            TodoItemQueries = todoItemQueries;
         }
 
-        public ICommandRepository<TodoItem> TodoItemCommands { get; }
+        public ICommandRepository<TEntity> CommandSet<TEntity>() where TEntity : Entity
+            => _unitOfWork.CommandSet<TEntity>();
 
-        public IQueryRepository<TodoItem> TodoItemQueries { get; }
+        public IQueryRepository<TEntity> QuerySet<TEntity>() where TEntity : Entity
+            => _unitOfWork.QuerySet<TEntity>();
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

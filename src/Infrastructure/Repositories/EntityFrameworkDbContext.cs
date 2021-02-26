@@ -37,6 +37,12 @@ namespace DaprCleanArchitecture.Infrastructure.Repositories
             base.OnModelCreating(builder);
         }
 
+        public ICommandRepository<TEntity> CommandSet<TEntity>() where TEntity : Entity
+            => new DbContextCommandRepository<TEntity>(this);
+
+        public IQueryRepository<TEntity> QuerySet<TEntity>() where TEntity : Entity
+            => new DbContextQueryRepository<TEntity>(this);
+
         public IEnumerable<Entity> ChangeTracking()
             => ChangeTracker.Entries<Entity>().Select(e => e.Entity);
     }

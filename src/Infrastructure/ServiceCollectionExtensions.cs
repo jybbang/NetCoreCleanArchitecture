@@ -14,7 +14,7 @@ namespace DaprCleanArchitecture.Infrastructure
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddDarpCleanArchitectureInfrastructure(this IServiceCollection services)
         {
             // Dapr
             //services.AddDaprClient();
@@ -32,6 +32,11 @@ namespace DaprCleanArchitecture.Infrastructure
 
             services.AddTransient<IMapper, Mapper>();
 
+            return services;
+        }
+
+        public static IServiceCollection AddDarpCleanArchitectureNpgsqlDbContext(this IServiceCollection services, IConfiguration configuration)
+        {
             // Repositories
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
             {
@@ -65,11 +70,8 @@ namespace DaprCleanArchitecture.Infrastructure
 
             services.AddScoped<IUnitOfWork>(provider => provider.GetService<EntityFrameworkDbContext>());
 
-            services.AddTransient(typeof(ICommandRepository<>), typeof(DbContextCommandRepository<>));
-
-            services.AddTransient(typeof(IQueryRepository<>), typeof(DbContextQueryRepository<>));
-
             return services;
         }
+
     }
 }
