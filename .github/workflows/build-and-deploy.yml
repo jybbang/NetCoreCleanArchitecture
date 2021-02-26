@@ -41,15 +41,24 @@ jobs:
        
       - name: Domain-Pack
         run: dotnet pack --no-build --configuration Release src/Domain/Domain.csproj --output .        
-       
+          
       - name: Application-Pack
-        run: dotnet pack --no-build --configuration Release src/Application/Application.csproj --output .       
-       
+        run: dotnet pack --no-build --configuration Release src/Application/Application.csproj --output .  
+        
       - name: Infrastructure-Pack
-        run: dotnet pack --no-build --configuration Release src/Infrastructure/Infrastructure.csproj --output .        
-       
+        run: dotnet pack --no-build --configuration Release src/Infrastructure/Infrastructure.csproj --output .     
+        
       - name: Hosting-Pack
         run: dotnet pack --no-build --configuration Release src/Hosting/Hosting.csproj --output .
-   
-      - name: PushNuget
-        run: dotnet nuget push *.nupkg --source "github" --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
+    
+      - name: Domain-PushNuget
+        run: dotnet nuget push DaprCleanArchitecture.Domain.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
+                  
+      - name: Application-PushNuget
+        run: dotnet nuget push DaprCleanArchitecture.Application.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
+                  
+      - name: Infrastructure-PushNuget
+        run: dotnet nuget push DaprCleanArchitecture.Infrastructure.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
+        
+      - name: Hosting-PushNuget
+        run: dotnet nuget push DaprCleanArchitecture.Hosting.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
