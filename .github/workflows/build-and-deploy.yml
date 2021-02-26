@@ -52,4 +52,4 @@ jobs:
         run: dotnet pack --no-build --configuration Release src/Hosting/Hosting.csproj --output .
    
       - name: PushNuget
-        run: dotnet nuget push *.nupkg --source "github" --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
+        run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
