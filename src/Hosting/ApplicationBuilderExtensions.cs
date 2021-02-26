@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 
-namespace Hosting
+namespace DaprCleanArchitecture.Hosting
 {
     public static class ApplicationBuilderExtensions
     {
