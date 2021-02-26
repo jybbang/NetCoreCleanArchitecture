@@ -2,6 +2,11 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
+		<PackageId>DaprCleanArchitecture.Hosting</PackageId>
+		<Authors>Junyoung Bang</Authors>
+		<Product>DaprCleanArchitecture.Hosting</Product>
+		<PackageProjectUrl>https://github.com/jybbang/DaprCleanArchitecture</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/jybbang/DaprCleanArchitecture</RepositoryUrl>
 	</PropertyGroup>
 
 	<ItemGroup>

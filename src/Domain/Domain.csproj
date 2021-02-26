@@ -3,6 +3,12 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>DaprCleanArchitecture.Domain</RootNamespace>
+    <PackageId>DaprCleanArchitecture.Domain</PackageId>
+    <Authors>Junyoung Bang</Authors>
+    <Company>Junyoung Bang</Company>
+    <Product>DaprCleanArchitecture.Domain</Product>
+    <PackageProjectUrl>https://github.com/jybbang/DaprCleanArchitecture</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jybbang/DaprCleanArchitecture</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
