@@ -7,7 +7,7 @@ namespace Hosting
 {
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseDarpCleanArchitecture(this IApplicationBuilder app, IWebHostEnvironment env)
+        public static IApplicationBuilder UseDaprCleanArchitecture(this IApplicationBuilder app, IWebHostEnvironment env)
         {
             // DotNetCore.AspNetCore
             app.UseCorsAllowAny();
@@ -18,7 +18,7 @@ namespace Hosting
             return app;
         }
 
-        public static IEndpointRouteBuilder MapDarpCleanArchitecture(this IEndpointRouteBuilder endpoints)
+        public static IEndpointRouteBuilder MapDaprCleanArchitecture(this IEndpointRouteBuilder endpoints)
         {
             endpoints.MapSubscribeHandler();
 

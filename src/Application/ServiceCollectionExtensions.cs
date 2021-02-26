@@ -10,7 +10,7 @@ namespace DaprCleanArchitecture.Application
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddDarpCleanArchitectureApplication(this IServiceCollection services)
+        public static IServiceCollection AddDaprCleanArchitectureApplication(this IServiceCollection services)
         {
             services.AddScoped<IApplicationEventSource, ApplicationEventSource>();
 

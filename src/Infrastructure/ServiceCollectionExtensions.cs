@@ -14,7 +14,7 @@ namespace DaprCleanArchitecture.Infrastructure
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddDarpCleanArchitectureInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddDaprCleanArchitectureInfrastructure(this IServiceCollection services)
         {
             // Dapr
             //services.AddDaprClient();
@@ -35,7 +35,7 @@ namespace DaprCleanArchitecture.Infrastructure
             return services;
         }
 
-        public static IServiceCollection AddDarpCleanArchitectureNpgsqlDbContext(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddDaprCleanArchitectureNpgsqlDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             // Repositories
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
