@@ -2,14 +2,17 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
-		<PackageId>NetCoreCleanArchitecture.Persistence.WebHosting</PackageId>
+		<PackageId>NetCoreCleanArchitecture.WebHosting</PackageId>
 		<Authors>Junyoung Bang</Authors>
-		<Product>NetCoreCleanArchitecture.Persistence.WebHosting</Product>
+		<Company>Jyb</Company>
+		<Product>NetCoreCleanArchitecture.WebHosting</Product>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
 		<Version>1.0.0</Version>
-		<AssemblyName>NetCoreCleanArchitecture.Persistence.WebHosting</AssemblyName>
-		<RootNamespace>NetCoreCleanArchitecture.Persistence.WebHosting</RootNamespace>
+		<AssemblyName>NetCoreCleanArchitecture.WebHosting</AssemblyName>
+		<RootNamespace>NetCoreCleanArchitecture.WebHosting</RootNamespace>
+		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -28,7 +31,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Application\Application.csproj" />
+		<ProjectReference Include="..\Application\Application.csproj" />
 	</ItemGroup>
-	
+
 </Project>

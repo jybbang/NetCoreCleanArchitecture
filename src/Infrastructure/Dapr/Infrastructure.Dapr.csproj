@@ -5,11 +5,14 @@
 		<RootNamespace>NetCoreCleanArchitecture.Infrastructure.Dapr</RootNamespace>
 		<PackageId>NetCoreCleanArchitecture.Infrastructure.Dapr</PackageId>
 		<Authors>Junyoung Bang</Authors>
+		<Company>Jyb</Company>
 		<Product>NetCoreCleanArchitecture.Infrastructure.Dapr</Product>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
 		<Version>1.0.0</Version>
 		<AssemblyName>NetCoreCleanArchitecture.Infrastructure.Dapr</AssemblyName>
+		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 	<ItemGroup>

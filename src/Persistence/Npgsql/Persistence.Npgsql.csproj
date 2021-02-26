@@ -4,11 +4,15 @@
 		<TargetFramework>net5.0</TargetFramework>
 		<RootNamespace>NetCoreCleanArchitecture.Persistence.Npgsql</RootNamespace>
 		<Authors>Junyoung Bang</Authors>
+		<Company>Jyb</Company>
 		<Product>NetCoreCleanArchitecture.Infrastructure.Npgsql</Product>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
+		<Version>1.0.0</Version>
 		<AssemblyName>NetCoreCleanArchitecture.Persistence.Npgsql</AssemblyName>
 		<PackageId>NetCoreCleanArchitecture.Persistence.Npgsql</PackageId>
+		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -18,7 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\EFCore\Persistence.EFCore.csproj" />
+		<ProjectReference Include="..\EFCore\Persistence.EFCore.csproj" />
 	</ItemGroup>
-	
+
 </Project>
