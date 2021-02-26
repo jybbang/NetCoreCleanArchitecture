@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Application\Application.csproj" />
+	  <ProjectReference Include="..\DaprCleanArchitecture.Application\DaprCleanArchitecture.Application.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
@@ -7,7 +7,7 @@
 		<Product>DaprCleanArchitecture.Hosting</Product>
 		<PackageProjectUrl>https://github.com/jybbang/DaprCleanArchitecture</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/jybbang/DaprCleanArchitecture</RepositoryUrl>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -26,7 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Application\Application.csproj" />
+	  <ProjectReference Include="..\DaprCleanArchitecture.Application\DaprCleanArchitecture.Application.csproj" />
 	</ItemGroup>
 	
 </Project>

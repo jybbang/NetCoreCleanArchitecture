@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Domain\Domain.csproj" />
+		<ProjectReference Include="..\DaprCleanArchitecture.Domain\DaprCleanArchitecture.Domain.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

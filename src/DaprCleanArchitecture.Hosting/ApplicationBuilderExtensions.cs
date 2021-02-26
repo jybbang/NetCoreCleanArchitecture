@@ -7,7 +7,7 @@ namespace DaprCleanArchitecture.Hosting
 {
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseDaprCleanArchitecture(this IApplicationBuilder app, IWebHostEnvironment env)
+        public static IApplicationBuilder UseDaprCleanArchitecture(this IApplicationBuilder app)
         {
             // DotNetCore.AspNetCore
             app.UseCorsAllowAny();
