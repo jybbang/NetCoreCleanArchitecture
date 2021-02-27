@@ -5,7 +5,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 {
     public abstract class DomainEvent : Base<DomainEvent>
     {
-        protected DomainEvent(Entity source, long version, string subject)
+        protected DomainEvent(Entity source, string subject, long version)
         {
             Type = source.GetType().Name;
             Source = source.Id;
