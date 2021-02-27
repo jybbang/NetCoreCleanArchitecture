@@ -8,7 +8,7 @@
 		<Product>NetCoreCleanArchitecture.Infrastructure.Npgsql</Product>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<AssemblyName>NetCoreCleanArchitecture.Persistence.Npgsql</AssemblyName>
 		<PackageId>NetCoreCleanArchitecture.Persistence.Npgsql</PackageId>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
@@ -18,7 +18,6 @@
 	<ItemGroup>
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.2" />
 		<PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL" Version="3.1.4" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

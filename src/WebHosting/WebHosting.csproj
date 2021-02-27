@@ -8,7 +8,7 @@
 		<Product>NetCoreCleanArchitecture.WebHosting</Product>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<AssemblyName>NetCoreCleanArchitecture.WebHosting</AssemblyName>
 		<RootNamespace>NetCoreCleanArchitecture.WebHosting</RootNamespace>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
