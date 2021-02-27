@@ -34,9 +34,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
         {
             if(oldState.Equals(newState)) return;
 
-            Interlocked.Increment(ref _version);
-
-            DomainEvents.TryAdd(new PropertyChangedEvent<TSource, TProperty>(this, oldState, newState, Version, propertyName));
+            Commit(new PropertyChangedEvent<TSource, TProperty>(this, oldState, newState, propertyName));
 
             oldState = newState;
         }
@@ -45,7 +43,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
         {
             Interlocked.Increment(ref _version);
 
-            DomainEvents.TryAdd(domainEvent);
+            DomainEvents.TryAdd(domainEvent.SetVersion(_version));
         }
     }
 }
