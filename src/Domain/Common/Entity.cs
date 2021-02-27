@@ -30,13 +30,11 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public IProducerConsumerCollection<DomainEvent> DomainEvents { get; } = new ConcurrentQueue<DomainEvent>();
 
-        protected void PropertyChanged<T>(ref T oldState, T newState, [CallerMemberName] string propertyName = default)
+        protected void PropertyChanged<TSource, TProperty>(ref TProperty oldState, TProperty newState, [CallerMemberName] string propertyName = default) where TSource : EntityHasDomainEvent
         {
-            if (oldState.Equals(newState)) return;
+            if(oldState.Equals(newState)) return;
 
-            Interlocked.Increment(ref _version);
-
-            DomainEvents.TryAdd(new PropertyChangedEvent<T>(this, Version, oldState, newState, propertyName));
+            Commit(new PropertyChangedEvent<TSource, TProperty>(this, Version, oldState, newState, propertyName));
 
             oldState = newState;
         }
