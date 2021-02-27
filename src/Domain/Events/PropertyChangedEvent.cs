@@ -3,10 +3,10 @@ using System.Runtime.CompilerServices;
 
 namespace NetCoreCleanArchitecture.Domain.Events
 {
-    public sealed class PropertyChangedEvent<T> : DomainEvent
+    public sealed class PropertyChangedEvent<TSource, TProperty> : DomainEvent where TSource : Entity
     {
-        public PropertyChangedEvent(Entity source, long version, T oldState, T newState, [CallerMemberName] string propertyName = default)
-            : base(source, version, $"{source.GetType().Name}{propertyName}PropertyChangedEvent")
+        public PropertyChangedEvent(TSource source, long version, TProperty oldState, TProperty newState, [CallerMemberName] string propertyName = default)
+            : base(source, version, $"{typeof(TSource).Name}{propertyName}PropertyChangedEvent")
         {
             PropertyName = propertyName;
             OldState = oldState;
@@ -15,8 +15,8 @@ namespace NetCoreCleanArchitecture.Domain.Events
 
         public string PropertyName { get; }
 
-        public T OldState { get; }
+        public TProperty OldState { get; }
 
-        public T NewState { get; }
+        public TProperty NewState { get; }
     }
 }
