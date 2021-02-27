@@ -74,3 +74,21 @@ jobs:
         
       - name: WebHosting-PushNuget
         run: dotnet nuget push *.WebHosting.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
+    
+      - name: Domain-PushNuget-github
+        run: dotnet nuget push *.Domain.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
+                  
+      - name: Application-PushNuget-github
+        run: dotnet nuget push *.Application.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
+                  
+      - name: Infrastructure.Dapr-PushNuget-github
+        run: dotnet nuget push *.Infrastructure.Dapr.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
+        
+      - name: EFCore-PushNuget-github
+        run: dotnet nuget push *.Persistence.EFCore.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate        
+        
+      - name: Npgsql-PushNuget-github
+        run: dotnet nuget push *.Persistence.Npgsql.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate        
+        
+      - name: WebHosting-PushNuget-github
+        run: dotnet nuget push *.WebHosting.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
