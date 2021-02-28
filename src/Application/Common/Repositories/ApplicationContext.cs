@@ -76,7 +76,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             var eventsToDispatch = new ConcurrentQueue<DomainEvent>();
 
             var domainEventsList = changedEntities
-                .Where(e => e is EntityHasDomainEvent ehde && ehde.DomainEvents.Any())
+                .Where(e => e is EntityHasDomainEvent entity && entity.DomainEvents.Any())
                 .Select(e => e as EntityHasDomainEvent)
                 .Select(e => e.DomainEvents);
 
