@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DomainEventSources
 {
-    public class DomainEventSource : IDomainEventSource
+    public class EventStore : IEventStore
     {
         private readonly DaprClient _client;
 
-        public DomainEventSource(DaprClient client)
+        public EventStore(DaprClient client)
         {
             _client = client;
         }
 
         public Task PublishEvent<T>(T message, CancellationToken cancellationToken = default) where T : DomainEvent
-             => _client.PublishEventAsync(nameof(DomainEventSource), message.Topic, message, cancellationToken);
+             => _client.PublishEventAsync(nameof(EventStore), message.Topic, message, cancellationToken);
     }
 }

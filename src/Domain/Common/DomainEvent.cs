@@ -23,7 +23,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public string Subject { get; }
 
-        public bool CanPublishWithSaveChanges { get; init; } = true;
+        public bool CanPublishToEventStore { get; init; } = true;
 
         public long SourceVersion { get; private set; }
 

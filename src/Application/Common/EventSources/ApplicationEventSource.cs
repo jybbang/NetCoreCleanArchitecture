@@ -10,18 +10,18 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
     public class ApplicationEventSource : IApplicationEventSource
     {
         private readonly ILoggerFactory _logFactory;
-        private readonly IDomainEventSource _eventSource;
+        private readonly IEventStore _eventStore;
         private readonly IPublisher _mediator;
         private long _published;
 
         public long Published => _published;
 
         public ApplicationEventSource(ILoggerFactory logFactory,
-            IDomainEventSource eventSource,
+            IEventStore eventStore,
             IPublisher mediator)
         {
             _logFactory = logFactory;
-            _eventSource = eventSource;
+            _eventStore = eventStore;
             _mediator = mediator;
         }
 
@@ -32,7 +32,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             // logging
             var domainEventName = typeof(TDomainEvent).Name;
 
-            logger.LogDebug("Publishing Domain Event: {Name} - {@Event}", domainEventName, domainEvent);
+            logger.LogDebug("Publishing Application Event: {Name} - {@Event}", domainEventName, domainEvent);
 
             await PublishWithPerformance(domainEvent, logger, cancellationToken);
 
@@ -49,7 +49,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 await PublishEventNotification(domainEvent, cancellationToken);
 
-                await _eventSource.PublishEvent(domainEvent, cancellationToken);
+                if(domainEvent.CanPublishToEventStore) await _eventStore.PublishEvent(domainEvent, cancellationToken);
             }
             finally
             {
@@ -57,7 +57,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 var elapsedMilliseconds = timer.ElapsedMilliseconds;
 
-                if (elapsedMilliseconds > 500)
+                if(elapsedMilliseconds > 500)
                 {
                     var eventName = typeof(TDomainEvent).Name;
 

@@ -28,22 +28,25 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public long Version { get => _version; set => Interlocked.Exchange(ref _version, value); }
 
-        public IProducerConsumerCollection<DomainEvent> DomainEvents { get; } = new ConcurrentQueue<DomainEvent>();
+        internal IProducerConsumerCollection<DomainEvent> DomainEvents { get; } = new ConcurrentQueue<DomainEvent>();
 
-        protected void PropertyChanged<TSource, TProperty>(ref TProperty oldState, TProperty newState, [CallerMemberName] string propertyName = default) where TSource : EntityHasDomainEvent
-        {
-            if(oldState.Equals(newState)) return;
-
-            Commit(new PropertyChangedEvent<TSource, TProperty>(this, oldState, newState, propertyName));
-
-            oldState = newState;
-        }
-
-        protected void Commit(DomainEvent domainEvent)
+        public void Commit(DomainEvent domainEvent)
         {
             Interlocked.Increment(ref _version);
 
             DomainEvents.TryAdd(domainEvent.SetVersion(_version));
+        }
+
+        protected void PropertyChanged<TSource, TProperty>(ref TProperty oldState, TProperty newState, bool canPublishToEventStore = true, [CallerMemberName] string propertyName = default) where TSource : EntityHasDomainEvent
+        {
+            if(oldState.Equals(newState)) return;
+
+            Commit(new PropertyChangedEvent<TSource, TProperty>(this, oldState, newState, propertyName)
+            {
+                CanPublishToEventStore = canPublishToEventStore
+            });
+
+            oldState = newState;
         }
     }
 }
