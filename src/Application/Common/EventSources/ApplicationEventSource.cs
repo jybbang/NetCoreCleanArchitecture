@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NetCoreCleanArchitecture.Domain.Common;
 using System.Diagnostics;
@@ -10,19 +11,27 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
     public class ApplicationEventSource : IApplicationEventSource
     {
         private readonly ILoggerFactory _logFactory;
-        private readonly IEventStore _eventStore;
+        private readonly IInfrastructureEventSource _eventSource;
         private readonly IPublisher _mediator;
-        private long _published;
 
-        public long Published => _published;
+        private long _appPublished;
+        private long _infraPublished;
 
-        public ApplicationEventSource(ILoggerFactory logFactory,
-            IEventStore eventStore,
-            IPublisher mediator)
+        public string AppName { get; }
+        public long ApplicationPublished => _appPublished;
+        public long InfrastructurePublished => _infraPublished;
+
+        public ApplicationEventSource(
+            ILoggerFactory logFactory,
+            IInfrastructureEventSource eventStore,
+            IPublisher mediator,
+            IConfiguration configuration)
         {
             _logFactory = logFactory;
-            _eventStore = eventStore;
+            _eventSource = eventStore;
             _mediator = mediator;
+
+            AppName = configuration.GetValue<string>("AppName");
         }
 
         public async Task Publish<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken = default) where TDomainEvent : DomainEvent
@@ -35,8 +44,6 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             logger.LogDebug("Publishing Application Event: {Name} - {@Event}", domainEventName, domainEvent);
 
             await PublishWithPerformance(domainEvent, logger, cancellationToken);
-
-            Interlocked.Increment(ref _published);
         }
 
         private async Task PublishWithPerformance<TDomainEvent>(TDomainEvent domainEvent, ILogger logger, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
@@ -49,7 +56,16 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 await PublishEventNotification(domainEvent, cancellationToken);
 
-                if(domainEvent.CanPublishToEventStore) await _eventStore.PublishEvent(domainEvent, cancellationToken);
+                if (domainEvent.CanPublishToInfrastructure)
+                {
+                    var topic = string.IsNullOrEmpty(AppName) ? domainEvent.Topic : $"{AppName}/{domainEvent.Topic}";
+
+                    await _eventSource.PublishEvent(topic, domainEvent, cancellationToken);
+
+                    Interlocked.Increment(ref _infraPublished);
+                }
+
+                Interlocked.Increment(ref _appPublished);
             }
             finally
             {
@@ -57,7 +73,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 var elapsedMilliseconds = timer.ElapsedMilliseconds;
 
-                if(elapsedMilliseconds > 500)
+                if (elapsedMilliseconds > 500)
                 {
                     var eventName = typeof(TDomainEvent).Name;
 

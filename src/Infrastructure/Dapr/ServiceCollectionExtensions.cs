@@ -20,7 +20,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr
             services.AddTransient<IDateTimeCache, DateTimeCache>();
 
             // EventStore
-            services.AddTransient<IEventStore, EventStore>();
+            services.AddTransient<IInfrastructureEventSource, InfrastructureEventSource>();
 
             return services;
         }
