@@ -8,7 +8,7 @@
 		<Product>NetCoreCleanArchitecture.Infrastructure.Npgsql</Product>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<AssemblyName>NetCoreCleanArchitecture.Persistence.Npgsql</AssemblyName>
 		<PackageId>NetCoreCleanArchitecture.Persistence.Npgsql</PackageId>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>

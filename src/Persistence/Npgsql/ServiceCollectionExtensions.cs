@@ -9,13 +9,14 @@ namespace NetCoreCleanArchitecture.Persistence.Npgsql
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddNetCoreCleanArchitectureNpgsql(this IServiceCollection services, string connectionString)
+        public static IServiceCollection AddNetCoreCleanArchitectureNpgsql(this IServiceCollection services, string connectionString, string migrationAssemblyName)
         {
             services.AddDbContext<EFCoreDbContext>(options =>
             {
                 options.UseNpgsql(
                     connectionString,
-                    b => b.MigrationsAssembly(typeof(EFCoreDbContext).Assembly.FullName));
+                    b => b.MigrationsAssembly(migrationAssemblyName));
+
                 EntityFramework.Exceptions.PostgreSQL.ExceptionProcessorExtensions.UseExceptionProcessor(options);
             });
 

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.Repositories;
 using NetCoreCleanArchitecture.Persistence.EFCore.Repositories;
+using System.Reflection;
 
 namespace NetCoreCleanArchitecture.Persistence.EFCore
 {
@@ -20,13 +21,14 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
             return services;
         }
 
-        public static IServiceCollection AddNetCoreCleanArchitectureSqlite(this IServiceCollection services, string connectionString)
+        public static IServiceCollection AddNetCoreCleanArchitectureSqlite(this IServiceCollection services, string connectionString, string migrationAssemblyName)
         {
             services.AddDbContext<EFCoreDbContext>(options =>
             {
                 options.UseSqlite(
                     connectionString,
-                    b => b.MigrationsAssembly(typeof(EFCoreDbContext).Assembly.FullName));
+                    b => b.MigrationsAssembly(migrationAssemblyName));
+
                 EntityFramework.Exceptions.Sqlite.ExceptionProcessorExtensions.UseExceptionProcessor(options);
             });
 
