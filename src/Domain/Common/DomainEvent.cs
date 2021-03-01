@@ -8,18 +8,18 @@ namespace NetCoreCleanArchitecture.Domain.Common
         protected DomainEvent(Entity source, string subject)
         {
             Type = source.GetType().Name;
-            Source = source.Id;
+            Id = source.Id;
             Subject = subject;
             Topic = $"{Type}/{Subject}";
         }
 
-        public Guid Id { get; } = Guid.NewGuid();
+        public Guid EventId { get; } = Guid.NewGuid();
 
         public string Topic { get; }
 
         public string Type { get; }
 
-        public Guid Source { get; }
+        public Guid Id { get; }
 
         public string Subject { get; }
 

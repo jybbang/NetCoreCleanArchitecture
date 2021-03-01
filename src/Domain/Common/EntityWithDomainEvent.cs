@@ -20,7 +20,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
             DomainEvents.TryAdd(domainEvent.SetVersion(_version));
         }
 
-        protected void PropertyChanged<TSource, TProperty>(ref TProperty oldState, TProperty newState, bool canPublishToEventStore = true, string subject = default, [CallerMemberName] string propertyName = default) where TSource : EntityWithDomainEvent
+        protected void PropertyChanged<TSource, TProperty>(ref TProperty oldState, TProperty newState, bool canPublishToEventStore = false, string subject = default, [CallerMemberName] string propertyName = default) where TSource : EntityWithDomainEvent
         {
             if (oldState.Equals(newState)) return;
 

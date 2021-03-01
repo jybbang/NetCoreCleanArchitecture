@@ -17,10 +17,6 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
         private long _appPublished;
         private long _infraPublished;
 
-        public string AppName { get; }
-        public long ApplicationPublished => _appPublished;
-        public long InfrastructurePublished => _infraPublished;
-
         public ApplicationEventSource(
             ILoggerFactory logFactory,
             IInfrastructureEventSource eventStore,
@@ -31,8 +27,12 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             _eventSource = eventStore;
             _mediator = mediator;
 
-            AppName = configuration.GetValue<string>("AppName");
+            AppName = configuration.GetValue<string>(nameof(AppName));
         }
+
+        public string AppName { get; }
+        public long ApplicationPublished => _appPublished;
+        public long InfrastructurePublished => _infraPublished;
 
         public async Task Publish<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken = default) where TDomainEvent : DomainEvent
         {

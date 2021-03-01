@@ -8,7 +8,7 @@
 		<Product>NetCoreCleanArchitecture.WebHosting</Product>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<AssemblyName>NetCoreCleanArchitecture.WebHosting</AssemblyName>
 		<RootNamespace>NetCoreCleanArchitecture.WebHosting</RootNamespace>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
@@ -18,9 +18,9 @@
 	<ItemGroup>
 		<PackageReference Include="Dapr.AspNetCore" Version="1.0.0" />
 		<PackageReference Include="FluentValidation.AspNetCore" Version="9.5.1" />
-		<PackageReference Include="DotNetCore.AspNetCore" Version="13.18.0" />
-		<PackageReference Include="DotNetCore.Objects" Version="13.18.0" />
-		<PackageReference Include="DotNetCore.Security" Version="13.18.0" />
+		<PackageReference Include="DotNetCore.AspNetCore" Version="13.20.0" />
+		<PackageReference Include="DotNetCore.Objects" Version="13.20.0" />
+		<PackageReference Include="DotNetCore.Security" Version="13.20.0" />
 		<PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.3" />
 		<PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
 		<PackageReference Include="Serilog.Extensions.Hosting" Version="4.1.0" />
