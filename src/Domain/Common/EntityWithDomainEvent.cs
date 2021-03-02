@@ -26,7 +26,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
             Commit(new PropertyChangedEvent<TSource, TProperty>(this, oldState, newState, subject, propertyName)
             {
-                CanPublishToInfrastructure = canPublishToEventStore
+                CanPublishWithEventBus = canPublishToEventStore
             });
 
             oldState = newState;

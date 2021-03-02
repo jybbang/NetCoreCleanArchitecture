@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
 {
-    public class StateStore<T> : IStateStore<T>
+    public class DaprStateStore<T> : IStateStore<T>
     {
         private readonly DaprClient _client;
 
-        public StateStore(DaprClient client)
+        public DaprStateStore(DaprClient client)
         {
             _client = client;
         }

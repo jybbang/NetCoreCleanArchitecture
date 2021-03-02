@@ -10,27 +10,30 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 {
     public class ApplicationEventSource : IApplicationEventSource
     {
+        private const string APP_NAME_SECTION = "AppName";
+
         private readonly ILoggerFactory _logFactory;
-        private readonly IInfrastructureEventSource _eventSource;
+        private readonly IEventBus _eventBus;
         private readonly IPublisher _mediator;
+        private readonly string appName;
 
         private long _appPublished;
         private long _infraPublished;
 
         public ApplicationEventSource(
             ILoggerFactory logFactory,
-            IInfrastructureEventSource eventStore,
+            IEventBus eventBus,
             IPublisher mediator,
             IConfiguration configuration)
         {
             _logFactory = logFactory;
-            _eventSource = eventStore;
+            _eventBus = eventBus;
             _mediator = mediator;
 
-            AppName = configuration.GetValue<string>(nameof(AppName));
+            appName = configuration.GetValue<string>(APP_NAME_SECTION);
         }
 
-        public string AppName { get; }
+
         public long ApplicationPublished => _appPublished;
         public long InfrastructurePublished => _infraPublished;
 
@@ -41,7 +44,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             // logging
             var domainEventName = typeof(TDomainEvent).Name;
 
-            logger.LogDebug("Publishing Application Event: {Name} - {@Event}", domainEventName, domainEvent);
+            logger.LogDebug("Publishing Event: {Name} - {@Event}", domainEventName, domainEvent);
 
             await PublishWithPerformance(domainEvent, logger, cancellationToken);
         }
@@ -56,11 +59,11 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 await PublishEventNotification(domainEvent, cancellationToken);
 
-                if (domainEvent.CanPublishToInfrastructure)
+                if (domainEvent.CanPublishWithEventBus)
                 {
-                    var topic = string.IsNullOrEmpty(AppName) ? domainEvent.Topic : $"{AppName}/{domainEvent.Topic}";
+                    var topic = string.IsNullOrEmpty(appName) ? domainEvent.Topic : $"{appName}/{domainEvent.Topic}";
 
-                    await _eventSource.PublishEvent(topic, domainEvent, cancellationToken);
+                    await _eventBus.PublishEvent(topic, domainEvent, cancellationToken);
 
                     Interlocked.Increment(ref _infraPublished);
                 }
@@ -77,7 +80,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                 {
                     var eventName = typeof(TDomainEvent).Name;
 
-                    logger.LogWarning("Publishing Long Running Domain Event: {Name} ({ElapsedMilliseconds} milliseconds) - {@Event}",
+                    logger.LogWarning("Publishing Long Running Event: {Name} ({ElapsedMilliseconds} milliseconds) - {@Event}",
                         eventName, elapsedMilliseconds, domainEvent);
                 }
             }

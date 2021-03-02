@@ -14,13 +14,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr
             // Dapr
             //services.AddDaprClient();
 
-            services.AddTransient(typeof(IStateStore<>), typeof(StateStore<>));
+            services.AddTransient(typeof(IStateStore<>), typeof(DaprStateStore<>));
 
             // DataTimeCaches
-            services.AddTransient<IDateTimeCache, DateTimeCache>();
+            services.AddTransient<IDateTimeCache, DaprDateTimeCache>();
 
             // EventStore
-            services.AddTransient<IInfrastructureEventSource, InfrastructureEventSource>();
+            services.AddTransient<IEventBus, DaprEventBus>();
 
             return services;
         }
