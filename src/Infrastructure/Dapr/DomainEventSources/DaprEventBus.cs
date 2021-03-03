@@ -9,7 +9,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DomainEventSources
 {
     public class DaprEventBus : IEventBus
     {
-        private const string DAPR_PUBSUB_NAME = "pubsub";
+        private const string DAPR_PUBSUB_NAME = "eventbus";
 
         private readonly ILogger<DaprEventBus> _logger;
         private readonly DaprClient _client;

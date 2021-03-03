@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NetCoreCleanArchitecture.Domain.Common;
 using System.Diagnostics;
@@ -15,7 +14,6 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
         private readonly ILoggerFactory _logFactory;
         private readonly IEventBus _eventBus;
         private readonly IPublisher _mediator;
-        private readonly string appName;
 
         private long _appPublished;
         private long _infraPublished;
@@ -23,16 +21,12 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
         public ApplicationEventSource(
             ILoggerFactory logFactory,
             IEventBus eventBus,
-            IPublisher mediator,
-            IConfiguration configuration)
+            IPublisher mediator)
         {
             _logFactory = logFactory;
             _eventBus = eventBus;
             _mediator = mediator;
-
-            appName = configuration.GetValue<string>(APP_NAME_SECTION);
         }
-
 
         public long ApplicationPublished => _appPublished;
         public long InfrastructurePublished => _infraPublished;
@@ -61,9 +55,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 if (domainEvent.CanPublishWithEventBus)
                 {
-                    var topic = string.IsNullOrEmpty(appName) ? domainEvent.Topic : $"{appName}/{domainEvent.Topic}";
-
-                    await _eventBus.PublishEvent(topic, domainEvent, cancellationToken);
+                    await _eventBus.PublishEvent(domainEvent.Topic, domainEvent, cancellationToken);
 
                     Interlocked.Increment(ref _infraPublished);
                 }
