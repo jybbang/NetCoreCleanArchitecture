@@ -37,7 +37,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var timestamp = _dateTimeCache.Now;
+            var timestamp = await _dateTimeCache.Now();
 
             var changedEntities = _unitOfWork.ChangeTracking();
 
