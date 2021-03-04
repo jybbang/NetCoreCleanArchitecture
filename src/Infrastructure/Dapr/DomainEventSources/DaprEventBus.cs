@@ -9,7 +9,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DomainEventSources
 {
     public class DaprEventBus : IEventBus
     {
-        private const string DAPR_PUBSUB_NAME = "eventbus";
+        private const string PUBSUB_NAME = "eventbus";
 
         private readonly ILogger<DaprEventBus> _logger;
         private readonly DaprClient _client;
@@ -24,7 +24,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DomainEventSources
         {
             _logger.LogDebug("DaprEventBus PublishEvent: {Topic} - {@Message}", topic, message);
 
-            return _client.PublishEventAsync(DAPR_PUBSUB_NAME, topic, message, cancellationToken);
+            return _client.PublishEventAsync(PUBSUB_NAME, topic, message, cancellationToken);
         }
     }
 }
