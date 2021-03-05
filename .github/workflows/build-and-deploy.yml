@@ -50,10 +50,7 @@ jobs:
         
       - name: EFCore-Pack
         run: dotnet pack --no-build --configuration Release src/Persistence/EFCore/Persistence.EFCore.csproj --output .    
-        
-      - name: Npgsql-Pack
-        run: dotnet pack --no-build --configuration Release src/Persistence/Npgsql/Persistence.Npgsql.csproj --output .    
-        
+               
       - name: WebHosting-Pack
         run: dotnet pack --no-build --configuration Release src/WebHosting/WebHosting.csproj --output .
     
@@ -69,9 +66,6 @@ jobs:
       - name: EFCore-PushNuget
         run: dotnet nuget push *.Persistence.EFCore.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate        
         
-      - name: Npgsql-PushNuget
-        run: dotnet nuget push *.Persistence.Npgsql.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate        
-        
       - name: WebHosting-PushNuget
         run: dotnet nuget push *.WebHosting.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
     
@@ -86,9 +80,6 @@ jobs:
         
       - name: EFCore-PushNuget-github
         run: dotnet nuget push *.Persistence.EFCore.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate        
-        
-      - name: Npgsql-PushNuget-github
-        run: dotnet nuget push *.Persistence.Npgsql.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate        
         
       - name: WebHosting-PushNuget-github
         run: dotnet nuget push *.WebHosting.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
