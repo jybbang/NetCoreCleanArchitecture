@@ -11,9 +11,6 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DateTimeCaches
 
         private readonly IStateStore<DateTime> _stateStore;
 
-        private bool _isCircuitBroken;
-        private int _fails = 0;
-
         public DaprDateTimeCache(IStateStore<DateTime> stateStore)
         {
             _stateStore = stateStore;
@@ -25,19 +22,11 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DateTimeCaches
 
             try
             {
-                if (_isCircuitBroken) return DateTime.UtcNow;
-
                 result = await _stateStore.GetAsync(DATETIME_CACHE_KEY, cancellationToken);
             }
             catch (Exception)
             {
-                _isCircuitBroken = true;
-
-                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, ++_fails)), cancellationToken);
-            }
-            finally
-            {
-                _isCircuitBroken = false;
+                result = DateTime.UtcNow;
             }
 
             return result;
