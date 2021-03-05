@@ -21,9 +21,9 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
         {
             services.AddDbContext<T>(options);
 
-            //services.AddScoped<DbContext>(provider => provider.GetService<T>());
+            services.AddScoped<DbContext>(provider => provider.GetService<T>());
 
-            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<DbContext>() as IUnitOfWork);
+            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<T>() as IUnitOfWork);
 
             switch (migration)
             {
@@ -42,9 +42,9 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
         {
             services.AddDbContextPool<T>(options => options.UseInMemoryDatabase(typeof(T).Name));
 
-            //services.AddScoped<DbContext>(provider => provider.GetService<T>());
+            services.AddScoped<DbContext>(provider => provider.GetService<T>());
 
-            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<DbContext>() as IUnitOfWork);
+            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<T>() as IUnitOfWork);
 
             services.BuildServiceProvider().GetRequiredService<T>().Database.EnsureCreated();
         }
