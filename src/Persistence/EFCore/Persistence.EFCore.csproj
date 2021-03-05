@@ -8,7 +8,7 @@
 		<Company>Jyb</Company>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
-		<Version>1.0.3</Version>
+		<Version>1.0.4</Version>
 		<PackageId>NetCoreCleanArchitecture.Persistence.EFCore</PackageId>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>

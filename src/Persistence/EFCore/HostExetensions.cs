@@ -8,7 +8,14 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
 {
     public static class HostExetensions
     {
-        public static void UseMigration(this IHost host)
+        public enum MigrationOptions
+        {
+            None,
+            EnsureCreated,
+            Migrate
+        }
+
+        public static void UseMigration(this IHost host, MigrationOptions options = MigrationOptions.Migrate)
         {
             using var scope = host.Services.CreateScope();
             var services = scope.ServiceProvider;
@@ -19,8 +26,17 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
 
                 if (dbContext.Database.IsInMemory()) return;
 
-                if (dbContext.Database.IsSqlite()) dbContext.Database.EnsureCreated();
-                else dbContext.Database.Migrate();
+                switch (options)
+                {
+                    case MigrationOptions.EnsureCreated:
+                        dbContext.Database.EnsureCreated();
+                        break;
+                    case MigrationOptions.Migrate:
+                        dbContext.Database.Migrate();
+                        break;
+                    default:
+                        break;
+                }
             }
             catch (Exception ex)
             {
