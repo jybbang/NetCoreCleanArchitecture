@@ -3,47 +3,50 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.Repositories;
 using NetCoreCleanArchitecture.Persistence.EFCore.Repositories;
+using System;
 using System.Reflection;
 
 namespace NetCoreCleanArchitecture.Persistence.EFCore
 {
+    public enum MigrationOptions
+    {
+        None,
+        EnsureCreated,
+        Migrate
+    }
+
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddNetCoreCleanArchitectureInMemory(this IServiceCollection services, string connectionString)
+        public static void AddNetCoreCleanArchitectureDbContext<T>(this IServiceCollection services, Action<DbContextOptionsBuilder> options, MigrationOptions migration = MigrationOptions.Migrate) where T : DbContext
         {
-            services.AddDbContext<EFCoreDbContext>(options =>
+            services.AddDbContext<T>(options);
+
+            //services.AddScoped<DbContext>(provider => provider.GetService<T>());
+
+            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<DbContext>() as IUnitOfWork);
+
+            switch (migration)
             {
-                options.UseInMemoryDatabase(nameof(NetCoreCleanArchitecture));
-            });
-
-            services.AddEFCore();
-
-            return services;
+                case MigrationOptions.EnsureCreated:
+                    services.BuildServiceProvider().GetRequiredService<T>().Database.EnsureCreated();
+                    break;
+                case MigrationOptions.Migrate:
+                    services.BuildServiceProvider().GetRequiredService<T>().Database.Migrate();
+                    break;
+                default:
+                    break;
+            }
         }
 
-        public static IServiceCollection AddNetCoreCleanArchitectureSqlite(this IServiceCollection services, string connectionString, string migrationAssemblyName)
+        public static void AddNetCoreCleanArchitectureDbContextMemory<T>(this IServiceCollection services) where T : DbContext
         {
-            services.AddDbContext<EFCoreDbContext>(options =>
-            {
-                options.UseSqlite(
-                    connectionString,
-                    b => b.MigrationsAssembly(migrationAssemblyName));
+            services.AddDbContextPool<T>(options => options.UseInMemoryDatabase(typeof(T).Name));
 
-                EntityFramework.Exceptions.Sqlite.ExceptionProcessorExtensions.UseExceptionProcessor(options);
-            });
+            //services.AddScoped<DbContext>(provider => provider.GetService<T>());
 
-            services.AddEFCore();
+            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<DbContext>() as IUnitOfWork);
 
-            return services;
-        }
-
-        internal static IServiceCollection AddEFCore(this IServiceCollection services)
-        {
-            services.AddScoped<DbContext>(provider => provider.GetService<EFCoreDbContext>());
-
-            services.AddScoped<IUnitOfWork>(provider => provider.GetService<EFCoreDbContext>());
-
-            return services;
+            services.BuildServiceProvider().GetRequiredService<T>().Database.EnsureCreated();
         }
     }
 }
