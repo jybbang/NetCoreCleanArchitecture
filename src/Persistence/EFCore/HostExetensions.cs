@@ -19,7 +19,8 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
 
                 if (dbContext.Database.IsInMemory()) return;
 
-                dbContext.Database.Migrate();
+                if (dbContext.Database.IsSqlite()) dbContext.Database.EnsureCreated();
+                else dbContext.Database.Migrate();
             }
             catch (Exception ex)
             {
