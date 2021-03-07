@@ -5,12 +5,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 {
     public abstract class Entity : Base<Entity>
     {
-        protected Entity(Guid id = default)
-        {
-            Id = id == Guid.Empty ? Guid.NewGuid() : id;
-        }
-
-        public Guid Id { get; init; }
+        public Guid Id { get; init; } = Guid.NewGuid();
 
         protected sealed override IEnumerable<object> Equals()
         {
