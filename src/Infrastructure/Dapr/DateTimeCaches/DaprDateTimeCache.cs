@@ -29,7 +29,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DateTimeCaches
                 result = DateTime.UtcNow;
             }
 
-            return result;
+            return result == DateTime.MinValue ? DateTime.UtcNow : result;
         }
     }
 }
