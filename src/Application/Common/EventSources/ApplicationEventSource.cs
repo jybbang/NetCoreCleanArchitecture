@@ -9,8 +9,6 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 {
     public class ApplicationEventSource : IApplicationEventSource
     {
-        private const string APP_NAME_SECTION = "AppName";
-
         private readonly ILoggerFactory _logFactory;
         private readonly IEventBus _eventBus;
         private readonly IPublisher _mediator;

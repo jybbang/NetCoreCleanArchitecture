@@ -23,7 +23,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
     {
         public static DbSet<T> CommandSet<T>(this DbContext context) where T : class
         {
-            return context.DetectChangesLazyLoading(true).Set<T>();
+            return context.Set<T>();
         }
 
         public static DbContext DetectChangesLazyLoading(this DbContext context, bool enabled)
@@ -39,7 +39,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 
         public static IQueryable<T> QuerySet<T>(this DbContext context) where T : class
         {
-            return context.DetectChangesLazyLoading(false).Set<T>().AsNoTracking();
+            return context.Set<T>();
         }
     }
 }

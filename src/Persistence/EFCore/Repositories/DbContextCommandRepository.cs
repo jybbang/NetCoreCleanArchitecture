@@ -65,7 +65,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 
         public async Task DeleteAsync(Guid key, CancellationToken cancellationToken = default)
         {
-            var entity = await Set.FindAsync(key, cancellationToken);
+            var entity = await Set.FindAsync(new object[] { key }, cancellationToken);
 
             Set.Remove(entity);
         }
@@ -92,7 +92,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 
         public async Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken = default)
         {
-            var entity = await Set.FindAsync(key, cancellationToken);
+            var entity = await Set.FindAsync(new object[] { key }, cancellationToken);
 
             _context.Entry(entity).CurrentValues.SetValues(item);
         }
