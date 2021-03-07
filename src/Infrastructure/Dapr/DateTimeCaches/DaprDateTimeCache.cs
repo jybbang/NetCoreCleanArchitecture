@@ -18,7 +18,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DateTimeCaches
 
         public async Task<DateTime> Now(CancellationToken cancellationToken = default)
         {
-            var result = DateTime.MinValue;
+            var result = default(DateTime);
 
             try
             {
@@ -29,7 +29,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DateTimeCaches
                 result = DateTime.UtcNow;
             }
 
-            return result == DateTime.MinValue ? DateTime.UtcNow : result;
+            return result == default ? DateTime.UtcNow : result;
         }
     }
 }

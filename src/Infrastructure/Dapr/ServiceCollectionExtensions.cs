@@ -14,6 +14,9 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr
             // Dapr
             //services.AddDaprClient();
 
+            // Controller with custom validator
+            services.AddControllers().AddDapr();
+
             services.AddTransient(typeof(IStateStore<>), typeof(DaprStateStore<>));
 
             // DataTimeCaches

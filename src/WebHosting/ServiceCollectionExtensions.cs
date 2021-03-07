@@ -32,7 +32,7 @@ namespace NetCoreCleanArchitecture.WebHosting
                     .AddFluentValidation();
 
             // Dapr to controllers
-            mvcBuilder.AddDapr();
+            //mvcBuilder.AddDapr();
 
             // DotNetCore.AspNetCore
             services.AddAuthenticationJwtBearer();

@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.Repositories;
-using NetCoreCleanArchitecture.Persistence.EFCore.Repositories;
 using System;
-using System.Reflection;
 
 namespace NetCoreCleanArchitecture.Persistence.EFCore
 {
