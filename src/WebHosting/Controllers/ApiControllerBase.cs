@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace NetCoreCleanArchitecture.WebHosting.Controllers
 {
     [ApiController]
-    [Route("/api/[controller]")]
+    [Route("[controller]")]
     [EnableCors]
     public abstract class ApiControllerBase : ControllerBase
     {

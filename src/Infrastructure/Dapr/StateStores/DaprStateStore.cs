@@ -8,6 +8,8 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
 {
     public class DaprStateStore<T> : IStateStore<T>
     {
+        private const string STORE_NAME = "statestore";
+
         private readonly DaprClient _client;
 
         public DaprStateStore(DaprClient client)
@@ -16,12 +18,12 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
         }
 
         public Task<T> GetAsync(string key, CancellationToken cancellationToken = default)
-            => _client.GetStateAsync<T>(typeof(T).Name, key, cancellationToken: cancellationToken);
+            => _client.GetStateAsync<T>(STORE_NAME, key, cancellationToken: cancellationToken);
 
         public Task AddAsync(string key, T item, CancellationToken cancellationToken = default)
-            => _client.SaveStateAsync(typeof(T).Name, key, item, cancellationToken: cancellationToken);
+            => _client.SaveStateAsync(STORE_NAME, key, item, cancellationToken: cancellationToken);
 
         public Task DeleteAsync(string key, CancellationToken cancellationToken = default)
-            => _client.DeleteStateAsync(typeof(T).Name, key, cancellationToken: cancellationToken);
+            => _client.DeleteStateAsync(STORE_NAME, key, cancellationToken: cancellationToken);
     }
 }

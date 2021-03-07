@@ -19,7 +19,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
     {
         public static void AddNetCoreCleanArchitectureDbContext<T>(this IServiceCollection services, Action<DbContextOptionsBuilder> options, MigrationOptions migration = MigrationOptions.Migrate) where T : DbContext
         {
-            services.AddDbContext<T>(options);
+            services.AddDbContextPool<T>(options);
 
             services.AddScoped<DbContext>(provider => provider.GetService<T>());
 
