@@ -35,7 +35,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
             _context = context;
         }
 
-        private DbSet<TEntity> Set => _context.CommandSet<TEntity>();
+        private DbSet<TEntity> Set => _context.Set<TEntity>();
 
         public void Add(TEntity item) => Set.Add(item);
 

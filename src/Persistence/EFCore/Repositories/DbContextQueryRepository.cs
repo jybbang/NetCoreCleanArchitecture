@@ -35,7 +35,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
             _context = context;
         }
 
-        public IQueryable<TEntity> Queryable => _context.QuerySet<TEntity>();
+        public IQueryable<TEntity> Queryable => _context.Set<TEntity>();
 
         public bool Any() => Queryable.Any();
 
@@ -61,9 +61,9 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 
         public Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => Queryable.Where(where).FirstOrDefaultAsync(cancellationToken);
 
-        public TEntity Get(Guid key) => _context.DetectChangesLazyLoading(false).Set<TEntity>().Find(key);
+        public TEntity Get(Guid key) => _context.Set<TEntity>().Find(key);
 
-        public Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default) => _context.DetectChangesLazyLoading(false).Set<TEntity>().FindAsync(new object[] { key }, cancellationToken).AsTask();
+        public Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default) => _context.Set<TEntity>().FindAsync(new object[] { key }, cancellationToken).AsTask();
 
         public IEnumerable<TEntity> List() => Queryable.ToList();
 
