@@ -10,7 +10,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
             Id = id == Guid.Empty ? Guid.NewGuid() : id;
         }
 
-        public Guid Id { get; }
+        public Guid Id { get; init; }
 
         protected sealed override IEnumerable<object> Equals()
         {
