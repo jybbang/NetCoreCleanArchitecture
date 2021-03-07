@@ -63,7 +63,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 
         public TEntity Get(Guid key) => _context.DetectChangesLazyLoading(false).Set<TEntity>().Find(key);
 
-        public Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default) => _context.DetectChangesLazyLoading(false).Set<TEntity>().FindAsync(key, cancellationToken).AsTask();
+        public Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default) => _context.DetectChangesLazyLoading(false).Set<TEntity>().FindAsync(new object[] { key }, cancellationToken: cancellationToken).AsTask();
 
         public IEnumerable<TEntity> List() => Queryable.ToList();
 
