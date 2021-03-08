@@ -11,12 +11,6 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr
     {
         public static IServiceCollection AddNetCoreCleanArchitectureInfrastructure(this IServiceCollection services)
         {
-            // Dapr
-            //services.AddDaprClient();
-
-            // Controller with custom validator
-            services.AddControllers().AddDapr();
-
             services.AddTransient(typeof(IStateStore<>), typeof(DaprStateStore<>));
 
             // DataTimeCaches
@@ -26,6 +20,14 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr
             services.AddTransient<IEventBus, DaprEventBus>();
 
             return services;
+        }
+
+        public static IMvcBuilder AddNetCoreCleanArchitectureDapr(this IMvcBuilder builder)
+        {
+            // Controller with custom validator
+            var mvcBuilder = builder.AddDapr();
+
+            return mvcBuilder;
         }
     }
 }

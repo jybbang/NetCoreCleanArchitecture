@@ -8,12 +8,13 @@ using NetCoreCleanArchitecture.Application.Common.Interfaces;
 using NetCoreCleanArchitecture.WebHosting.Filters;
 using NetCoreCleanArchitecture.WebHosting.Identity;
 using System;
+using Prometheus;
 
 namespace NetCoreCleanArchitecture.WebHosting
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddNetCoreCleanArchitectureHosting(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddNetCoreCleanArchitectureWebHosting(this IServiceCollection services)
         {
             // Identity
             services.AddHttpContextAccessor();
@@ -25,14 +26,6 @@ namespace NetCoreCleanArchitecture.WebHosting
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
-
-            // Controller with custom validator
-            var mvcBuilder = services.AddControllers(options =>
-                 options.Filters.Add<ApiExceptionFilterAttribute>())
-                    .AddFluentValidation();
-
-            // Dapr to controllers
-            //mvcBuilder.AddDapr();
 
             // DotNetCore.AspNetCore
             services.AddAuthenticationJwtBearer();
@@ -51,6 +44,26 @@ namespace NetCoreCleanArchitecture.WebHosting
             services.AddAuthenticationJwtBearer();
 
             return services;
+        }
+
+        public static IMvcBuilder AddNetCoreCleanArchitectureControllers(this IServiceCollection services)
+        {
+            // Controller with custom validator
+            var builder = services.AddControllers(options =>
+                     options.Filters.Add<ApiExceptionFilterAttribute>())
+                        .AddFluentValidation();
+
+            return builder;
+        }
+
+        public static IHealthChecksBuilder AddNetCoreCleanArchitectureHealthChecks(this IServiceCollection services)
+        {
+            // ASP.NET Core health check status metrics
+            var builder = services.AddHealthChecks()
+                .ForwardToPrometheus();
+            //.AddDbContextCheck<DbContext>();
+
+            return builder;
         }
     }
 }
