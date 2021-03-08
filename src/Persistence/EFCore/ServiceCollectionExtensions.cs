@@ -35,7 +35,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
             }
         }
 
-        public static void AddNetCoreDbContextMemory<T>(this IServiceCollection services) where T : DbContext
+        public static void AddNetCleanDbContextMemory<T>(this IServiceCollection services) where T : DbContext
         {
             services.AddDbContextPool<T>(options => options.UseInMemoryDatabase(typeof(T).Name));
 
