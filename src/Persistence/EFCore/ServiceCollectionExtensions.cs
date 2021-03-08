@@ -14,7 +14,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
 
     public static class ServiceCollectionExtensions
     {
-        public static void AddNetCoreCleanArchitectureDbContext<T>(this IServiceCollection services, Action<DbContextOptionsBuilder> options, MigrationOptions migration = MigrationOptions.Migrate) where T : DbContext
+        public static void AddNetCleanDbContext<T>(this IServiceCollection services, Action<DbContextOptionsBuilder> options, MigrationOptions migration = MigrationOptions.Migrate) where T : DbContext
         {
             services.AddDbContextPool<T>(options);
 
@@ -35,7 +35,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
             }
         }
 
-        public static void AddNetCoreCleanArchitectureDbContextMemory<T>(this IServiceCollection services) where T : DbContext
+        public static void AddNetCoreDbContextMemory<T>(this IServiceCollection services) where T : DbContext
         {
             services.AddDbContextPool<T>(options => options.UseInMemoryDatabase(typeof(T).Name));
 
@@ -46,7 +46,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
             services.BuildServiceProvider().GetRequiredService<T>().Database.EnsureCreated();
         }
 
-        public static IHealthChecksBuilder AddNetCoreCleanArchitectureDbContextChecks(this IHealthChecksBuilder builder)
+        public static IHealthChecksBuilder AddNetCleanDbContextCheck(this IHealthChecksBuilder builder)
         {
             builder.AddDbContextCheck<DbContext>();
 

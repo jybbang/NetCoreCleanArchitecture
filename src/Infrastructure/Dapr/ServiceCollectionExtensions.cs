@@ -9,7 +9,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddNetCoreCleanArchitectureInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddNetCleanInfrastructure(this IServiceCollection services)
         {
             services.AddTransient(typeof(IStateStore<>), typeof(DaprStateStore<>));
 
@@ -22,7 +22,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr
             return services;
         }
 
-        public static IMvcBuilder AddNetCoreCleanArchitectureDapr(this IMvcBuilder builder)
+        public static IMvcBuilder AddNetCleanDapr(this IMvcBuilder builder)
         {
             // Controller with custom validator
             var mvcBuilder = builder.AddDapr();

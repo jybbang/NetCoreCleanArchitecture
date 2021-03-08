@@ -7,7 +7,7 @@ namespace NetCoreCleanArchitecture.WebHosting
 {
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseNetCoreCleanArchitectureWebHosting(this IApplicationBuilder app)
+        public static IApplicationBuilder UseNetCleanWebHosting(this IApplicationBuilder app)
         {
             // DotNetCore.AspNetCore
             app.UseCorsAllowAny();
@@ -18,7 +18,7 @@ namespace NetCoreCleanArchitecture.WebHosting
             return app;
         }
 
-        public static IEndpointRouteBuilder MapNetCoreCleanArchitectureWebHosting(this IEndpointRouteBuilder endpoints)
+        public static IEndpointRouteBuilder MapNetCleanWebHosting(this IEndpointRouteBuilder endpoints)
         {
             // ASP.NET Core exporter middleware
             endpoints.MapMetrics();

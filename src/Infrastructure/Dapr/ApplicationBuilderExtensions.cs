@@ -5,7 +5,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr
 {
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseNetCoreCleanArchitectureInfrastructure(this IApplicationBuilder app)
+        public static IApplicationBuilder UseNetCleanInfrastructure(this IApplicationBuilder app)
         {
             // CloudEvents
             app.UseCloudEvents();
@@ -13,7 +13,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr
             return app;
         }
 
-        public static IEndpointRouteBuilder MapNetCoreCleanArchitectureInfrastructure(this IEndpointRouteBuilder endpoints)
+        public static IEndpointRouteBuilder MapNetCleanInfrastructure(this IEndpointRouteBuilder endpoints)
         {
             endpoints.MapSubscribeHandler();
 

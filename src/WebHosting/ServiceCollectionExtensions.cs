@@ -14,7 +14,7 @@ namespace NetCoreCleanArchitecture.WebHosting
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddNetCoreCleanArchitectureWebHosting(this IServiceCollection services)
+        public static IServiceCollection AddNetCleanWebHosting(this IServiceCollection services)
         {
             // Identity
             services.AddHttpContextAccessor();
@@ -46,7 +46,7 @@ namespace NetCoreCleanArchitecture.WebHosting
             return services;
         }
 
-        public static IMvcBuilder AddNetCoreCleanArchitectureControllers(this IServiceCollection services)
+        public static IMvcBuilder AddNetCleanControllers(this IServiceCollection services)
         {
             // Controller with custom validator
             var builder = services.AddControllers(options =>
@@ -56,7 +56,7 @@ namespace NetCoreCleanArchitecture.WebHosting
             return builder;
         }
 
-        public static IHealthChecksBuilder AddNetCoreCleanArchitectureHealthChecks(this IServiceCollection services)
+        public static IHealthChecksBuilder AddNetCleanHealthChecks(this IServiceCollection services)
         {
             // ASP.NET Core health check status metrics
             var builder = services.AddHealthChecks()

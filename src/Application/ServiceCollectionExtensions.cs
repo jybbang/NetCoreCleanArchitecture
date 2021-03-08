@@ -10,7 +10,7 @@ namespace NetCoreCleanArchitecture.Application
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddNetCoreCleanArchitectureApplication(this IServiceCollection services)
+        public static IServiceCollection AddNetCleanApplication(this IServiceCollection services)
         {
             services.AddScoped<IApplicationEventSource, ApplicationEventSource>();
 
