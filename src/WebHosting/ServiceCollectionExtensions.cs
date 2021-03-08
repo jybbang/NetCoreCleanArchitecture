@@ -61,7 +61,6 @@ namespace NetCoreCleanArchitecture.WebHosting
             // ASP.NET Core health check status metrics
             var builder = services.AddHealthChecks()
                 .ForwardToPrometheus();
-            //.AddDbContextCheck<DbContext>();
 
             return builder;
         }

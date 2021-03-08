@@ -45,5 +45,12 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
 
             services.BuildServiceProvider().GetRequiredService<T>().Database.EnsureCreated();
         }
+
+        public static IHealthChecksBuilder AddNetCoreCleanArchitectureDbContextChecks(this IHealthChecksBuilder builder)
+        {
+            builder.AddDbContextCheck<DbContext>();
+
+            return builder;
+        }
     }
 }
