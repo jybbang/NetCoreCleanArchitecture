@@ -28,6 +28,8 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
     {
         IQueryable<TEntity> Queryable { get; }
 
+        IQueryable<TEntity> QueryableAsNoTracking { get; }
+
         bool Any();
 
         bool Any(Expression<Func<TEntity, bool>> where);
@@ -48,16 +50,8 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default);
 
-        IEnumerable<TEntity> List();
+        IEnumerable<TEntity> List(bool asNoTraking = true);
 
-        Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default);
-
-        TEntity Find(Expression<Func<TEntity, bool>> where);
-
-        Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default);
-
-        IEnumerable<TEntity> FindAll(Expression<Func<TEntity, bool>> where);
-
-        Task<List<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default);
+        Task<List<TEntity>> ListAsync(bool asNoTraking = true, CancellationToken cancellationToken = default);
     }
 }

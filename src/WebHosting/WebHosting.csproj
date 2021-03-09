@@ -8,7 +8,7 @@
 		<Product>NetCoreCleanArchitecture.WebHosting</Product>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
-		<Version>1.0.9</Version>
+		<Version>1.0.10</Version>
 		<AssemblyName>NetCoreCleanArchitecture.WebHosting</AssemblyName>
 		<RootNamespace>NetCoreCleanArchitecture.WebHosting</RootNamespace>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
@@ -16,7 +16,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentValidation.AspNetCore" Version="9.5.1" />
+		<PackageReference Include="FluentValidation.AspNetCore" Version="9.5.2" />
 		<PackageReference Include="DotNetCore.AspNetCore" Version="14.0.0" />
 		<PackageReference Include="DotNetCore.Objects" Version="14.0.0" />
 		<PackageReference Include="DotNetCore.Security" Version="14.0.0" />
