@@ -49,5 +49,9 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
         TEntity Get(Guid key);
 
         Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default);
+
+        IEnumerable<TEntity> List(bool asNoTraking = true);
+
+        Task<List<TEntity>> ListAsync(bool asNoTraking = true, CancellationToken cancellationToken = default);
     }
 }

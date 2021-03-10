@@ -13,8 +13,8 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
         private readonly IEventBus _eventBus;
         private readonly IPublisher _mediator;
 
-        private long _appPublished;
-        private long _infraPublished;
+        private uint _appPublished;
+        private uint _eventbusPublished;
 
         public ApplicationEventSource(
             ILoggerFactory logFactory,
@@ -26,8 +26,8 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             _mediator = mediator;
         }
 
-        public long ApplicationPublished => _appPublished;
-        public long InfrastructurePublished => _infraPublished;
+        public uint ApplicationPublished => _appPublished;
+        public uint EventbusPublished => _eventbusPublished;
 
         public async Task Publish<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken = default) where TDomainEvent : DomainEvent
         {
@@ -55,7 +55,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                 {
                     await _eventBus.PublishEvent(domainEvent.Topic, domainEvent, cancellationToken);
 
-                    Interlocked.Increment(ref _infraPublished);
+                    Interlocked.Increment(ref _eventbusPublished);
                 }
 
                 Interlocked.Increment(ref _appPublished);
