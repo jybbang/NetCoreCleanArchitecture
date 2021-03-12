@@ -23,7 +23,9 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public string Subject { get; }
 
-        public bool CanPublishWithEventBus { get; init; } = true;
+        public bool CanPublishToEventBus { get; init; } = true;
+
+        public bool CanStoreToEventStore { get; init; } = true;
 
         public long SourceVersion { get; private set; }
 

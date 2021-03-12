@@ -26,7 +26,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 {
     public interface IQueryRepository<TEntity> where TEntity : Entity
     {
-        IQueryable<TEntity> Queryable { get; }
+        IQueryable<TEntity> QueryableAsTracking { get; }
 
         IQueryable<TEntity> QueryableAsNoTracking { get; }
 
@@ -50,8 +50,12 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default);
 
-        IEnumerable<TEntity> List(bool asNoTraking = true);
+        IEnumerable<TEntity> ListAsTacking();
 
-        Task<List<TEntity>> ListAsync(bool asNoTraking = true, CancellationToken cancellationToken = default);
+        Task<List<TEntity>> ListAsTackingAsync(CancellationToken cancellationToken = default);
+
+        IEnumerable<TEntity> ListAsNoTracking();
+
+        Task<List<TEntity>> ListAsNoTrackingAsync(CancellationToken cancellationToken = default);
     }
 }

@@ -8,6 +8,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
     public enum MigrationOptions
     {
         None,
+        EnsureDeleteAndCreated,
         EnsureCreated,
         Migrate
     }
@@ -24,6 +25,12 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
 
             switch (migration)
             {
+                case MigrationOptions.EnsureDeleteAndCreated:
+                    {
+                        services.BuildServiceProvider().GetRequiredService<T>().Database.EnsureDeleted();
+                        services.BuildServiceProvider().GetRequiredService<T>().Database.EnsureCreated();
+                    }
+                    break;
                 case MigrationOptions.EnsureCreated:
                     services.BuildServiceProvider().GetRequiredService<T>().Database.EnsureCreated();
                     break;

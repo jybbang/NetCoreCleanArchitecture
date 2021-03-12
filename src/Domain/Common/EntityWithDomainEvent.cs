@@ -7,9 +7,9 @@ namespace NetCoreCleanArchitecture.Domain.Common
 {
     public abstract class EntityWithDomainEvent : Entity
     {
-        protected long _version;
+        protected uint _version;
 
-        public long Version { get => _version; set => Interlocked.Exchange(ref _version, value); }
+        public uint Version { get => _version; set => Interlocked.Exchange(ref _version, value); }
 
         internal IProducerConsumerCollection<DomainEvent> DomainEvents { get; } = new ConcurrentQueue<DomainEvent>();
 
@@ -26,7 +26,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
             Commit(new PropertyChangedEvent<TSource, TProperty>(this, oldState, newState, subject, propertyName)
             {
-                CanPublishWithEventBus = canPublishToEventStore
+                CanPublishToEventBus = canPublishToEventStore
             });
 
             oldState = newState;

@@ -51,7 +51,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 await PublishEventNotification(domainEvent, cancellationToken);
 
-                if (domainEvent.CanPublishWithEventBus)
+                if (domainEvent.CanPublishToEventBus)
                 {
                     await _eventBus.PublishEvent(domainEvent.Topic, domainEvent, cancellationToken);
 
