@@ -43,6 +43,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
         public DomainEvent Publising(DateTimeOffset timestamp = default)
         {
             IsPublished = true;
+
             Time = timestamp == default ? DateTimeOffset.UtcNow : timestamp;
 
             return this;
