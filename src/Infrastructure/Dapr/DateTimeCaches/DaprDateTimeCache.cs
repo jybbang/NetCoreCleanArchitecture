@@ -1,4 +1,7 @@
-﻿using NetCoreCleanArchitecture.Application.Common.Interfaces;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
+using NetCoreCleanArchitecture.Application.Common.Interfaces;
+using NetCoreCleanArchitecture.Infrastructure.Dapr.Options;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,13 +10,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DateTimeCaches
 {
     public class DaprDateTimeCache : IDateTimeCache
     {
-        private const string DATETIME_CACHE_KEY = "now";
-
         private readonly IStateStore<DateTime> _stateStore;
+        private readonly InfrastructureDaprOptions _opt;
 
-        public DaprDateTimeCache(IStateStore<DateTime> stateStore)
+        public DaprDateTimeCache(IStateStore<DateTime> stateStore, IOptions<InfrastructureDaprOptions> opt)
         {
             _stateStore = stateStore;
+            _opt = opt.Value;
         }
 
         public async Task<DateTime> Now(CancellationToken cancellationToken = default)
@@ -22,11 +25,12 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DateTimeCaches
 
             try
             {
-                result = await _stateStore.GetAsync(DATETIME_CACHE_KEY, cancellationToken);
+                result = _opt.UseDatetimeCache
+                    ? await _stateStore.GetAsync(_opt.DatetimeKey, new CancellationTokenSource(200).Token)
+                    : DateTime.UtcNow;
             }
             catch (Exception)
             {
-                result = DateTime.UtcNow;
             }
 
             return result == default ? DateTime.UtcNow : result;
