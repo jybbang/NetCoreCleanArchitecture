@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using NetCoreCleanArchitecture.Domain.Common;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,16 +50,9 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             {
                 timer.Start();
 
-                await PublishEventNotification(domainEvent, cancellationToken);
+                await PublishEventNotification(domainEvent, logger, cancellationToken);
 
-                if (domainEvent.CanPublishToEventBus)
-                {
-                    await _eventBus.PublishEvent(domainEvent.Topic, domainEvent, cancellationToken);
-
-                    Interlocked.Increment(ref _eventbusPublished);
-                }
-
-                Interlocked.Increment(ref _appPublished);
+                await PublishToEventbus(domainEvent, logger, cancellationToken);
             }
             finally
             {
@@ -76,7 +70,26 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             }
         }
 
-        private Task PublishEventNotification<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
+        private async Task PublishToEventbus<TDomainEvent>(TDomainEvent domainEvent, ILogger logger, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
+        {
+            try
+            {
+                if (domainEvent.CanPublishToEventBus)
+                {
+                    await _eventBus.PublishEvent(domainEvent.Topic, domainEvent, cancellationToken);
+
+                    Interlocked.Increment(ref _eventbusPublished);
+                }
+
+                Interlocked.Increment(ref _appPublished);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Unhandled exception.");
+            }
+        }
+
+        private Task PublishEventNotification<TDomainEvent>(TDomainEvent domainEvent, ILogger logger, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
         {
             var notification = new DomainEventNotification<TDomainEvent>(domainEvent);
 
