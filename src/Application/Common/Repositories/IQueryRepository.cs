@@ -50,6 +50,10 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         IEnumerable<TEntity> List();
 
+        IEnumerable<TEntity> List(Expression<Func<TEntity, bool>> where);
+
         Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default);
+
+        Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default);
     }
 }

@@ -36,69 +36,38 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
         public MongoQueryRepository(MongoContext context)
         {
             _collection = context.Database.GetCollection<TEntity>(typeof(TEntity).Name);
+
             Queryable = _collection.AsQueryable();
         }
 
         public IQueryable<TEntity> Queryable { get; }
 
-        public bool Any()
-        {
-            return Queryable.Any();
-        }
+        public bool Any() => Queryable.Any();
 
-        public bool Any(Expression<Func<TEntity, bool>> where)
-        {
-            return Queryable.Where(where).Any();
-        }
+        public bool Any(Expression<Func<TEntity, bool>> where) => Queryable.Where(where).Any();
 
-        public Task<bool> AnyAsync(CancellationToken cancellationToken = default)
-        {
-            return Queryable.AnyAsync(cancellationToken: cancellationToken);
-        }
+        public Task<bool> AnyAsync(CancellationToken cancellationToken = default) => Queryable.AnyAsync(cancellationToken: cancellationToken);
 
-        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default)
-        {
-            return Queryable.Where(where).AnyAsync(cancellationToken: cancellationToken);
-        }
+        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => Queryable.Where(where).AnyAsync(cancellationToken: cancellationToken);
 
-        public long Count()
-        {
-            return Queryable.LongCount();
-        }
+        public long Count() => Queryable.LongCount();
 
-        public long Count(Expression<Func<TEntity, bool>> where)
-        {
-            return Queryable.Where(where).LongCount();
-        }
+        public long Count(Expression<Func<TEntity, bool>> where) => Queryable.Where(where).LongCount();
 
-        public Task<long> CountAsync(CancellationToken cancellationToken = default)
-        {
-            return Queryable.LongCountAsync(cancellationToken: cancellationToken);
-        }
+        public Task<long> CountAsync(CancellationToken cancellationToken = default) => Queryable.LongCountAsync(cancellationToken: cancellationToken);
 
-        public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default)
-        {
-            return Queryable.Where(where).LongCountAsync(cancellationToken: cancellationToken);
-        }
+        public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => Queryable.Where(where).LongCountAsync(cancellationToken: cancellationToken);
 
-        public TEntity Get(Guid key)
-        {
-            return _collection.Find(item => item.Id == key).SingleOrDefault();
-        }
+        public TEntity Get(Guid key) => _collection.Find(item => item.Id == key).SingleOrDefault();
 
-        public Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default)
-        {
-            return _collection.Find(item => item.Id == key).SingleOrDefaultAsync(cancellationToken);
-        }
+        public Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default) => _collection.Find(item => item.Id == key).SingleOrDefaultAsync(cancellationToken);
 
-        public IEnumerable<TEntity> List()
-        {
-            return Queryable.ToList();
-        }
+        public IEnumerable<TEntity> List() => Queryable.ToList();
 
-        public Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default)
-        {
-            return Queryable.ToListAsync(cancellationToken);
-        }
+        public Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default) => Queryable.ToListAsync(cancellationToken);
+
+        public IEnumerable<TEntity> List(Expression<Func<TEntity, bool>> where) => Queryable.Where(where).ToList();
+
+        public Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => Queryable.Where(where).ToListAsync(cancellationToken);
     }
 }

@@ -34,9 +34,9 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
         {
             _context = context;
 
-            Queryable = _context.Set<TEntity>();
-
             _queryableAsNoTracking = _context.Set<TEntity>().AsNoTracking();
+
+            Queryable = _context.Set<TEntity>();
         }
 
         private readonly IQueryable<TEntity> _queryableAsNoTracking;
@@ -66,5 +66,9 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
         public IEnumerable<TEntity> List() => _queryableAsNoTracking.ToList();
 
         public Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default) => _queryableAsNoTracking.ToListAsync(cancellationToken);
+
+        public IEnumerable<TEntity> List(Expression<Func<TEntity, bool>> where) => _queryableAsNoTracking.Where(where).ToList();
+
+        public Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => _queryableAsNoTracking.Where(where).ToListAsync(cancellationToken);
     }
 }
