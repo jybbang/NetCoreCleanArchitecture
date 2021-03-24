@@ -14,42 +14,21 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using NetCoreCleanArchitecture.Domain.Common;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace NetCoreCleanArchitecture.Application.Common.Repositories
+namespace NetCoreCleanArchitecture.WebHosting.Attributes
 {
-    public interface IQueryRepository<TEntity> where TEntity : Entity
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+    public sealed class EnumAuthorizeAttribute : AuthorizeAttribute
     {
-        IQueryable<TEntity> Queryable { get; }
-
-        bool Any();
-
-        bool Any(Expression<Func<TEntity, bool>> where);
-
-        Task<bool> AnyAsync(CancellationToken cancellationToken = default);
-
-        Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default);
-
-        long Count();
-
-        long Count(Expression<Func<TEntity, bool>> where);
-
-        Task<long> CountAsync(CancellationToken cancellationToken = default);
-
-        Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default);
-
-        TEntity Get(Guid key);
-
-        Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default);
-
-        IEnumerable<TEntity> List();
-
-        Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default);
+        public EnumAuthorizeAttribute(params object[] roles)
+        {
+            Roles = string.Join(",", roles.Select(role => Enum.GetName(role.GetType(), role)));
+        }
     }
 }

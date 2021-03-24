@@ -1,6 +1,4 @@
-﻿using DotNetCore.AspNetCore;
-using DotNetCore.Security;
-using FluentValidation.AspNetCore;
+﻿using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +7,7 @@ using NetCoreCleanArchitecture.WebHosting.Filters;
 using NetCoreCleanArchitecture.WebHosting.Identity;
 using System;
 using Prometheus;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace NetCoreCleanArchitecture.WebHosting
 {
@@ -27,21 +26,16 @@ namespace NetCoreCleanArchitecture.WebHosting
                 options.SuppressModelStateInvalidFilter = true;
             });
 
-            // DotNetCore.AspNetCore
-            services.AddAuthenticationJwtBearer();
+            // AddCorsAllowAny
+            services.AddCors(options => options.AddPolicy("AllowAny",
+                policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
-            services.AddCorsAllowAny();
-
-            services.AddFileExtensionContentTypeProvider();
-
-            services.ConfigureFormOptionsMaxLengthLimit();
-
-            // DotNetCore.Security
-            services.AddHash();
-
-            services.AddJsonWebToken(Guid.NewGuid().ToString(), TimeSpan.FromHours(12));
-
-            services.AddAuthenticationJwtBearer();
+            // ConfigureFormOptionsMaxLengthLimit
+            services.Configure<FormOptions>(options =>
+            {
+                options.ValueLengthLimit = int.MaxValue;
+                options.MultipartBodyLengthLimit = int.MaxValue;
+            });
 
             return services;
         }
@@ -49,9 +43,9 @@ namespace NetCoreCleanArchitecture.WebHosting
         public static IMvcBuilder AddNetCleanControllers(this IServiceCollection services)
         {
             // Controller with custom validator
-            var builder = services.AddControllers(options =>
-                     options.Filters.Add<ApiExceptionFilterAttribute>())
-                        .AddFluentValidation();
+            var builder = services.AddControllers(options => options.Filters.Add<ApiExceptionFilterAttribute>())
+                .AddJsonOptions(opt => opt.JsonSerializerOptions.IgnoreNullValues = true)
+                .AddFluentValidation();
 
             return builder;
         }

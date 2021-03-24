@@ -24,20 +24,20 @@ namespace NetCoreCleanArchitecture.WebHosting.Extensions
     {
         public static IActionResult ToActionResult(this Result result)
         {
-            return new CustomResult(result);
+            return new ApiResult(result);
         }
 
         public static Task<IActionResult> ToActionResultAsync(this Result result)
         {
-            return Task.FromResult(new CustomResult(result) as IActionResult);
+            return Task.FromResult(new ApiResult(result) as IActionResult);
         }
     }
 
-    public sealed class CustomResult : IActionResult
+    public sealed class ApiResult : IActionResult
     {
         private readonly Result _result;
 
-        internal CustomResult(Result result)
+        internal ApiResult(Result result)
         {
             _result = result;
         }

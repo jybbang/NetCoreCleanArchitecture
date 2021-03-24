@@ -33,38 +33,38 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
         public DbContextQueryRepository(DbContext context)
         {
             _context = context;
+
+            Queryable = _context.Set<TEntity>();
+
+            _queryableAsNoTracking = _context.Set<TEntity>().AsNoTracking();
         }
 
-        public IQueryable<TEntity> QueryableAsTracking => _context.Set<TEntity>();
+        private readonly IQueryable<TEntity> _queryableAsNoTracking;
 
-        public IQueryable<TEntity> QueryableAsNoTracking => _context.Set<TEntity>().AsNoTracking();
+        public IQueryable<TEntity> Queryable { get; }
 
-        public bool Any() => QueryableAsTracking.Any();
+        public bool Any() => _queryableAsNoTracking.Any();
 
-        public bool Any(Expression<Func<TEntity, bool>> where) => QueryableAsTracking.Any(where);
+        public bool Any(Expression<Func<TEntity, bool>> where) => _queryableAsNoTracking.Any(where);
 
-        public Task<bool> AnyAsync(CancellationToken cancellationToken = default) => QueryableAsTracking.AnyAsync(cancellationToken);
+        public Task<bool> AnyAsync(CancellationToken cancellationToken = default) => _queryableAsNoTracking.AnyAsync(cancellationToken);
 
-        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => QueryableAsTracking.AnyAsync(where, cancellationToken);
+        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => _queryableAsNoTracking.AnyAsync(where, cancellationToken);
 
-        public long Count() => QueryableAsTracking.Count();
+        public long Count() => _queryableAsNoTracking.Count();
 
-        public long Count(Expression<Func<TEntity, bool>> where) => QueryableAsTracking.Count(where);
+        public long Count(Expression<Func<TEntity, bool>> where) => _queryableAsNoTracking.Count(where);
 
-        public Task<long> CountAsync(CancellationToken cancellationToken = default) => QueryableAsTracking.LongCountAsync(cancellationToken);
+        public Task<long> CountAsync(CancellationToken cancellationToken = default) => _queryableAsNoTracking.LongCountAsync(cancellationToken);
 
-        public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => QueryableAsTracking.LongCountAsync(where, cancellationToken);
+        public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => _queryableAsNoTracking.LongCountAsync(where, cancellationToken);
 
         public TEntity Get(Guid key) => _context.Set<TEntity>().Find(key);
 
         public Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default) => _context.Set<TEntity>().FindAsync(new object[] { key }, cancellationToken).AsTask();
 
-        public IEnumerable<TEntity> ListAsTacking() => QueryableAsTracking.ToList();
+        public IEnumerable<TEntity> List() => _queryableAsNoTracking.ToList();
 
-        public Task<List<TEntity>> ListAsTackingAsync(CancellationToken cancellationToken = default) => QueryableAsTracking.ToListAsync(cancellationToken);
-
-        public IEnumerable<TEntity> ListAsNoTracking() => QueryableAsNoTracking.ToList();
-
-        public Task<List<TEntity>> ListAsNoTrackingAsync(CancellationToken cancellationToken = default) => QueryableAsNoTracking.ToListAsync(cancellationToken);
+        public Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default) => _queryableAsNoTracking.ToListAsync(cancellationToken);
     }
 }

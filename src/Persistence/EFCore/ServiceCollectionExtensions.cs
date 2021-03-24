@@ -15,11 +15,14 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
 
     public static class ServiceCollectionExtensions
     {
-        public static void AddNetCleanDbContext<T>(this IServiceCollection services, Action<DbContextOptionsBuilder> options, MigrationOptions migration = MigrationOptions.Migrate) where T : DbContext
+        public static void AddNetCleanDbContext<T>(
+            this IServiceCollection services, 
+            Action<DbContextOptionsBuilder> options,
+            MigrationOptions migration = MigrationOptions.Migrate) where T : DbContext
         {
             services.AddDbContextPool<T>(options);
 
-            services.AddScoped<DbContext>(provider => provider.GetService<T>());
+            services.AddScoped<DbContext>(provider => provider.GetRequiredService<T>());
 
             services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<T>() as IUnitOfWork);
 
@@ -46,7 +49,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
         {
             services.AddDbContextPool<T>(options => options.UseInMemoryDatabase(typeof(T).Name));
 
-            services.AddScoped<DbContext>(provider => provider.GetService<T>());
+            services.AddScoped<DbContext>(provider => provider.GetRequiredService<T>());
 
             services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<T>() as IUnitOfWork);
 

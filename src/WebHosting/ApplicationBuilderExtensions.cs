@@ -1,5 +1,4 @@
-﻿using DotNetCore.AspNetCore;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Prometheus;
 
@@ -9,8 +8,8 @@ namespace NetCoreCleanArchitecture.WebHosting
     {
         public static IApplicationBuilder UseNetCleanWebHosting(this IApplicationBuilder app)
         {
-            // DotNetCore.AspNetCore
-            app.UseCorsAllowAny();
+            // UseCorsAllowAny
+            app.UseCors("AllowAny");
 
             // ASP.NET Core HTTP request metrics
             app.UseHttpMetrics();

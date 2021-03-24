@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<AssemblyName>NetCoreCleanArchitecture.Persistence.MongoDb</AssemblyName>
+		<RootNamespace>NetCoreCleanArchitecture.Persistence.MongoDb</RootNamespace>
+		<Authors>Junyoung Bang</Authors>
+		<Company>Jyb</Company>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
+		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="5.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.4" />
+		<PackageReference Include="Mongo2Go" Version="2.2.16" />
+		<PackageReference Include="MongoDB.Driver" Version="2.12.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Application\Application.csproj" />
+	</ItemGroup>
+	
+</Project>
