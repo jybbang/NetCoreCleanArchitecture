@@ -10,6 +10,6 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
         uint EventbusPublished { get; }
 
-        Task Publish<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken = default) where TDomainEvent : DomainEvent;
+        Task Publish(DomainEvent domainEvent, CancellationToken cancellationToken = default);
     }
 }
