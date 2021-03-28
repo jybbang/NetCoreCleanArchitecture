@@ -14,8 +14,6 @@ namespace NetCoreCleanArchitecture.Application
         {
             services.AddScoped<IApplicationEventSource, ApplicationEventSource>();
 
-            services.AddScoped<IApplicationContext, ApplicationContext>();
-
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddMediatR(Assembly.GetExecutingAssembly());

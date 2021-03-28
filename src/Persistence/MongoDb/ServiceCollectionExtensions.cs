@@ -33,6 +33,8 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb
                 throw new ArgumentNullException(nameof(options));
             }
 
+            services.AddScoped<IApplicationContext, ApplicationContext>();
+
             var context = (T)Activator.CreateInstance(typeof(T), new object[] { connectionString, options });
 
             services.AddSingleton<T>(context);
@@ -59,6 +61,8 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb
 
         public static void AddNetCleanMongoContextMemory<T>(this IServiceCollection services) where T : MongoContext
         {
+            services.AddScoped<IApplicationContext, ApplicationContext>();
+
             var options = new MongoContextOptions { UseInMemory = true };
 
             var context = (T)Activator.CreateInstance(typeof(T), new object[] { typeof(T).Name, options });
