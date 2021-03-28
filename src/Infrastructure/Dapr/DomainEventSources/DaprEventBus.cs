@@ -22,7 +22,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DomainEventSources
             _client = client;
         }
 
-        public Task PublishEvent<T>(string topic, T message, CancellationToken cancellationToken = default) where T : DomainEvent
+        public Task PublishEvent<T>(string topic, T message, CancellationToken cancellationToken = default)
         {
             _logger.LogDebug("DaprEventBus PublishEvent: {Topic} - {@Message}", topic, message);
 

@@ -14,9 +14,6 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
         private readonly IEventBus _eventBus;
         private readonly IPublisher _mediator;
 
-        private uint _appPublished;
-        private uint _eventbusPublished;
-
         public ApplicationEventSource(
             ILoggerFactory logFactory,
             IEventBus eventBus,
@@ -26,6 +23,9 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             _eventBus = eventBus;
             _mediator = mediator;
         }
+
+        private uint _appPublished;
+        private uint _eventbusPublished;
 
         public uint ApplicationPublished => _appPublished;
         public uint EventbusPublished => _eventbusPublished;
