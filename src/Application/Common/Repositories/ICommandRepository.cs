@@ -35,11 +35,11 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         void Remove(Guid key);
 
-        void Remove(Expression<Func<TEntity, bool>> where);
-
         Task RemoveAsync(Guid key, CancellationToken cancellationToken = default);
 
-        Task RemoveAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default);
+        void RemoveRange(Expression<Func<TEntity, bool>> where);
+
+        Task RemoveRangeAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default);
 
         void Update(Guid key, TEntity item);
 

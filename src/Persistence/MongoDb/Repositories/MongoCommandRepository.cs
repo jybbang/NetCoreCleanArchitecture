@@ -62,19 +62,19 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
             _collection.DeleteOne(Id(key));
         }
 
-        public void Remove(Expression<Func<TEntity, bool>> where)
-        {
-            _collection.DeleteOne(where);
-        }
-
         public Task RemoveAsync(Guid key, CancellationToken cancellationToken = default)
         {
             return _collection.DeleteOneAsync(Id(key), cancellationToken: cancellationToken);
         }
 
-        public Task RemoveAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default)
+        public void RemoveRange(Expression<Func<TEntity, bool>> where)
         {
-            return _collection.DeleteOneAsync(where, cancellationToken: cancellationToken);
+            _collection.DeleteMany(where);
+        }
+
+        public Task RemoveRangeAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default)
+        {
+            return _collection.DeleteManyAsync(where, cancellationToken: cancellationToken);
         }
 
         public void Update(Guid key, TEntity item)

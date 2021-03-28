@@ -54,7 +54,14 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
             Set.Remove(entity);
         }
 
-        public void Remove(Expression<Func<TEntity, bool>> where)
+        public async Task RemoveAsync(Guid key, CancellationToken cancellationToken = default)
+        {
+            var entity = await Set.FindAsync(new object[] { key }, cancellationToken);
+
+            Set.Remove(entity);
+        }
+
+        public void RemoveRange(Expression<Func<TEntity, bool>> where)
         {
             var entity = Set.Where(where);
 
@@ -63,14 +70,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
             Set.RemoveRange(entity);
         }
 
-        public async Task RemoveAsync(Guid key, CancellationToken cancellationToken = default)
-        {
-            var entity = await Set.FindAsync(new object[] { key }, cancellationToken);
-
-            Set.Remove(entity);
-        }
-
-        public async Task RemoveAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default)
+        public async Task RemoveRangeAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default)
         {
             var entity = Set.Where(where);
 
