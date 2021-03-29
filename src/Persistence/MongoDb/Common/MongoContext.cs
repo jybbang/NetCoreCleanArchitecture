@@ -55,7 +55,7 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
 
         private readonly MongoDbRunner _runner;
 
-        private readonly ConcurrentBag<Entity> _changeTrackings = new();
+        private readonly ConcurrentDictionary<Guid, Entity> _changeTracker = new();
 
         public string DatabaseName { get; }
 
@@ -63,16 +63,16 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
 
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var result = _changeTrackings.Count;
+            var result = _changeTracker.Count;
 
-            _changeTrackings.Clear();
+            _changeTracker.Clear();
 
             return Task.FromResult(result);
         }
 
         public IEnumerable<Entity> ChangeTracking()
         {
-            return _changeTrackings.ToArray();
+            return _changeTracker.Values;
         }
 
         internal void DropCollections()
@@ -85,14 +85,14 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
             }
         }
 
-        internal void AddTracking(Entity id)
+        internal void AddTracking(Entity entity)
         {
-            _changeTrackings.Add(id);
+            _changeTracker.AddOrUpdate(entity.Id, entity, (k, v) => entity);
         }
 
-        internal void AddTrackingRange(IEnumerable<Entity> ids)
+        internal void AddTrackingRange(IEnumerable<Entity> entities)
         {
-            foreach (var id in ids)
+            foreach (var id in entities)
             {
                 AddTracking(id);
             }
