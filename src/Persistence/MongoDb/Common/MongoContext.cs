@@ -56,14 +56,14 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
 
         public IMongoDatabase Database { get; }
 
-        public void CreateCollection()
+        internal void DropCollections()
         {
-            Database.CreateCollection(DatabaseName);
-        }
+            var collections = Database.ListCollectionNames();
 
-        public void DropCollection()
-        {
-            Database.DropCollection(DatabaseName);
+            foreach (var collection in collections.Current)
+            {
+                Database.DropCollection(collection);
+            }
         }
     }
 

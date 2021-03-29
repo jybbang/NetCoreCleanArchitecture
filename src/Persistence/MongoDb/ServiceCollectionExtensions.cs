@@ -12,7 +12,7 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb
     {
         None,
         EnsureDeleteAndCreated,
-        EnsureCreated
+        EnsureCreated,
     }
 
     public static class ServiceCollectionExtensions
@@ -47,12 +47,8 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb
             {
                 case MigrationOptions.EnsureDeleteAndCreated:
                     {
-                        services.BuildServiceProvider().GetRequiredService<T>().DropCollection();
-                        services.BuildServiceProvider().GetRequiredService<T>().CreateCollection();
+                        services.BuildServiceProvider().GetRequiredService<T>().DropCollections();
                     }
-                    break;
-                case MigrationOptions.EnsureCreated:
-                    services.BuildServiceProvider().GetRequiredService<T>().CreateCollection();
                     break;
                 default:
                     break;
@@ -72,8 +68,6 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb
             services.AddScoped<MongoContext>(provider => provider.GetRequiredService<T>());
 
             services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<T>() as IUnitOfWork);
-
-            services.BuildServiceProvider().GetRequiredService<T>().CreateCollection();
         }
 
         public static IHealthChecksBuilder AddNetCleanMongoContextCheck(this IHealthChecksBuilder builder, string connectionString)
