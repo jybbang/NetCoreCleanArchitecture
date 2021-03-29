@@ -16,10 +16,13 @@
 
 using Mongo2Go;
 using MongoDB.Driver;
+using NetCoreCleanArchitecture.Domain.Common;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
@@ -52,9 +55,25 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
 
         private readonly MongoDbRunner _runner;
 
+        private readonly ConcurrentBag<Entity> _changeTrackings = new();
+
         public string DatabaseName { get; }
 
         public IMongoDatabase Database { get; }
+
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var result = _changeTrackings.Count;
+
+            _changeTrackings.Clear();
+
+            return Task.FromResult(result);
+        }
+
+        public IEnumerable<Entity> ChangeTracking()
+        {
+            return _changeTrackings.ToArray();
+        }
 
         internal void DropCollections()
         {
@@ -63,6 +82,19 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
             foreach (var collection in collections.Current)
             {
                 Database.DropCollection(collection);
+            }
+        }
+
+        internal void AddTracking(Entity id)
+        {
+            _changeTrackings.Add(id);
+        }
+
+        internal void AddTrackingRange(IEnumerable<Entity> ids)
+        {
+            foreach (var id in ids)
+            {
+                AddTracking(id);
             }
         }
     }

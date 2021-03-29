@@ -14,6 +14,7 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using NetCoreCleanArchitecture.Application.Common.Repositories;
 using NetCoreCleanArchitecture.Domain.Common;
@@ -30,80 +31,115 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 {
     public class MongoCommandRepository<TEntity> : ICommandRepository<TEntity> where TEntity : Entity
     {
+        private readonly MongoContext _context;
         private readonly IMongoCollection<TEntity> _collection;
 
         public MongoCommandRepository(MongoContext context)
         {
+            _context = context;
+
             _collection = context.Database.GetCollection<TEntity>(typeof(TEntity).Name);
         }
 
         public void Add(TEntity item)
         {
+            _context.AddTracking(item);
+
             _collection.InsertOne(item);
         }
 
         public Task AddAsync(TEntity item, CancellationToken cancellationToken = default)
         {
+            _context.AddTracking(item);
+
             return _collection.InsertOneAsync(item, cancellationToken: cancellationToken);
         }
 
         public void AddRange(IEnumerable<TEntity> items)
         {
+            _context.AddTrackingRange(items);
+
             _collection.InsertMany(items);
         }
 
         public Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
         {
+            _context.AddTrackingRange(items);
+
             return _collection.InsertManyAsync(items, cancellationToken: cancellationToken);
         }
 
         public void Remove(Guid key)
         {
-            _collection.DeleteOne(Id(key));
+            var result = _collection.FindOneAndDelete(Id(key));
+            
+            _context.AddTracking(result);
         }
 
-        public Task RemoveAsync(Guid key, CancellationToken cancellationToken = default)
+        public async Task RemoveAsync(Guid key, CancellationToken cancellationToken = default)
         {
-            return _collection.DeleteOneAsync(Id(key), cancellationToken: cancellationToken);
+            var result = await _collection.FindOneAndDeleteAsync(Id(key), cancellationToken: cancellationToken);
+
+            _context.AddTracking(result);
         }
 
         public void RemoveRange(Expression<Func<TEntity, bool>> where)
         {
+            var items = _collection.AsQueryable().Where(where);
+
+            _context.AddTrackingRange(items);
+
             _collection.DeleteMany(where);
         }
 
         public Task RemoveRangeAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default)
         {
+            var items = _collection.AsQueryable().Where(where);
+
+            _context.AddTrackingRange(items);
+
             return _collection.DeleteManyAsync(where, cancellationToken: cancellationToken);
         }
 
         public void Update(Guid key, TEntity item)
         {
+            _context.AddTracking(item);
+
             _collection.ReplaceOne(Id(key), item);
         }
 
         public Task UpdateAsync(Guid key, TEntity item, CancellationToken cancellationToken = default)
         {
+            _context.AddTracking(item);
+
             return _collection.ReplaceOneAsync(Id(key), item, cancellationToken: cancellationToken);
         }
 
         public void UpdatePartial(Guid key, object item)
         {
+            _context.AddTracking(item as TEntity);
+
             _collection.ReplaceOne(Id(key), item as TEntity);
         }
 
         public Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken = default)
         {
+            _context.AddTracking(item as TEntity);
+
             return _collection.ReplaceOneAsync(Id(key), item as TEntity, cancellationToken: cancellationToken);
         }
 
         public void UpdateRange(IEnumerable<TEntity> items)
         {
+            _context.AddTrackingRange(items);
+
             _collection.BulkWrite(CreateUpdates(items));
         }
 
         public Task UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
         {
+            _context.AddTrackingRange(items);
+
             return _collection.BulkWriteAsync(CreateUpdates(items), cancellationToken: cancellationToken);
         }
 
