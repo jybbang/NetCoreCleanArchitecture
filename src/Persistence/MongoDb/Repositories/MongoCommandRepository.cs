@@ -116,15 +116,11 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 
         public void UpdatePartial(Guid key, object item)
         {
-            _context.AddTracking(item as TEntity, null);
-
             _collection.ReplaceOne(Id(key), item as TEntity);
         }
 
         public Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken = default)
         {
-            _context.AddTracking(item as TEntity, null);
-
             return _collection.ReplaceOneAsync(Id(key), item as TEntity, cancellationToken: cancellationToken);
         }
 

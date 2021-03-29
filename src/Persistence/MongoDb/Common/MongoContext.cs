@@ -67,12 +67,12 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
         {
             var result = _changeTracker.Count;
 
-            foreach (var (id, handler) in _updateHandlers)
+            foreach (var (id, entity) in _changeTracker)
             {
-                if (handler is null) continue;
-
-                if (_changeTracker.TryGetValue(id, out var entity))
+                if (_updateHandlers.TryGetValue(id, out var handler))
                 {
+                    if (handler is null) continue;
+
                     await handler.Invoke(id, entity, cancellationToken);
                 }
             }
