@@ -41,19 +41,19 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 
         public IQueryable<TEntity> Queryable { get; }
 
-        public bool Any() => Queryable.Any();
+        public bool Any() => _collection.Find(NotId(Guid.Empty)).Any();
 
-        public bool Any(Expression<Func<TEntity, bool>> where) => Queryable.Where(where).Any();
+        public bool Any(Expression<Func<TEntity, bool>> where) => _collection.Find(where).Any();
 
-        public Task<bool> AnyAsync(CancellationToken cancellationToken = default) => Task.FromResult(Any());
+        public Task<bool> AnyAsync(CancellationToken cancellationToken = default) => _collection.Find(NotId(Guid.Empty)).AnyAsync(cancellationToken);
 
-        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => Task.FromResult(Any(where));
+        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => _collection.Find(where).AnyAsync(cancellationToken);
 
-        public long Count() => Queryable.LongCount();
+        public long Count() => _collection.Find(NotId(Guid.Empty)).CountDocuments();
 
         public long Count(Expression<Func<TEntity, bool>> where) => _collection.CountDocuments(where);
 
-        public Task<long> CountAsync(CancellationToken cancellationToken = default) => Task.FromResult(Count());
+        public Task<long> CountAsync(CancellationToken cancellationToken = default) => _collection.Find(NotId(Guid.Empty)).CountDocumentsAsync(cancellationToken);
 
         public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => _collection.CountDocumentsAsync(where, cancellationToken: cancellationToken);
 
@@ -61,12 +61,17 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 
         public Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default) => _collection.Find(item => item.Id == key).SingleOrDefaultAsync(cancellationToken);
 
-        public List<TEntity> List() => Queryable.ToList();
+        public List<TEntity> List() => _collection.Find(NotId(Guid.Empty)).ToList();
 
-        public Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default) => Task.FromResult(List());
+        public Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default) => _collection.Find(NotId(Guid.Empty)).ToListAsync(cancellationToken);
 
         public List<TEntity> List(Expression<Func<TEntity, bool>> where) => _collection.Find(where).ToList();
 
         public Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => _collection.Find(where).ToListAsync(cancellationToken);
+
+        private FilterDefinition<TEntity> NotId(Guid value)
+        {
+            return Builders<TEntity>.Filter.Ne("Id", value);
+        }
     }
 }
