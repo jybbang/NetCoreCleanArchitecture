@@ -42,28 +42,28 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 
         public void Add(TEntity item)
         {
-            _context.AddTracking(item);
+            _context.AddTracking(item, UpdatePartialAsync);
 
             _collection.InsertOne(item);
         }
 
         public Task AddAsync(TEntity item, CancellationToken cancellationToken = default)
         {
-            _context.AddTracking(item);
+            _context.AddTracking(item, UpdatePartialAsync);
 
             return _collection.InsertOneAsync(item, cancellationToken: cancellationToken);
         }
 
         public void AddRange(IEnumerable<TEntity> items)
         {
-            _context.AddTrackingRange(items);
+            _context.AddTrackingRange(items, UpdatePartialAsync);
 
             _collection.InsertMany(items);
         }
 
         public Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
         {
-            _context.AddTrackingRange(items);
+            _context.AddTrackingRange(items, UpdatePartialAsync);
 
             return _collection.InsertManyAsync(items, cancellationToken: cancellationToken);
         }
@@ -72,21 +72,21 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
         {
             var result = _collection.FindOneAndDelete(Id(key));
             
-            _context.AddTracking(result);
+            _context.AddTracking(result, null);
         }
 
         public async Task RemoveAsync(Guid key, CancellationToken cancellationToken = default)
         {
             var result = await _collection.FindOneAndDeleteAsync(Id(key), cancellationToken: cancellationToken);
 
-            _context.AddTracking(result);
+            _context.AddTracking(result, null);
         }
 
         public void RemoveRange(Expression<Func<TEntity, bool>> where)
         {
             var items = _collection.AsQueryable().Where(where);
 
-            _context.AddTrackingRange(items);
+            _context.AddTrackingRange(items, null);
 
             _collection.DeleteMany(where);
         }
@@ -95,49 +95,49 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
         {
             var items = _collection.AsQueryable().Where(where);
 
-            _context.AddTrackingRange(items);
+            _context.AddTrackingRange(items, null);
 
             return _collection.DeleteManyAsync(where, cancellationToken: cancellationToken);
         }
 
         public void Update(Guid key, TEntity item)
         {
-            _context.AddTracking(item);
+            _context.AddTracking(item, UpdatePartialAsync);
 
             _collection.ReplaceOne(Id(key), item);
         }
 
         public Task UpdateAsync(Guid key, TEntity item, CancellationToken cancellationToken = default)
         {
-            _context.AddTracking(item);
+            _context.AddTracking(item, UpdatePartialAsync);
 
             return _collection.ReplaceOneAsync(Id(key), item, cancellationToken: cancellationToken);
         }
 
         public void UpdatePartial(Guid key, object item)
         {
-            _context.AddTracking(item as TEntity);
+            _context.AddTracking(item as TEntity, null);
 
             _collection.ReplaceOne(Id(key), item as TEntity);
         }
 
         public Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken = default)
         {
-            _context.AddTracking(item as TEntity);
+            _context.AddTracking(item as TEntity, null);
 
             return _collection.ReplaceOneAsync(Id(key), item as TEntity, cancellationToken: cancellationToken);
         }
 
         public void UpdateRange(IEnumerable<TEntity> items)
         {
-            _context.AddTrackingRange(items);
+            _context.AddTrackingRange(items, UpdatePartialAsync);
 
             _collection.BulkWrite(CreateUpdates(items));
         }
 
         public Task UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
         {
-            _context.AddTrackingRange(items);
+            _context.AddTrackingRange(items, UpdatePartialAsync);
 
             return _collection.BulkWriteAsync(CreateUpdates(items), cancellationToken: cancellationToken);
         }
@@ -156,7 +156,7 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
             return updates;
         }
 
-        public FilterDefinition<TEntity> Id(Guid value)
+        private FilterDefinition<TEntity> Id(Guid value)
         {
             return Builders<TEntity>.Filter.Eq(nameof(Id), value);
         }

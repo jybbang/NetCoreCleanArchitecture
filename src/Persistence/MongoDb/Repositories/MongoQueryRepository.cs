@@ -51,11 +51,11 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 
         public long Count() => Queryable.LongCount();
 
-        public long Count(Expression<Func<TEntity, bool>> where) => Queryable.Where(where).LongCount();
+        public long Count(Expression<Func<TEntity, bool>> where) => _collection.CountDocuments(where);
 
         public Task<long> CountAsync(CancellationToken cancellationToken = default) => Task.FromResult(Count());
 
-        public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => Task.FromResult(Count(where));
+        public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => _collection.CountDocumentsAsync(where, cancellationToken: cancellationToken);
 
         public TEntity Get(Guid key) => _collection.Find(item => item.Id == key).SingleOrDefault();
 
@@ -65,8 +65,8 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 
         public Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default) => Task.FromResult(List());
 
-        public List<TEntity> List(Expression<Func<TEntity, bool>> where) => Queryable.Where(where).ToList();
+        public List<TEntity> List(Expression<Func<TEntity, bool>> where) => _collection.Find(where).ToList();
 
-        public Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => Task.FromResult(List(where));
+        public Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => _collection.Find(where).ToListAsync(cancellationToken);
     }
 }

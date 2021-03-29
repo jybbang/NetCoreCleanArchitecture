@@ -57,17 +57,31 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
 
         private readonly ConcurrentDictionary<Guid, Entity> _changeTracker = new();
 
+        private readonly ConcurrentDictionary<Guid, Func<Guid, Entity, CancellationToken, Task>> _updateHandlers = new();
+
         public string DatabaseName { get; }
 
         public IMongoDatabase Database { get; }
 
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var result = _changeTracker.Count;
 
+            foreach (var (id, handler) in _updateHandlers)
+            {
+                if (handler is null) continue;
+
+                if (_changeTracker.TryGetValue(id, out var entity))
+                {
+                    await handler.Invoke(id, entity, cancellationToken);
+                }
+            }
+
             _changeTracker.Clear();
 
-            return Task.FromResult(result);
+            _updateHandlers.Clear();
+
+            return result;
         }
 
         public IEnumerable<Entity> ChangeTracking()
@@ -87,16 +101,18 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
             }
         }
 
-        internal void AddTracking(Entity entity)
+        internal void AddTracking(Entity entity, Func<Guid, Entity, CancellationToken, Task> handler)
         {
             _changeTracker.AddOrUpdate(entity.Id, entity, (k, v) => entity);
+
+            _updateHandlers.AddOrUpdate(entity.Id, handler, (k, v) => handler);
         }
 
-        internal void AddTrackingRange(IEnumerable<Entity> entities)
+        internal void AddTrackingRange(IEnumerable<Entity> entities, Func<Guid, Entity, CancellationToken, Task> handler)
         {
-            foreach (var id in entities)
+            foreach (var entity in entities)
             {
-                AddTracking(id);
+                AddTracking(entity, handler);
             }
         }
     }
