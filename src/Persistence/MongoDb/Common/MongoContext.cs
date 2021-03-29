@@ -79,6 +79,8 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
         {
             var collections = Database.ListCollectionNames();
 
+            collections.MoveNext();
+
             foreach (var collection in collections.Current)
             {
                 Database.DropCollection(collection);

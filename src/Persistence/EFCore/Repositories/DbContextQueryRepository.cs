@@ -63,11 +63,11 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 
         public Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default) => _context.Set<TEntity>().FindAsync(new object[] { key }, cancellationToken).AsTask();
 
-        public IEnumerable<TEntity> List() => _queryableAsNoTracking.ToList();
+        public List<TEntity> List() => _queryableAsNoTracking.ToList();
 
         public Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default) => _queryableAsNoTracking.ToListAsync(cancellationToken);
 
-        public IEnumerable<TEntity> List(Expression<Func<TEntity, bool>> where) => _queryableAsNoTracking.Where(where).ToList();
+        public List<TEntity> List(Expression<Func<TEntity, bool>> where) => _queryableAsNoTracking.Where(where).ToList();
 
         public Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => _queryableAsNoTracking.Where(where).ToListAsync(cancellationToken);
     }

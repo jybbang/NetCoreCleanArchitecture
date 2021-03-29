@@ -14,7 +14,6 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using NetCoreCleanArchitecture.Application.Common.Repositories;
@@ -46,28 +45,28 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 
         public bool Any(Expression<Func<TEntity, bool>> where) => Queryable.Where(where).Any();
 
-        public Task<bool> AnyAsync(CancellationToken cancellationToken = default) => Queryable.AnyAsync(cancellationToken: cancellationToken);
+        public Task<bool> AnyAsync(CancellationToken cancellationToken = default) => Task.FromResult(Any());
 
-        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => Queryable.Where(where).AnyAsync(cancellationToken: cancellationToken);
+        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => Task.FromResult(Any(where));
 
         public long Count() => Queryable.LongCount();
 
         public long Count(Expression<Func<TEntity, bool>> where) => Queryable.Where(where).LongCount();
 
-        public Task<long> CountAsync(CancellationToken cancellationToken = default) => Queryable.LongCountAsync(cancellationToken: cancellationToken);
+        public Task<long> CountAsync(CancellationToken cancellationToken = default) => Task.FromResult(Count());
 
-        public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => Queryable.Where(where).LongCountAsync(cancellationToken: cancellationToken);
+        public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => Task.FromResult(Count(where));
 
         public TEntity Get(Guid key) => _collection.Find(item => item.Id == key).SingleOrDefault();
 
         public Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default) => _collection.Find(item => item.Id == key).SingleOrDefaultAsync(cancellationToken);
 
-        public IEnumerable<TEntity> List() => Queryable.ToList();
+        public List<TEntity> List() => Queryable.ToList();
 
-        public Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default) => Queryable.ToListAsync(cancellationToken);
+        public Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default) => Task.FromResult(List());
 
-        public IEnumerable<TEntity> List(Expression<Func<TEntity, bool>> where) => Queryable.Where(where).ToList();
+        public List<TEntity> List(Expression<Func<TEntity, bool>> where) => Queryable.Where(where).ToList();
 
-        public Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => Queryable.Where(where).ToListAsync(cancellationToken);
+        public Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => Task.FromResult(List(where));
     }
 }

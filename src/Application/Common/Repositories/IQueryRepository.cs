@@ -48,9 +48,9 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default);
 
-        IEnumerable<TEntity> List();
+        List<TEntity> List();
 
-        IEnumerable<TEntity> List(Expression<Func<TEntity, bool>> where);
+        List<TEntity> List(Expression<Func<TEntity, bool>> where);
 
         Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default);
 
