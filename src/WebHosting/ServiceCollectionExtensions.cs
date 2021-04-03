@@ -1,13 +1,11 @@
 ﻿using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.Interfaces;
 using NetCoreCleanArchitecture.WebHosting.Filters;
 using NetCoreCleanArchitecture.WebHosting.Identity;
-using System;
 using Prometheus;
-using Microsoft.AspNetCore.Http.Features;
 
 namespace NetCoreCleanArchitecture.WebHosting
 {

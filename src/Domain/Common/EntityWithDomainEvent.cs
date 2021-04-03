@@ -7,9 +7,9 @@ namespace NetCoreCleanArchitecture.Domain.Common
 {
     public abstract class EntityWithDomainEvent : Entity
     {
-        protected uint _version;
+        protected long _version;
 
-        public uint Version { get => _version; set => Interlocked.Exchange(ref _version, value); }
+        public long Version { get => _version; private set => Interlocked.Exchange(ref _version, value); }
 
         internal IProducerConsumerCollection<DomainEvent> DomainEvents { get; } = new ConcurrentQueue<DomainEvent>();
 
@@ -20,14 +20,11 @@ namespace NetCoreCleanArchitecture.Domain.Common
             DomainEvents.TryAdd(domainEvent.SetVersion(_version));
         }
 
-        protected void PropertyChanged<TSource, TProperty>(ref TProperty oldState, TProperty newState, string subject = default, bool canPublishToEventStore = false, [CallerMemberName] string propertyName = default) where TSource : EntityWithDomainEvent
+        protected void PropertyChanged<TSource, TProperty>(ref TProperty oldState, TProperty newState, string subject = default, [CallerMemberName] string propertyName = default) where TSource : EntityWithDomainEvent
         {
-            if (oldState.Equals(newState)) return;
+            if (oldState is not null && oldState.Equals(newState)) return;
 
-            Commit(new PropertyChangedEvent<TSource, TProperty>(this, oldState, newState, subject, propertyName)
-            {
-                CanPublishToEventBus = canPublishToEventStore
-            });
+            Commit(new PropertyChangedEvent<TSource, TProperty>(this, oldState, newState, subject, propertyName));
 
             oldState = newState;
         }

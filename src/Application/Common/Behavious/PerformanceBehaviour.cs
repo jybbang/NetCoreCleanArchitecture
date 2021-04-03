@@ -52,7 +52,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
                 {
                     var requestName = typeof(TRequest).Name;
 
-                    _logger.LogWarning("Send Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) - {@Request}",
+                    _logger.LogWarning("Send Request: Long Running {Name} ({ElapsedMilliseconds} milliseconds) - {@Request}",
                         requestName, elapsedMilliseconds, request);
                 }
             }

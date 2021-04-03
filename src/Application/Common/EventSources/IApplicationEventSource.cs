@@ -6,10 +6,6 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 {
     public interface IApplicationEventSource
     {
-        uint ApplicationPublished { get; }
-
-        uint EventbusPublished { get; }
-
         Task Publish(DomainEvent domainEvent, CancellationToken cancellationToken = default);
     }
 }

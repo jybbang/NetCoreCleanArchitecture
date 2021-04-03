@@ -24,12 +24,6 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             _mediator = mediator;
         }
 
-        private uint _appPublished;
-        private uint _eventbusPublished;
-
-        public uint ApplicationPublished => _appPublished;
-        public uint EventbusPublished => _eventbusPublished;
-
         public async Task Publish(DomainEvent domainEvent, CancellationToken cancellationToken = default)
         {
             // logging
@@ -42,7 +36,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             await PublishWithPerformance(domainEvent, logger, cancellationToken);
         }
 
-        private async Task PublishWithPerformance(DomainEvent domainEvent, ILogger logger, CancellationToken cancellationToken) 
+        private async Task PublishWithPerformance(DomainEvent domainEvent, ILogger logger, CancellationToken cancellationToken)
         {
             var timer = new Stopwatch();
 
@@ -64,28 +58,9 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                 {
                     var eventName = domainEvent.GetType().Name;
 
-                    logger.LogWarning("Publishing Long Running Event: {Name} ({ElapsedMilliseconds} milliseconds) - {@Event}",
+                    logger.LogWarning("Publishing Event: Long Running {Name} ({ElapsedMilliseconds} milliseconds) - {@Event}",
                         eventName, elapsedMilliseconds, domainEvent);
                 }
-            }
-        }
-
-        private async Task PublishToEventbus(DomainEvent domainEvent, ILogger logger, CancellationToken cancellationToken)
-        {
-            try
-            {
-                if (domainEvent.CanPublishToEventBus)
-                {
-                    await _eventBus.PublishEvent(domainEvent.Topic, domainEvent, cancellationToken);
-
-                    Interlocked.Increment(ref _eventbusPublished);
-                }
-
-                Interlocked.Increment(ref _appPublished);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Unhandled exception.");
             }
         }
 
@@ -94,9 +69,24 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             var notification = (INotification)Activator.CreateInstance(
                 typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), domainEvent);
 
-            //var notification = new DomainEventNotification<TDomainEvent>(domainEvent);
-
             return _mediator.Publish(notification, cancellationToken);
+        }
+
+        private async Task PublishToEventbus(DomainEvent domainEvent, ILogger logger, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (domainEvent.CanPublishToEventBus)
+                {
+                    await _eventBus.PublishAsync(domainEvent.Topic, domainEvent, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                var eventName = domainEvent.GetType().Name;
+
+                logger.LogError(ex, "Publishing Event: PublishToEventbus Unhandled Exception {Name} - {@Event}", eventName, domainEvent);
+            }
         }
     }
 }

@@ -3,12 +3,13 @@
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
 		<AssemblyName>NetCoreCleanArchitecture.Persistence.EFCore</AssemblyName>
-		<RootNamespace>NetCoreCleanArchitecture.Persistence.Common</RootNamespace>
+		<RootNamespace>NetCoreCleanArchitecture.Persistence.EFCore</RootNamespace>
 		<Authors>Junyoung Bang</Authors>
 		<Company>Jyb</Company>
+		<Product>NetCoreCleanArchitecture.Persistence.EFCore</Product>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
-		<Version>1.0.24</Version>
+		<Version>1.1.0</Version>
 		<PackageId>NetCoreCleanArchitecture.Persistence.EFCore</PackageId>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>

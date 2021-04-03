@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.Common.Interfaces;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.Options;
 using System;

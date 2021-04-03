@@ -7,9 +7,12 @@ namespace NetCoreCleanArchitecture.Domain.Common
     {
         protected DomainEvent(Entity source, string subject)
         {
-            Type = source.GetType().Name;
             Id = source.Id;
+
+            Type = source.GetType().Name;
+
             Subject = subject;
+
             Topic = $"{Type}/{Subject}";
         }
 
@@ -25,7 +28,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public bool CanPublishToEventBus { get; init; } = true;
 
-        public bool CanStoreToEventStore { get; init; } = true;
+        public bool CanSaveToEventStore { get; init; } = true;
 
         public long SourceVersion { get; private set; }
 

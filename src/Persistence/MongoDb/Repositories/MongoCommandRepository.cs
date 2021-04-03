@@ -20,9 +20,7 @@ using NetCoreCleanArchitecture.Domain.Common;
 using NetCoreCleanArchitecture.Persistence.MongoDb.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -70,34 +68,22 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 
         public void Remove(Guid key)
         {
-            var result = _collection.FindOneAndDelete(Id(key));
-            
-            _context.AddTracking(result, null);
+            _collection.DeleteOne(Id(key));
         }
 
-        public async Task RemoveAsync(Guid key, CancellationToken cancellationToken = default)
+        public Task RemoveAsync(Guid key, CancellationToken cancellationToken = default)
         {
-            var result = await _collection.FindOneAndDeleteAsync(Id(key), cancellationToken: cancellationToken);
-
-            _context.AddTracking(result, null);
+            return _collection.DeleteOneAsync(Id(key), cancellationToken: cancellationToken);
         }
 
         public void RemoveRange(Expression<Func<TEntity, bool>> where)
         {
-            var items = _collection.AsQueryable().Where(where);
-
-            _context.AddTrackingRange(items, null);
-
             _collection.DeleteMany(where);
         }
 
-        public Task RemoveRangeAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default)
+        public async Task RemoveRangeAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default)
         {
-            var items = _collection.AsQueryable().Where(where);
-
-            _context.AddTrackingRange(items, null);
-
-            return _collection.DeleteManyAsync(where, cancellationToken: cancellationToken);
+            await _collection.DeleteManyAsync(where, cancellationToken: cancellationToken);
         }
 
         public void Update(Guid key, TEntity item)
@@ -155,6 +141,11 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
         private FilterDefinition<TEntity> Id(Guid value)
         {
             return Builders<TEntity>.Filter.Eq(nameof(Id), value);
+        }
+
+        private FilterDefinition<TEntity> NotId(Guid value)
+        {
+            return Builders<TEntity>.Filter.Not(Id(value));
         }
     }
 }

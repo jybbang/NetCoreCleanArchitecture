@@ -16,7 +16,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
     public static class ServiceCollectionExtensions
     {
         public static void AddNetCleanDbContext<T>(
-            this IServiceCollection services, 
+            this IServiceCollection services,
             Action<DbContextOptionsBuilder> options,
             MigrationOptions migration = MigrationOptions.Migrate) where T : DbContext
         {

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.Common.EventSources;
-using NetCoreCleanArchitecture.Domain.Common;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.Options;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,11 +21,11 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DomainEventSources
             _client = client;
         }
 
-        public Task PublishEvent<T>(string topic, T message, CancellationToken cancellationToken = default)
+        public async Task PublishAsync<T>(string topic, T message, CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("DaprEventBus PublishEvent: {Topic} - {@Message}", topic, message);
+            _logger.LogDebug("DaprEventBus: PublishAsync {Topic} - {@Message}", topic, message);
 
-            return _client.PublishEventAsync(_opt.PubSubName, topic, message, cancellationToken);
+            await _client.PublishEventAsync(_opt.PubSubName, topic, message, cancellationToken);
         }
     }
 }

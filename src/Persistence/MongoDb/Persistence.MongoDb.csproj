@@ -6,11 +6,12 @@
 		<RootNamespace>NetCoreCleanArchitecture.Persistence.MongoDb</RootNamespace>
 		<Authors>Junyoung Bang</Authors>
 		<Company>Jyb</Company>
+		<Product>NetCoreCleanArchitecture.Persistence.MongoDb</Product>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
-		<Version>1.0.10</Version>
+		<Version>1.1.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -20,8 +20,6 @@ using NetCoreCleanArchitecture.Domain.Common;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -89,7 +87,7 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
             return _changeTracker.Values;
         }
 
-        internal void DropCollections()
+        public void DropCollections()
         {
             var collections = Database.ListCollectionNames();
 

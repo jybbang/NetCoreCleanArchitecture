@@ -1,10 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using NetCoreCleanArchitecture.Application.Common.Repositories;
 using NetCoreCleanArchitecture.Persistence.MongoDb.Common;
 using System;
-using HealthChecks.MongoDb;
-using NetCoreCleanArchitecture.Application.Common.Repositories;
-using Mongo2Go;
-using System.Reflection;
 
 namespace NetCoreCleanArchitecture.Persistence.MongoDb
 {

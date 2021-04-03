@@ -69,9 +69,14 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 
         public Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default) => _collection.Find(where).ToListAsync(cancellationToken);
 
+        private FilterDefinition<TEntity> Id(Guid value)
+        {
+            return Builders<TEntity>.Filter.Eq(nameof(Id), value);
+        }
+
         private FilterDefinition<TEntity> NotId(Guid value)
         {
-            return Builders<TEntity>.Filter.Ne("Id", value);
+            return Builders<TEntity>.Filter.Not(Id(value));
         }
     }
 }
