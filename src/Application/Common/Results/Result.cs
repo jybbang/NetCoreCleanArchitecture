@@ -43,15 +43,11 @@ namespace NetCoreCleanArchitecture.Application.Common.Results
 
         public static Result Fail() => new Result(false);
 
-        public static Result Fail(params string[] errors) => Fail(errors);
-
-        public static Result Fail(IEnumerable<string> errors) => new Result(false, errors);
+        public static Result Fail(params string[] errors) => new Result(false, errors);
 
         public static Task<Result> FailAsync() => Task.FromResult(Fail());
 
         public static Task<Result> FailAsync(params string[] errors) => Task.FromResult(Fail(errors));
-
-        public static Task<Result> FailAsync(IEnumerable<string> errors) => Task.FromResult(Fail(errors));
 
         public static Result Success() => new Result(true);
 
@@ -70,15 +66,11 @@ namespace NetCoreCleanArchitecture.Application.Common.Results
 
         public static new Result<T> Fail() => new Result<T>(false);
 
-        public static new Result<T> Fail(params string[] errors) => Fail(errors);
-
-        public static new Result<T> Fail(IEnumerable<string> errors) => new Result<T>(false, errors);
+        public static new Result<T> Fail(params string[] errors) => new Result<T>(false, errors);
 
         public static new Task<Result<T>> FailAsync() => Task.FromResult(Fail());
 
         public static new Task<Result<T>> FailAsync(params string[] errors) => Task.FromResult(Fail(errors));
-
-        public static new Task<Result<T>> FailAsync(IEnumerable<string> errors) => Task.FromResult(Fail(errors));
 
         public static Result<T> Success(T data) => new Result<T>(true, null, data);
 

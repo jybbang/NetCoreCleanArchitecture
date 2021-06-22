@@ -20,7 +20,6 @@ using NetCoreCleanArchitecture.Domain.Common;
 using NetCoreCleanArchitecture.Persistence.MongoDb.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -66,24 +65,18 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
             return _collection.InsertManyAsync(items, cancellationToken: cancellationToken);
         }
 
-        public void Remove(Guid key)
+        public void Remove(TEntity item)
         {
-            _collection.DeleteOne(Id(key));
+            _context.AddTracking(item, UpdatePartialAsync);
+
+            _collection.DeleteOne(Id(item.Id));
         }
 
-        public Task RemoveAsync(Guid key, CancellationToken cancellationToken = default)
+        public Task RemoveAsync(TEntity item, CancellationToken cancellationToken = default)
         {
-            return _collection.DeleteOneAsync(Id(key), cancellationToken: cancellationToken);
-        }
+            _context.AddTracking(item, UpdatePartialAsync);
 
-        public void RemoveRange(Expression<Func<TEntity, bool>> where)
-        {
-            _collection.DeleteMany(where);
-        }
-
-        public async Task RemoveRangeAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default)
-        {
-            await _collection.DeleteManyAsync(where, cancellationToken: cancellationToken);
+            return _collection.DeleteOneAsync(Id(item.Id), cancellationToken: cancellationToken);
         }
 
         public void Update(Guid key, TEntity item)

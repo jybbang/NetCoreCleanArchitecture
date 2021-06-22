@@ -17,7 +17,6 @@
 using NetCoreCleanArchitecture.Domain.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,13 +32,9 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default);
 
-        void Remove(Guid key);
+        void Remove(TEntity item);
 
-        Task RemoveAsync(Guid key, CancellationToken cancellationToken = default);
-
-        void RemoveRange(Expression<Func<TEntity, bool>> where);
-
-        Task RemoveRangeAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default);
+        Task RemoveAsync(TEntity item, CancellationToken cancellationToken = default);
 
         void Update(Guid key, TEntity item);
 

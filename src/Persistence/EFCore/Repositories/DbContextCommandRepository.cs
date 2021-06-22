@@ -19,8 +19,6 @@ using NetCoreCleanArchitecture.Application.Common.Repositories;
 using NetCoreCleanArchitecture.Domain.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,38 +43,20 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 
         public Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default) => Set.AddRangeAsync(items, cancellationToken);
 
-        public void Remove(Guid key)
+        public void Remove(TEntity item)
         {
-            var entity = Set.Find(key);
+            var entity = Set.Find(item.Id);
 
             if (entity is null) return;
 
             Set.Remove(entity);
         }
 
-        public async Task RemoveAsync(Guid key, CancellationToken cancellationToken = default)
+        public async Task RemoveAsync(TEntity item, CancellationToken cancellationToken = default)
         {
-            var entity = await Set.FindAsync(new object[] { key }, cancellationToken);
+            var entity = await Set.FindAsync(new object[] { item.Id }, cancellationToken);
 
             Set.Remove(entity);
-        }
-
-        public void RemoveRange(Expression<Func<TEntity, bool>> where)
-        {
-            var entity = Set.Where(where);
-
-            if (!entity.Any()) return;
-
-            Set.RemoveRange(entity);
-        }
-
-        public async Task RemoveRangeAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default)
-        {
-            var entity = Set.Where(where);
-
-            if (!(await entity.AnyAsync(cancellationToken))) return;
-
-            Set.RemoveRange(entity);
         }
 
         public void Update(Guid key, TEntity item) => Set.Update(item);
