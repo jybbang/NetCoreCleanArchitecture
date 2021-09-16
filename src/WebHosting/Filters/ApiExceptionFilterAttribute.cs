@@ -92,13 +92,11 @@ namespace NetCoreCleanArchitecture.WebHosting.Filters
 
         private void HandleNotFoundException(ExceptionContext context)
         {
-            var exception = context.Exception as NotFoundException;
-
             var details = new ProblemDetails()
             {
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
-                Title = "The specified resource was not found.",
-                Detail = exception.Message
+                Title = "The specified resource was not found",
+                Detail = context.Exception.Message,
             };
 
             context.Result = new NotFoundObjectResult(details);
@@ -112,7 +110,8 @@ namespace NetCoreCleanArchitecture.WebHosting.Filters
             {
                 Status = StatusCodes.Status401Unauthorized,
                 Title = "Unauthorized",
-                Type = "https://tools.ietf.org/html/rfc7235#section-3.1"
+                Type = "https://tools.ietf.org/html/rfc7235#section-3.1",
+                Detail = context.Exception.Message,
             };
 
             context.Result = new ObjectResult(details)
@@ -129,7 +128,8 @@ namespace NetCoreCleanArchitecture.WebHosting.Filters
             {
                 Status = StatusCodes.Status403Forbidden,
                 Title = "Forbidden",
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3"
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3",
+                Detail = context.Exception.Message,
             };
 
             context.Result = new ObjectResult(details)
@@ -145,8 +145,9 @@ namespace NetCoreCleanArchitecture.WebHosting.Filters
             var details = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = "An error occurred while processing your request.",
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1"
+                Title = "An error occurred while processing your request",
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
+                Detail = context.Exception.Message,
             };
 
             context.Result = new ObjectResult(details)

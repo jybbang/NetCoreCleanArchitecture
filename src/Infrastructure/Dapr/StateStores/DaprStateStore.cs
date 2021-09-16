@@ -19,6 +19,20 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             _client = client;
         }
 
+        public async Task<T> GetOrAddAsync(string key, T item, CancellationToken cancellationToken = default)
+        {
+            var result = await GetAsync(key, cancellationToken);
+
+            if (result is null)
+            {
+                await AddAsync(key, item, cancellationToken);
+
+                result = item;
+            }
+
+            return result;
+        }
+
         public Task<T> GetAsync(string key, CancellationToken cancellationToken = default)
             => _client.GetStateAsync<T>(_opt.StoreName, key, cancellationToken: cancellationToken);
 

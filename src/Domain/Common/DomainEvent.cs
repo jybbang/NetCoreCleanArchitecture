@@ -5,30 +5,22 @@ namespace NetCoreCleanArchitecture.Domain.Common
 {
     public abstract class DomainEvent : Base<DomainEvent>
     {
-        protected DomainEvent(Entity source, string subject)
+        protected DomainEvent(string topic)
         {
-            Id = source.Id;
-
-            Type = source.GetType().Name;
-
-            Subject = subject;
-
-            Topic = $"{Type}/{Subject}";
+            Topic = topic;
         }
 
         public Guid EventId { get; } = Guid.NewGuid();
 
         public string Topic { get; }
 
-        public string Type { get; }
+        public bool CanPublishToEventBus { get; set; } = true;
 
-        public Guid Id { get; }
+        public bool CanSaveToEventStore { get; set; } = true;
 
-        public string Subject { get; }
+        public bool CanBuffered { get; set; } = false;
 
-        public bool CanPublishToEventBus { get; init; } = true;
-
-        public bool CanSaveToEventStore { get; init; } = true;
+        public string BufferKey { get; set; }
 
         public long SourceVersion { get; private set; }
 
@@ -54,7 +46,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         protected sealed override IEnumerable<object> Equals()
         {
-            yield return Id;
+            yield return EventId;
         }
     }
 }

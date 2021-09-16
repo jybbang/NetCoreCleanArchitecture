@@ -1,16 +1,22 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.Behaviours;
 using NetCoreCleanArchitecture.Application.Common.EventSources;
+using NetCoreCleanArchitecture.Application.Common.Options;
 using System.Reflection;
 
 namespace NetCoreCleanArchitecture.Application
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddNetCleanApplication(this IServiceCollection services)
+        public static IServiceCollection AddNetCleanApplication(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddSingleton<EventBufferService>();
+
+            services.Configure<EventBufferServiceOptions>(configuration.GetSection(nameof(EventBufferServiceOptions)));
+
             services.AddScoped<IApplicationEventSource, ApplicationEventSource>();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());

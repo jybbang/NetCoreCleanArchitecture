@@ -22,7 +22,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         protected void PropertyChanged<TSource, TProperty>(ref TProperty oldState, TProperty newState, string subject = default, [CallerMemberName] string propertyName = default) where TSource : EntityWithDomainEvent
         {
-            if (oldState is not null && oldState.Equals(newState)) return;
+            if (!(oldState == null) && oldState.Equals(newState)) return;
 
             Commit(new PropertyChangedEvent<TSource, TProperty>(this, oldState, newState, subject, propertyName));
 

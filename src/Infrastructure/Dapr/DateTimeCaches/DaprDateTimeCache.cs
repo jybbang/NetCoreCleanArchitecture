@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.Common.Interfaces;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.Options;
 using System;
@@ -9,11 +10,16 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DateTimeCaches
 {
     public class DaprDateTimeCache : IDateTimeCache
     {
+        private readonly ILogger<DaprDateTimeCache> _logger;
         private readonly IStateStore<DateTime> _stateStore;
         private readonly InfrastructureDaprOptions _opt;
 
-        public DaprDateTimeCache(IStateStore<DateTime> stateStore, IOptions<InfrastructureDaprOptions> opt)
+        public DaprDateTimeCache(
+            ILogger<DaprDateTimeCache> logger,
+            IStateStore<DateTime> stateStore,
+            IOptions<InfrastructureDaprOptions> opt)
         {
+            _logger = logger;
             _stateStore = stateStore;
             _opt = opt.Value;
         }
@@ -28,8 +34,9 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DateTimeCaches
                     ? await _stateStore.GetAsync(_opt.DatetimeKey, new CancellationTokenSource(200).Token)
                     : DateTime.UtcNow;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "DaprDateTimeCache Unhandled Exception");
             }
 
             return result == default ? DateTime.UtcNow : result;

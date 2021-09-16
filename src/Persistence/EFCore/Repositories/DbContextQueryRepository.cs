@@ -30,6 +30,8 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
     {
         private readonly DbContext _context;
 
+        private readonly IQueryable<TEntity> _queryableAsNoTracking;
+
         public DbContextQueryRepository(DbContext context)
         {
             _context = context;
@@ -38,8 +40,6 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 
             Queryable = _context.Set<TEntity>();
         }
-
-        private readonly IQueryable<TEntity> _queryableAsNoTracking;
 
         public IQueryable<TEntity> Queryable { get; }
 

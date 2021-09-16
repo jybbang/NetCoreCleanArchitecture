@@ -13,18 +13,21 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
         private readonly ILoggerFactory _logFactory;
         private readonly IEventBus _eventBus;
         private readonly IPublisher _mediator;
+        private readonly EventBufferService _eventBuffer;
 
         public ApplicationEventSource(
             ILoggerFactory logFactory,
             IEventBus eventBus,
-            IPublisher mediator)
+            IPublisher mediator,
+            EventBufferService eventBuffer)
         {
             _logFactory = logFactory;
             _eventBus = eventBus;
             _mediator = mediator;
+            _eventBuffer = eventBuffer;
         }
 
-        public async Task Publish(DomainEvent domainEvent, CancellationToken cancellationToken = default)
+        public async Task Publish<T>(T domainEvent, CancellationToken cancellationToken = default) where T : DomainEvent
         {
             // logging
             var eventName = domainEvent.GetType().Name;
@@ -36,7 +39,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             await PublishWithPerformance(domainEvent, logger, cancellationToken);
         }
 
-        private async Task PublishWithPerformance(DomainEvent domainEvent, ILogger logger, CancellationToken cancellationToken)
+        private async Task PublishWithPerformance<T>(T domainEvent, ILogger logger, CancellationToken cancellationToken) where T : DomainEvent
         {
             var timer = new Stopwatch();
 
@@ -47,6 +50,12 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                 await PublishEventNotification(domainEvent, logger, cancellationToken);
 
                 await PublishToEventbus(domainEvent, logger, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                var eventName = domainEvent.GetType().Name;
+
+                logger.LogError(ex, "Publishing Event: Unhandled Exception {Name} - {@Event}", eventName, domainEvent);
             }
             finally
             {
@@ -64,7 +73,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             }
         }
 
-        private Task PublishEventNotification(DomainEvent domainEvent, ILogger logger, CancellationToken cancellationToken)
+        private Task PublishEventNotification<T>(T domainEvent, ILogger logger, CancellationToken cancellationToken) where T : DomainEvent
         {
             var notification = (INotification)Activator.CreateInstance(
                 typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), domainEvent);
@@ -72,21 +81,22 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             return _mediator.Publish(notification, cancellationToken);
         }
 
-        private async Task PublishToEventbus(DomainEvent domainEvent, ILogger logger, CancellationToken cancellationToken)
+        private async Task PublishToEventbus<T>(T domainEvent, ILogger logger, CancellationToken cancellationToken) where T : DomainEvent
         {
-            try
-            {
-                if (domainEvent.CanPublishToEventBus)
-                {
-                    await _eventBus.PublishAsync(domainEvent.Topic, domainEvent, cancellationToken);
-                }
-            }
-            catch (Exception ex)
-            {
-                var eventName = domainEvent.GetType().Name;
+            if (!domainEvent.CanPublishToEventBus) return;
 
-                logger.LogError(ex, "Publishing Event: PublishToEventbus Unhandled Exception {Name} - {@Event}", eventName, domainEvent);
+            var notification = Convert.ChangeType(domainEvent, domainEvent.GetType());
+
+            if (domainEvent.CanBuffered)
+            {
+                var key = string.IsNullOrEmpty(domainEvent.BufferKey) ? domainEvent.EventId.ToString() : domainEvent.BufferKey;
+
+                _eventBuffer.BufferPublish(key, notification);
+
+                return;
             }
+
+            await _eventBus.PublishAsync(domainEvent.Topic, notification, cancellationToken);
         }
     }
 }

@@ -30,6 +30,10 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
         private readonly string _connectionString;
         private readonly MongoContextOptions _options;
 
+        private readonly MongoDbRunner _runner;
+        private readonly ConcurrentDictionary<Guid, Entity> _changeTracker = new();
+        private readonly ConcurrentDictionary<Guid, Func<Guid, Entity, CancellationToken, Task>> _updateHandlers = new();
+
         protected MongoContext(string connectionString, MongoContextOptions options)
         {
             _connectionString = connectionString;
@@ -50,12 +54,6 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
                 Database = new MongoClient(_connectionString).GetDatabase(DatabaseName);
             }
         }
-
-        private readonly MongoDbRunner _runner;
-
-        private readonly ConcurrentDictionary<Guid, Entity> _changeTracker = new();
-
-        private readonly ConcurrentDictionary<Guid, Func<Guid, Entity, CancellationToken, Task>> _updateHandlers = new();
 
         public string DatabaseName { get; }
 

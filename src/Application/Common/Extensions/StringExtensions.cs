@@ -166,7 +166,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Extensions
                         break;
                 }
             }
-        stop:
+            stop:
             return sb.ToString();
         }
 
@@ -268,7 +268,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Extensions
                         break;
                 }
             }
-        stop:
+            stop:
             return sb.ToString();
         }
 

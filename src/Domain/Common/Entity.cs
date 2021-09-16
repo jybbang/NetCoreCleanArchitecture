@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace NetCoreCleanArchitecture.Domain.Common
 {
     public abstract class Entity : Base<Entity>
     {
-        public Guid Id { get; init; } = Guid.NewGuid();
+        [JsonInclude]
+        public Guid Id { get; private set; } = Guid.NewGuid();
 
         protected sealed override IEnumerable<object> Equals()
         {

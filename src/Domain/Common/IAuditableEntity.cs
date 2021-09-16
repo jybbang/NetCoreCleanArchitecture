@@ -20,9 +20,9 @@ namespace NetCoreCleanArchitecture.Domain.Common
 {
     public interface IAuditableEntity
     {
-        public string CreateUserId { get; set; }
+        string CreateUserId { get; set; }
 
-        public string UpdateUserId { get; set; }
+        string UpdateUserId { get; set; }
 
         DateTimeOffset CreatedAt { get; set; }
 
