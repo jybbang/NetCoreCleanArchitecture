@@ -5,8 +5,9 @@ namespace NetCoreCleanArchitecture.Domain.Events
 {
     public sealed class PropertyChangedEvent<TSource, TProperty> : DomainEvent where TSource : Entity
     {
-        public PropertyChangedEvent(Entity source, TProperty oldState, TProperty newState, string subject = default, [CallerMemberName] string propertyName = default)
-            : base(source, subject == default ? $"{propertyName}ChangedEvent" : subject)
+        public PropertyChangedEvent(Entity source, TProperty oldState, TProperty newState,
+            string topic = default, [CallerMemberName] string propertyName = default)
+            : base(source.Id, topic == default ? $"{source.GetType().Name}{propertyName}ChangedEvent" : topic)
         {
             PropertyName = propertyName;
             OldState = oldState;

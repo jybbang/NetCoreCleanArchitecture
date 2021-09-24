@@ -5,30 +5,24 @@ namespace NetCoreCleanArchitecture.Domain.Common
 {
     public abstract class DomainEvent : Base<DomainEvent>
     {
-        protected DomainEvent(Entity source, string subject)
+        protected DomainEvent(Guid id, string topic)
         {
-            Id = source.Id;
+            Id = id;
 
-            Type = source.GetType().Name;
-
-            Subject = subject;
-
-            Topic = $"{Type}/{Subject}";
+            Topic = topic;
         }
 
         public Guid EventId { get; } = Guid.NewGuid();
 
         public string Topic { get; }
 
-        public string Type { get; }
-
         public Guid Id { get; }
-
-        public string Subject { get; }
 
         public bool CanPublishToEventBus { get; init; } = true;
 
         public bool CanSaveToEventStore { get; init; } = true;
+
+        public bool CanBuffered { get; init; } = false;
 
         public long SourceVersion { get; private set; }
 

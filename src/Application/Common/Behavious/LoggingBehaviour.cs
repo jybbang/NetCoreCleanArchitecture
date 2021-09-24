@@ -34,7 +34,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
         {
             var requestName = typeof(TRequest).Name;
 
-            _logger.LogDebug("Send Request: {Name} - {@Request}", requestName, request);
+            _logger.LogDebug("Send Request {Name} - {@Request}", requestName, request);
 
             return Task.CompletedTask;
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace NetCoreCleanArchitecture.Domain.Common
 {
-    public abstract class Entity : Base<Entity>
+    public abstract class Entity : Base<Entity>, IHasId
     {
         public Guid Id { get; init; } = Guid.NewGuid();
 
