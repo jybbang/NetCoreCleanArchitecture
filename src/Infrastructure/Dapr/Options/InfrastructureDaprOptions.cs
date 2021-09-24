@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NetCoreCleanArchitecture.Infrastructure.Dapr.Options
+﻿namespace NetCoreCleanArchitecture.Infrastructure.Dapr.Options
 {
     public record InfrastructureDaprOptions
     {

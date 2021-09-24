@@ -2,16 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.Common.EventSources;
-using NetCoreCleanArchitecture.Domain.Common;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.Options;
-using System;
-using System.Reactive.Subjects;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
-using System.Text.Json;
-using System.Reactive.Disposables;
 
 namespace NetCoreCleanArchitecture.Infrastructure.Dapr.DomainEventSources
 {
