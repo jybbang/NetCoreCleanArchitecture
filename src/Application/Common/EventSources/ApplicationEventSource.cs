@@ -89,7 +89,10 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
             if (domainEvent.CanBuffered)
             {
-                _eventBuffer.BufferPublish(notification);
+                var key = string.IsNullOrEmpty(domainEvent.BufferKey) ? domainEvent.EventId.ToString() : domainEvent.BufferKey;
+
+                _eventBuffer.BufferPublish(key, notification);
+
                 return;
             }
 

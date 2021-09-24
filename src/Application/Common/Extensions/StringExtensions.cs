@@ -15,7 +15,6 @@
 //
 
 using System;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -80,7 +79,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Extensions
         {
             if (value is null) return "0";
 
-            var cnt = value.Count();
+            var cnt = value.Length;
 
             var isStarted = false;
 
@@ -166,7 +165,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Extensions
                         break;
                 }
             }
-        stop:
+            stop:
             return sb.ToString();
         }
 
@@ -174,7 +173,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Extensions
         {
             if (value is null) return "0";
 
-            var cnt = value.Count();
+            var cnt = value.Length;
 
             var hasDot = false;
 
@@ -268,7 +267,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Extensions
                         break;
                 }
             }
-        stop:
+            stop:
             return sb.ToString();
         }
 

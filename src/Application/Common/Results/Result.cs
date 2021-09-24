@@ -41,15 +41,15 @@ namespace NetCoreCleanArchitecture.Application.Common.Results
 
         public bool HasError => Errors.Any();
 
-        public static Result Fail() => new Result(false);
+        public static Result Fail() => new(false);
 
-        public static Result Fail(params string[] errors) => new Result(false, errors);
+        public static Result Fail(params string[] errors) => new(false, errors);
 
         public static Task<Result> FailAsync() => Task.FromResult(Fail());
 
         public static Task<Result> FailAsync(params string[] errors) => Task.FromResult(Fail(errors));
 
-        public static Result Success() => new Result(true);
+        public static Result Success() => new(true);
 
         public static Task<Result> SuccessAsync() => Task.FromResult(Success());
     }
@@ -64,15 +64,15 @@ namespace NetCoreCleanArchitecture.Application.Common.Results
 
         public T Data { get; }
 
-        public static new Result<T> Fail() => new Result<T>(false);
+        public static new Result<T> Fail() => new(false);
 
-        public static new Result<T> Fail(params string[] errors) => new Result<T>(false, errors);
+        public static new Result<T> Fail(params string[] errors) => new(false, errors);
 
         public static new Task<Result<T>> FailAsync() => Task.FromResult(Fail());
 
         public static new Task<Result<T>> FailAsync(params string[] errors) => Task.FromResult(Fail(errors));
 
-        public static Result<T> Success(T data) => new Result<T>(true, null, data);
+        public static Result<T> Success(T data) => new(true, null, data);
 
         public static Task<Result<T>> SuccessAsync(T data) => Task.FromResult(Success(data));
     }

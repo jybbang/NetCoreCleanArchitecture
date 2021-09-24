@@ -1,4 +1,5 @@
 ﻿using NetCoreCleanArchitecture.Domain.Common;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace NetCoreCleanArchitecture.Domain.Events
@@ -7,12 +8,15 @@ namespace NetCoreCleanArchitecture.Domain.Events
     {
         public PropertyChangedEvent(Entity source, TProperty oldState, TProperty newState,
             string topic = default, [CallerMemberName] string propertyName = default)
-            : base(source.Id, topic == default ? $"{source.GetType().Name}{propertyName}ChangedEvent" : topic)
+            : base(topic == default ? $"{source.GetType().Name}{propertyName}ChangedEvent" : topic)
         {
+            SourceId = source.Id;
             PropertyName = propertyName;
             OldState = oldState;
             NewState = newState;
         }
+
+        public Guid SourceId { get; }
 
         public string PropertyName { get; }
 

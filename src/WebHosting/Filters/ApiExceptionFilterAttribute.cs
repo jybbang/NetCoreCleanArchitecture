@@ -95,7 +95,7 @@ namespace NetCoreCleanArchitecture.WebHosting.Filters
             var details = new ProblemDetails()
             {
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
-                Title = "The specified resource was not found.",
+                Title = "The specified resource was not found",
                 Detail = context.Exception.Message,
             };
 
@@ -145,7 +145,7 @@ namespace NetCoreCleanArchitecture.WebHosting.Filters
             var details = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = "An error occurred while processing your request.",
+                Title = "An error occurred while processing your request",
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
                 Detail = context.Exception.Message,
             };

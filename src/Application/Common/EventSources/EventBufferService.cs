@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.Common.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Linq;
 using System.Text;
@@ -37,11 +39,13 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                     try
                     {
+                        var send = buffer.ToDictionary(b => b.Item1, b => b.Item2);
+
                         using var scope = _services.CreateScope();
 
                         var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
-                        await eventBus.PublishAsync(_opt.Topic, buffer);
+                        await eventBus.PublishAsync(_opt.Topic, send.Values);
                     }
                     catch (Exception ex)
                     {
@@ -53,11 +57,11 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                 nameof(EventBufferService), _opt);
         }
 
-        private readonly Subject<object> _buffer = new();
+        private readonly Subject<Tuple<string, object>> _buffer = new();
 
-        public void BufferPublish(object notification)
+        public void BufferPublish(string bufferKey, object notification)
         {
-            _buffer.OnNext(notification);
+            _buffer.OnNext(Tuple.Create(bufferKey, notification));
         }
     }
 }
