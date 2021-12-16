@@ -14,37 +14,25 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using MediatR;
-using Microsoft.Extensions.Logging;
+using NetCoreCleanArchitecture.Application.Common.Results;
 using System;
-using System.Threading;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace NetCoreCleanArchitecture.Application.Common.Behaviours
+namespace NetCoreCleanArchitecture.Application.Common.Interfaces
 {
-    public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public interface IIdentityService
     {
-        private readonly ILogger<TRequest> _logger;
+        Task<string> GetUserNameAsync(string userId);
 
-        public UnhandledExceptionBehaviour(ILogger<TRequest> logger)
-        {
-            _logger = logger;
-        }
+        Task<bool> IsInRoleAsync(string userId, string role);
 
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
-        {
-            try
-            {
-                return await next();
-            }
-            catch (Exception ex)
-            {
-                var requestName = typeof(TRequest).Name;
+        Task<bool> AuthorizeAsync(string userId, string policyName);
 
-                _logger.LogError(ex, "Send Request Unhandled Exception {Name} - {@Request}", requestName, request);
+        Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password);
 
-                throw;
-            }
-        }
+        Task<Result> DeleteUserAsync(string userId);
     }
 }

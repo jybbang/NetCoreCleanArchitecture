@@ -16,46 +16,58 @@
 
 using MediatR;
 using Microsoft.Extensions.Logging;
+using NetCoreCleanArchitecture.Application.Common.Interfaces;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Application.Common.Behaviours
 {
-    public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
     {
         private readonly Stopwatch _timer;
         private readonly ILogger<TRequest> _logger;
+        private readonly ICurrentUserService _currentUserService;
+        private readonly IIdentityService _identityService;
 
-        public PerformanceBehaviour(ILogger<TRequest> logger)
+        public PerformanceBehaviour(
+            ILogger<TRequest> logger,
+            ICurrentUserService currentUserService,
+            IIdentityService identityService)
         {
-            _logger = logger;
-
             _timer = new Stopwatch();
+
+            _logger = logger;
+            _currentUserService = currentUserService;
+            _identityService = identityService;
         }
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            try
+            _timer.Start();
+
+            var response = await next();
+
+            _timer.Stop();
+
+            var elapsedMilliseconds = _timer.ElapsedMilliseconds;
+
+            if (elapsedMilliseconds > 500)
             {
-                _timer.Start();
+                var requestName = typeof(TRequest).Name;
+                var userId = _currentUserService.UserId ?? string.Empty;
+                var userName = string.Empty;
 
-                return await next();
-            }
-            finally
-            {
-                _timer.Stop();
-
-                var elapsedMilliseconds = _timer.ElapsedMilliseconds;
-
-                if (elapsedMilliseconds > 500)
+                if (!string.IsNullOrEmpty(userId))
                 {
-                    var requestName = typeof(TRequest).Name;
-
-                    _logger.LogWarning("Send Request Long Running {Name} ({ElapsedMilliseconds} milliseconds) - {@Request}",
-                        requestName, elapsedMilliseconds, request);
+                    userName = await _identityService.GetUserNameAsync(userId);
                 }
+
+                _logger.LogWarning("Send Long Running Request {Name} ({ElapsedMilliseconds} milliseconds) - {@UserId} {@UserName} {@Request}",
+                    requestName, elapsedMilliseconds, userId, userName, request);
             }
+
+            return response;
         }
     }
 }

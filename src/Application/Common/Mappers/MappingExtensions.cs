@@ -14,18 +14,23 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using NetCoreCleanArchitecture.Application.Common.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace NetCoreCleanArchitecture.Domain.Common
+
+namespace NetCoreCleanArchitecture.Application.Common.Mappers
 {
-    public interface IAuditableEntity
+    public static class MappingExtensions
     {
-        string CreateUserId { get; set; }
+        public static PaginatedList<TDestination> PaginatedListAsync<TDestination>(this IQueryable<TDestination> queryable, int pageNumber, int pageSize)
+            => PaginatedList<TDestination>.Create(queryable, pageNumber, pageSize);
 
-        string UpdateUserId { get; set; }
-
-        DateTimeOffset? CreatedAt { get; set; }
-
-        DateTimeOffset? UpdatedAt { get; set; }
+        public static List<TDestination> ProjectToListAsync<TDestination>(this IQueryable queryable, IConfigurationProvider configuration)
+            => queryable.ProjectTo<TDestination>(configuration).ToList();
     }
 }

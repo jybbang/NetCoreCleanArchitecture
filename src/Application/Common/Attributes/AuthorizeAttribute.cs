@@ -14,29 +14,36 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using MediatR.Pipeline;
-using Microsoft.Extensions.Logging;
-using System.Threading;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace NetCoreCleanArchitecture.Application.Common.Behaviours
+namespace NetCoreCleanArchitecture.Application.Common.Attributes
 {
-    public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest>
+    /// <summary>
+    /// Specifies the class this attribute is applied to requires authorization.
+    /// Usage)
+    //  [Authorize(Roles = "Administrator")]
+    //  [Authorize(Policy = "CanPurge")]
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
+    public class AuthorizeAttribute : Attribute
     {
-        private readonly ILogger<TRequest> _logger;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthorizeAttribute"/> class. 
+        /// </summary>
+        public AuthorizeAttribute() { }
 
-        public LoggingBehaviour(ILogger<TRequest> logger)
-        {
-            _logger = logger;
-        }
+        /// <summary>
+        /// Gets or sets a comma delimited list of roles that are allowed to access the resource.
+        /// </summary>
+        public string Roles { get; set; } = string.Empty;
 
-        public Task Process(TRequest request, CancellationToken cancellationToken)
-        {
-            var requestName = typeof(TRequest).Name;
-
-            _logger.LogDebug("Send Request {Name} - {@Request}", requestName, request);
-
-            return Task.CompletedTask;
-        }
+        /// <summary>
+        /// Gets or sets the policy name that determines access to the resource.
+        /// </summary>
+        public string Policy { get; set; } = string.Empty;
     }
 }

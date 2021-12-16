@@ -20,7 +20,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
             Action<DbContextOptionsBuilder> options,
             MigrationOptions migration = MigrationOptions.Migrate) where T : DbContext
         {
-            services.AddScoped<IApplicationContext, ApplicationContext>();
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
             services.AddDbContextPool<T>(options);
 
@@ -49,7 +49,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
 
         public static void AddNetCleanDbContextMemory<T>(this IServiceCollection services) where T : DbContext
         {
-            services.AddScoped<IApplicationContext, ApplicationContext>();
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
             services.AddDbContextPool<T>(options => options.UseInMemoryDatabase(typeof(T).Name));
 

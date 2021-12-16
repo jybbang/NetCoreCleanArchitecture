@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Application.Common.Repositories
 {
-    public interface IApplicationContext
+    public interface IApplicationDbContext
     {
         ICommandRepository<TEntity> CommandSet<TEntity>() where TEntity : Entity;
 

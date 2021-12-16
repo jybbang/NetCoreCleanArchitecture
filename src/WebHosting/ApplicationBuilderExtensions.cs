@@ -14,6 +14,8 @@ namespace NetCoreCleanArchitecture.WebHosting
             // ASP.NET Core HTTP request metrics
             app.UseHttpMetrics();
 
+            app.UseHttpsRedirection();
+
             return app;
         }
 

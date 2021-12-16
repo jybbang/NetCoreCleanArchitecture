@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Application.Common.Repositories
 {
-    public class ApplicationContext : IApplicationContext
+    public class ApplicationDbContext : IApplicationDbContext
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IApplicationEventSource _eventSource;
         private readonly ICurrentUserService _currentUser;
         private readonly IDateTimeCache _dateTimeCache;
 
-        public ApplicationContext(
+        public ApplicationDbContext(
             IUnitOfWork unitOfWork,
             IApplicationEventSource eventSource,
             ICurrentUserService currentUser,

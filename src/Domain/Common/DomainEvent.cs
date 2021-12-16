@@ -26,7 +26,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public bool IsPublished { get; private set; }
 
-        public DateTimeOffset Time { get; private set; }
+        public DateTimeOffset Timestamp { get; private set; }
 
         public DomainEvent SetVersion(long version)
         {
@@ -39,7 +39,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
         {
             IsPublished = true;
 
-            Time = timestamp == default ? DateTimeOffset.UtcNow : timestamp;
+            Timestamp = timestamp == default ? DateTimeOffset.UtcNow : timestamp;
 
             return this;
         }

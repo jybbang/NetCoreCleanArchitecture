@@ -14,18 +14,37 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace NetCoreCleanArchitecture.Domain.Common
+namespace NetCoreCleanArchitecture.Application.Common.Behaviours
 {
-    public interface IAuditableEntity
+    public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
     {
-        string CreateUserId { get; set; }
+        private readonly ILogger<TRequest> _logger;
 
-        string UpdateUserId { get; set; }
+        public UnhandledExceptionBehaviour(ILogger<TRequest> logger)
+        {
+            _logger = logger;
+        }
 
-        DateTimeOffset? CreatedAt { get; set; }
+        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        {
+            try
+            {
+                return await next();
+            }
+            catch (Exception ex)
+            {
+                var requestName = typeof(TRequest).Name;
 
-        DateTimeOffset? UpdatedAt { get; set; }
+                _logger.LogError(ex, "Send Request Unhandled Exception {Name} - {@Request}", requestName, request);
+
+                throw;
+            }
+        }
     }
 }

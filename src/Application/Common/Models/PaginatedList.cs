@@ -14,38 +14,43 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using FluentValidation;
-using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace NetCoreCleanArchitecture.Application.Common.Behaviours
+namespace NetCoreCleanArchitecture.Application.Common.Models
 {
-    public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+    public class PaginatedList<T>
     {
-        private readonly IEnumerable<IValidator<TRequest>> _validators;
-
-        public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
+        public PaginatedList(List<T> items, int count, int pageNumber, int pageSize)
         {
-            _validators = validators;
+            PageNumber = pageNumber;
+            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            TotalCount = count;
+            Items = items;
         }
 
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        public List<T> Items { get; }
+
+        public int PageNumber { get; }
+
+        public int TotalPages { get; }
+
+        public int TotalCount { get; }
+
+        public bool HasPreviousPage => PageNumber > 1;
+
+        public bool HasNextPage => PageNumber < TotalPages;
+
+        public static PaginatedList<T> Create(IQueryable<T> source, int pageNumber, int pageSize)
         {
-            if (_validators.Any())
-            {
-                var context = new ValidationContext<TRequest>(request);
+            var count = source.Count();
 
-                var validationResults = await Task.WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
-                var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null).ToList();
+            var items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-                if (failures.Any())
-                    throw new ValidationException(failures);
-            }
-            return await next();
+            return new PaginatedList<T>(items, count, pageNumber, pageSize);
         }
     }
 }

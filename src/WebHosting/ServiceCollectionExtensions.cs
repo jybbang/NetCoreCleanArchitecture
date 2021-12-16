@@ -1,7 +1,9 @@
 ﻿using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NetCoreCleanArchitecture.Application;
 using NetCoreCleanArchitecture.Application.Common.Interfaces;
 using NetCoreCleanArchitecture.WebHosting.Filters;
 using NetCoreCleanArchitecture.WebHosting.Identity;
@@ -11,18 +13,18 @@ namespace NetCoreCleanArchitecture.WebHosting
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddNetCleanWebHosting(this IServiceCollection services)
+        public static IServiceCollection AddNetCleanWebHosting(this IServiceCollection services, IConfiguration configuration)
         {
-            // Identity
-            services.AddHttpContextAccessor();
+            services.AddNetCleanApplication(configuration);
 
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
+            // Identity
+            services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
+            services.AddHttpContextAccessor();
 
             // Customise default API behaviour
             services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
+                options.SuppressModelStateInvalidFilter = true);
 
             // AddCorsAllowAny
             services.AddCors(options => options.AddPolicy("AllowAny",
@@ -42,7 +44,7 @@ namespace NetCoreCleanArchitecture.WebHosting
         {
             // Controller with custom validator
             var builder = services.AddControllers(options => options.Filters.Add<ApiExceptionFilterAttribute>())
-                .AddJsonOptions(opt => opt.JsonSerializerOptions.IgnoreNullValues = true)
+                .AddJsonOptions(opt => opt.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)
                 .AddFluentValidation();
 
             return builder;
