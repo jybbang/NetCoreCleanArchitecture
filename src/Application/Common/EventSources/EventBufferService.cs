@@ -1,60 +1,69 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using NetCoreCleanArchitecture.Application.Common.Options;
+using NetCoreCleanArchitecture.Domain.Common;
 using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading;
 
 namespace NetCoreCleanArchitecture.Application.Common.EventSources
 {
     public class EventBufferService
     {
         private readonly ILogger<EventBufferService> _logger;
-        private readonly EventBufferServiceOptions _opt;
         private readonly IServiceProvider _services;
+
+        private readonly ConcurrentDictionary<string, Subject<object>> _buffers = new();
 
         public EventBufferService(
             ILogger<EventBufferService> logger,
-            IOptions<EventBufferServiceOptions> opt,
             IServiceProvider services)
         {
             _logger = logger;
-            _opt = opt.Value;
             _services = services;
 
-            _buffer
-            .Buffer(_opt.BufferTime, _opt.BufferCount)
-                .Subscribe(async buffer =>
-                {
-                    if (!buffer.Any()) return;
-
-                    try
-                    {
-                        var send = buffer.ToDictionary(b => b.Item1, b => b.Item2);
-
-                        using var scope = _services.CreateScope();
-
-                        var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
-
-                        await eventBus.PublishAsync(_opt.Topic, send.Values);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "EventBufferService Unhandled Exception - {@Buffer}", buffer);
-                    }
-                });
-
-            _logger.LogInformation("{Class} Initialized - {@Optiopns}",
-                nameof(EventBufferService), _opt);
+            _logger.LogInformation("{Class} Initialized", nameof(EventBufferService));
         }
 
-        private readonly Subject<Tuple<string, object>> _buffer = new();
-
-        public void BufferPublish(string bufferKey, object notification)
+        public void BufferPublish<TDomainEvent>(string topic, TDomainEvent domainEvent) where TDomainEvent : BufferedDomainEvent
         {
-            _buffer.OnNext(Tuple.Create(bufferKey, notification));
+            if (_buffers.TryGetValue(topic, out var buffer))
+            {
+                buffer.OnNext(domainEvent);
+            }
+            else
+            {
+                buffer = new Subject<object>();
+
+                if (_buffers.TryAdd(topic, buffer))
+                {
+                    buffer
+                        .Buffer(domainEvent.BufferTime, domainEvent.BufferCount)
+                        .Subscribe(async events =>
+                        {
+                            if (!events.Any()) return;
+
+                            try
+                            {
+                                using var scope = _services.CreateScope();
+
+                                var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+
+                                var cts = new CancellationTokenSource(domainEvent.PublishTimeout);
+
+                                await eventBus.PublishAsync(topic, events, cts.Token);
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError(ex, "EventBufferService Unhandled Exception - {@Topic}", topic);
+                            }
+                        });
+
+                    buffer.OnNext(domainEvent);
+                }
+            }
         }
     }
 }

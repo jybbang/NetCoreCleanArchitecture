@@ -1,32 +1,23 @@
-﻿using NetCoreCleanArchitecture.Domain.Events;
-using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Concurrent;
 using System.Threading;
 
 namespace NetCoreCleanArchitecture.Domain.Common
 {
     public abstract class EntityWithDomainEvent : Entity
     {
-        protected long _version;
+        private long _version;
 
         public long Version { get => _version; private set => Interlocked.Exchange(ref _version, value); }
 
-        internal IProducerConsumerCollection<DomainEvent> DomainEvents { get; } = new ConcurrentQueue<DomainEvent>();
+        public IProducerConsumerCollection<DomainEvent> DomainEvents { get; } = new ConcurrentQueue<DomainEvent>();
 
         public void Commit(DomainEvent domainEvent)
         {
             Interlocked.Increment(ref _version);
 
-            DomainEvents.TryAdd(domainEvent.SetVersion(_version));
-        }
+            domainEvent.SourceVersion = _version;
 
-        protected void PropertyChanged<TSource, TProperty>(ref TProperty oldState, TProperty newState, string subject = default, [CallerMemberName] string propertyName = default) where TSource : EntityWithDomainEvent
-        {
-            if (!(oldState == null) && oldState.Equals(newState)) return;
-
-            Commit(new PropertyChangedEvent<TSource, TProperty>(this, oldState, newState, subject, propertyName));
-
-            oldState = newState;
+            DomainEvents.TryAdd(domainEvent);
         }
     }
 }

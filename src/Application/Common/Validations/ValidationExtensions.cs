@@ -15,7 +15,7 @@
 //
 
 using FluentValidation;
-using NetCoreCleanArchitecture.Application.Common.Results;
+using Results.Fluent;
 using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Application.Common.Validations
@@ -26,17 +26,17 @@ namespace NetCoreCleanArchitecture.Application.Common.Validations
         {
             if (instance is null)
             {
-                return Result.Fail();
+                return Result.Failure();
             }
 
             var result = await validator.ValidateAsync(instance);
 
             if (result.IsValid)
             {
-                return await Result.SuccessAsync();
+                return Result.Success();
             }
 
-            return Result.Fail(result.ToString());
+            return Result.Failure(result.ToString());
         }
     }
 }

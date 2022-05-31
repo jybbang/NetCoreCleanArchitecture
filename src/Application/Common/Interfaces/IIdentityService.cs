@@ -14,11 +14,7 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using NetCoreCleanArchitecture.Application.Common.Results;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Results.Fluent;
 using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Application.Common.Interfaces

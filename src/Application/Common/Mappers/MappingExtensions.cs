@@ -17,10 +17,8 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using NetCoreCleanArchitecture.Application.Common.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 
 namespace NetCoreCleanArchitecture.Application.Common.Mappers

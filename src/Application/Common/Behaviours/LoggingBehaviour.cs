@@ -46,7 +46,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
                 userName = await _identityService.GetUserNameAsync(userId);
             }
 
-            _logger.LogDebug("Send Request {Name} - {@UserId} {@UserName} {@Request}",
+            _logger.LogTrace("Send Request {Name} - {@UserId} {@UserName} {@Request}",
             requestName, userId, userName, request);
         }
     }

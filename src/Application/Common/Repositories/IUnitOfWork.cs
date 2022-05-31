@@ -13,6 +13,6 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         IEnumerable<Entity> ChangeTracking();
 
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

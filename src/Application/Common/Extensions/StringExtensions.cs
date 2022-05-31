@@ -45,31 +45,6 @@ namespace NetCoreCleanArchitecture.Application.Common.Extensions
             });
         }
 
-        public static string LowerCamelCase(this string value)
-        {
-            return string.IsNullOrWhiteSpace(value) ? string.Empty : value[0].ToString().ToLowerInvariant() + value[1..];
-        }
-
-        public static string NonSpecialCharacters(this string value)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return string.Empty;
-
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            var bytes = Encoding.GetEncoding("ISO-8859-8").GetBytes(value);
-
-            value = Encoding.Default.GetString(bytes);
-
-            return new Regex("[^0-9a-zA-Z._ ]+?").Replace(value, string.Empty);
-        }
-
-        public static string NumericCharacters(this string value)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return string.Empty;
-
-            return Regex.Replace(value, "[^0-9]", string.Empty);
-        }
-
         public static string RemoveExtraSpaces(this string value)
         {
             return string.IsNullOrWhiteSpace(value) ? string.Empty : Regex.Replace(value, @"\s+", " ");
@@ -165,7 +140,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Extensions
                         break;
                 }
             }
-        stop:
+            stop:
             return sb.ToString();
         }
 
@@ -267,8 +242,15 @@ namespace NetCoreCleanArchitecture.Application.Common.Extensions
                         break;
                 }
             }
-        stop:
+            stop:
             return sb.ToString();
+        }
+
+        public static bool ToBoolean(this string value)
+        {
+            return bool.TryParse(value, out var result)
+                ? result
+                : ToInt32(value) != 0;
         }
 
         public static int ToInt32(this string value)
@@ -276,6 +258,13 @@ namespace NetCoreCleanArchitecture.Application.Common.Extensions
             var val = IntergerCharacters(value);
 
             return string.IsNullOrWhiteSpace(val) ? 0 : Convert.ToInt32(val);
+        }
+
+        public static long ToInt64(this string value)
+        {
+            var val = IntergerCharacters(value);
+
+            return string.IsNullOrWhiteSpace(val) ? 0 : Convert.ToInt64(val);
         }
 
         public static double ToDouble(this string value)

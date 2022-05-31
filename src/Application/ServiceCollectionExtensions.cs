@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.Behaviours;
 using NetCoreCleanArchitecture.Application.Common.EventSources;
-using NetCoreCleanArchitecture.Application.Common.Options;
 using System.Reflection;
 
 namespace NetCoreCleanArchitecture.Application
@@ -14,8 +13,6 @@ namespace NetCoreCleanArchitecture.Application
         public static IServiceCollection AddNetCleanApplication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<EventBufferService>();
-
-            services.Configure<EventBufferServiceOptions>(configuration.GetSection(nameof(EventBufferServiceOptions)));
 
             services.AddScoped<IApplicationEventSource, ApplicationEventSource>();
 

@@ -27,19 +27,19 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             _eventBuffer = eventBuffer;
         }
 
-        public async Task Publish<T>(T domainEvent, CancellationToken cancellationToken = default) where T : DomainEvent
+        public async Task PublishAsync<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
         {
             // logging
             var eventName = domainEvent.GetType().Name;
 
             var logger = _logFactory.CreateLogger(eventName);
 
-            logger.LogDebug("Publishing Event: {Name} - {@Event}", eventName, domainEvent);
+            logger.LogTrace("Publishing Event: {Name} - {@Event}", eventName, domainEvent);
 
-            await PublishWithPerformance(domainEvent, logger, cancellationToken);
+            await PublishWithPerformanceAsync(domainEvent, logger, cancellationToken);
         }
 
-        private async Task PublishWithPerformance<T>(T domainEvent, ILogger logger, CancellationToken cancellationToken) where T : DomainEvent
+        private async Task PublishWithPerformanceAsync<TDomainEvent>(TDomainEvent domainEvent, ILogger logger, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
         {
             var timer = new Stopwatch();
 
@@ -47,9 +47,9 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             {
                 timer.Start();
 
-                await PublishEventNotification(domainEvent, logger, cancellationToken);
+                await PublishEventNotification(domainEvent, cancellationToken);
 
-                await PublishToEventbus(domainEvent, logger, cancellationToken);
+                await PublishToEventbus(domainEvent, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -63,7 +63,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 var elapsedMilliseconds = timer.ElapsedMilliseconds;
 
-                if (elapsedMilliseconds > 500)
+                if (elapsedMilliseconds > 5000)
                 {
                     var eventName = domainEvent.GetType().Name;
 
@@ -73,7 +73,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             }
         }
 
-        private Task PublishEventNotification<T>(T domainEvent, ILogger logger, CancellationToken cancellationToken) where T : DomainEvent
+        private Task PublishEventNotification<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
         {
             var notification = (INotification)Activator.CreateInstance(
                 typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), domainEvent);
@@ -81,22 +81,16 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             return _mediator.Publish(notification, cancellationToken);
         }
 
-        private async Task PublishToEventbus<T>(T domainEvent, ILogger logger, CancellationToken cancellationToken) where T : DomainEvent
+        private async Task PublishToEventbus<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
         {
-            if (!domainEvent.CanPublishToEventBus) return;
-
-            var notification = Convert.ChangeType(domainEvent, domainEvent.GetType());
-
-            if (domainEvent.CanBuffered)
+            if (domainEvent is BufferedDomainEvent bufferedEvent)
             {
-                var key = string.IsNullOrEmpty(domainEvent.BufferKey) ? domainEvent.EventId.ToString() : domainEvent.BufferKey;
-
-                _eventBuffer.BufferPublish(key, notification);
+                _eventBuffer.BufferPublish(domainEvent.Topic, bufferedEvent);
 
                 return;
             }
 
-            await _eventBus.PublishAsync(domainEvent.Topic, notification, cancellationToken);
+            await _eventBus.PublishAsync(domainEvent.Topic, domainEvent, cancellationToken);
         }
     }
 }

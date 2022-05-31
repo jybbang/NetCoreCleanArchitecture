@@ -32,28 +32,28 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         bool Any(Expression<Func<TEntity, bool>> where);
 
-        Task<bool> AnyAsync(CancellationToken cancellationToken = default);
+        Task<bool> AnyAsync(CancellationToken cancellationToken);
 
-        Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default);
+        Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
 
         long Count();
 
         long Count(Expression<Func<TEntity, bool>> where);
 
-        Task<long> CountAsync(CancellationToken cancellationToken = default);
+        Task<long> CountAsync(CancellationToken cancellationToken);
 
-        Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default);
+        Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
 
         TEntity Get(Guid key);
 
-        Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken = default);
+        Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken);
 
         List<TEntity> List();
 
         List<TEntity> List(Expression<Func<TEntity, bool>> where);
 
-        Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default);
+        Task<List<TEntity>> ListAsync(CancellationToken cancellationToken);
 
-        Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken = default);
+        Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
     }
 }

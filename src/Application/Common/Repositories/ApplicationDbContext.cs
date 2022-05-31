@@ -15,18 +15,15 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
         private readonly IUnitOfWork _unitOfWork;
         private readonly IApplicationEventSource _eventSource;
         private readonly ICurrentUserService _currentUser;
-        private readonly IDateTimeCache _dateTimeCache;
 
         public ApplicationDbContext(
             IUnitOfWork unitOfWork,
             IApplicationEventSource eventSource,
-            ICurrentUserService currentUser,
-            IDateTimeCache dateTimeCache)
+            ICurrentUserService currentUser)
         {
             _unitOfWork = unitOfWork;
             _eventSource = eventSource;
             _currentUser = currentUser;
-            _dateTimeCache = dateTimeCache;
         }
 
         public ICommandRepository<TEntity> CommandSet<TEntity>() where TEntity : Entity
@@ -37,7 +34,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var timestamp = await _dateTimeCache.Now(cancellationToken);
+            var timestamp = DateTimeOffset.UtcNow;
 
             var changedEntities = _unitOfWork.ChangeTracking();
 
@@ -82,14 +79,11 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
             foreach (var domainevents in domainEventsList)
             {
-                while (domainevents.Count > 0)
+                while (domainevents.TryTake(out var domainEvent))
                 {
-                    if (domainevents.TryTake(out var domainEvent))
-                    {
-                        domainEvent.Publising(timestamp);
+                    domainEvent.Publising(timestamp);
 
-                        eventsToDispatch.Enqueue(domainEvent);
-                    }
+                    eventsToDispatch.Enqueue(domainEvent);
                 }
             }
 
@@ -98,12 +92,9 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         private async Task DispatchEvents(IProducerConsumerCollection<DomainEvent> events, CancellationToken cancellationToken = default)
         {
-            while (events.Count > 0)
+            while (events.TryTake(out var domainEvent))
             {
-                if (events.TryTake(out var domainEvent))
-                {
-                    await _eventSource.Publish(domainEvent, cancellationToken);
-                }
+                await _eventSource.PublishAsync(domainEvent, cancellationToken);
             }
         }
     }

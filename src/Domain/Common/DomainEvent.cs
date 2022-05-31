@@ -10,36 +10,23 @@ namespace NetCoreCleanArchitecture.Domain.Common
             Topic = topic;
         }
 
-        public Guid EventId { get; } = Guid.NewGuid();
-
         public string Topic { get; }
 
-        public bool CanPublishToEventBus { get; set; } = true;
+        public Guid EventId { get; set; }
 
-        public bool CanSaveToEventStore { get; set; } = true;
+        public long SourceVersion { get; set; }
 
-        public bool CanBuffered { get; set; } = false;
+        public bool IsPublished { get; set; }
 
-        public string BufferKey { get; set; }
-
-        public long SourceVersion { get; private set; }
-
-        public bool IsPublished { get; private set; }
-
-        public DateTimeOffset Timestamp { get; private set; }
-
-        public DomainEvent SetVersion(long version)
-        {
-            SourceVersion = version;
-
-            return this;
-        }
+        public DateTimeOffset Timestamp { get; set; }
 
         public DomainEvent Publising(DateTimeOffset timestamp = default)
         {
-            IsPublished = true;
+            EventId = Guid.NewGuid();
 
             Timestamp = timestamp == default ? DateTimeOffset.UtcNow : timestamp;
+
+            IsPublished = true;
 
             return this;
         }

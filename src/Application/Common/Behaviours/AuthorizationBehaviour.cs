@@ -19,15 +19,13 @@ using NetCoreCleanArchitecture.Application.Common.Attributes;
 using NetCoreCleanArchitecture.Application.Common.Exceptions;
 using NetCoreCleanArchitecture.Application.Common.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Application.Common.Behaviours
 {
-    public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+    public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
         private readonly ICurrentUserService _currentUserService;
         private readonly IIdentityService _identityService;

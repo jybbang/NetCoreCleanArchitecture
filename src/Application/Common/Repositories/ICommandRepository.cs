@@ -26,26 +26,26 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
     {
         void Add(TEntity item);
 
-        Task AddAsync(TEntity item, CancellationToken cancellationToken = default);
+        Task AddAsync(TEntity item, CancellationToken cancellationToken);
 
         void AddRange(IEnumerable<TEntity> items);
 
-        Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default);
+        Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken);
 
         void Remove(TEntity item);
 
-        Task RemoveAsync(TEntity item, CancellationToken cancellationToken = default);
+        Task RemoveAsync(TEntity item, CancellationToken cancellationToken);
 
         void Update(Guid key, TEntity item);
 
-        Task UpdateAsync(Guid key, TEntity item, CancellationToken cancellationToken = default);
+        Task UpdateAsync(Guid key, TEntity item, CancellationToken cancellationToken);
 
         void UpdatePartial(Guid key, object item);
 
-        Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken = default);
+        Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken);
 
         void UpdateRange(IEnumerable<TEntity> items);
 
-        Task UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default);
+        Task UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken);
     }
 }

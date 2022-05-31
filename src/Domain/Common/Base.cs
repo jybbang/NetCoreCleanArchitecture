@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace NetCoreCleanArchitecture.Domain.Common
 {
-    public abstract class Base<T> : IEquatable<Base<T>>, ICloneable
+    public abstract class Base<T> : IEquatable<Base<T>>
     {
         public static bool operator !=(Base<T> a, Base<T> b)
         {
@@ -73,10 +73,5 @@ namespace NetCoreCleanArchitecture.Domain.Common
         }
 
         protected abstract IEnumerable<object> Equals();
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
     }
 }
