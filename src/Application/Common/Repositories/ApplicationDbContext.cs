@@ -32,27 +32,29 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
         public IQueryRepository<TEntity> QuerySet<TEntity>() where TEntity : Entity
             => _unitOfWork.QuerySet<TEntity>();
 
-        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             var timestamp = DateTimeOffset.UtcNow;
 
             var changedEntities = _unitOfWork.ChangeTracking();
 
-            UpdateAuditable(changedEntities, timestamp);
+            UpdateAuditable(changedEntities, timestamp, cancellationToken);
 
-            var eventsToDispatch = GetEventsToDispatch(changedEntities, timestamp);
+            var eventsToDispatch = GetEventsToDispatch(changedEntities, cancellationToken);
 
             var result = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await DispatchEvents(eventsToDispatch, cancellationToken);
+            await DispatchEvents(eventsToDispatch, timestamp, cancellationToken);
 
             return result;
         }
 
-        private void UpdateAuditable(IEnumerable<Entity> changedEntities, DateTimeOffset timestamp)
+        private void UpdateAuditable(IEnumerable<Entity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken)
         {
             foreach (var entity in changedEntities)
             {
+                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+
                 if (entity is not IAuditableEntity auditableEntity) return;
 
                 if (auditableEntity.CreatedAt == default)
@@ -68,7 +70,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             }
         }
 
-        private IProducerConsumerCollection<DomainEvent> GetEventsToDispatch(IEnumerable<Entity> changedEntities, DateTimeOffset timestamp)
+        private IProducerConsumerCollection<DomainEvent> GetEventsToDispatch(IEnumerable<Entity> changedEntities, CancellationToken cancellationToken)
         {
             var eventsToDispatch = new ConcurrentQueue<DomainEvent>();
 
@@ -81,7 +83,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             {
                 while (domainevents.TryTake(out var domainEvent))
                 {
-                    domainEvent.Publising(timestamp);
+                    if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
 
                     eventsToDispatch.Enqueue(domainEvent);
                 }
@@ -90,10 +92,14 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             return eventsToDispatch;
         }
 
-        private async Task DispatchEvents(IProducerConsumerCollection<DomainEvent> events, CancellationToken cancellationToken = default)
+        private async Task DispatchEvents(IProducerConsumerCollection<DomainEvent> events, DateTimeOffset timestamp, CancellationToken cancellationToken)
         {
             while (events.TryTake(out var domainEvent))
             {
+                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+
+                domainEvent.Publising(timestamp);
+
                 await _eventSource.PublishAsync(domainEvent, cancellationToken);
             }
         }

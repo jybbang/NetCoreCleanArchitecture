@@ -29,16 +29,38 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
         public async Task PublishAsync<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
         {
-            // logging
             var eventName = domainEvent.GetType().Name;
 
             var logger = _logFactory.CreateLogger(eventName);
 
-            logger.LogTrace("Publishing Event {Name} - {@Event}", eventName, domainEvent);
+            var timer = new Stopwatch();
 
-            await PublishEventNotification(domainEvent, cancellationToken);
+            try
+            {
+                timer.Start();
 
-            await PublishToEventbus(domainEvent, cancellationToken);
+                logger.LogTrace("Publishing Event {Name} - {@Event}", eventName, domainEvent);
+
+                await PublishEventNotification(domainEvent, cancellationToken);
+
+                await PublishToEventbus(domainEvent, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Publishing Event Unhandled Exception {Name} - {@Event}", eventName, domainEvent);
+            }
+            finally
+            {
+                timer.Stop();
+
+                var elapsedMilliseconds = timer.ElapsedMilliseconds;
+
+                if (elapsedMilliseconds > 1000)
+                {
+                    logger.LogWarning("Publishing Event Long Running {Name} ({ElapsedMilliseconds} milliseconds) - {@Event}",
+                        eventName, elapsedMilliseconds, domainEvent);
+                }
+            }
         }
 
         private Task PublishEventNotification<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : DomainEvent

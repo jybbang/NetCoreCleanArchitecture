@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using NetCoreCleanArchitecture.Domain.Common;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -39,27 +40,35 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 if (_buffers.TryAdd(topic, buffer))
                 {
-                    buffer
-                        .Buffer(domainEvent.BufferTime, domainEvent.BufferCount)
-                        .Subscribe(async events =>
+                    var observer = buffer
+                            .Buffer(domainEvent.BufferCount);
+
+                    if (domainEvent.BufferTime > TimeSpan.Zero)
+                    {
+                        observer = observer
+                            .Merge(buffer
+                            .Buffer(domainEvent.BufferTime));
+                    }
+
+                    observer.Subscribe(async events =>
+                    {
+                        if (!events.Any()) return;
+
+                        try
                         {
-                            if (!events.Any()) return;
+                            using var scope = _services.CreateScope();
 
-                            try
-                            {
-                                using var scope = _services.CreateScope();
+                            var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
-                                var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+                            var cts = new CancellationTokenSource(domainEvent.PublishTimeout);
 
-                                var cts = new CancellationTokenSource(domainEvent.PublishTimeout);
-
-                                await eventBus.PublishAsync(topic, events, cts.Token);
-                            }
-                            catch (Exception ex)
-                            {
-                                _logger.LogError(ex, "EventBufferService Unhandled Exception - {@Topic}", topic);
-                            }
-                        });
+                            await eventBus.PublishAsync(topic, events, cts.Token);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "EventBufferService Unhandled Exception - {@Topic}", topic);
+                        }
+                    });
 
                     buffer.OnNext(domainEvent);
                 }

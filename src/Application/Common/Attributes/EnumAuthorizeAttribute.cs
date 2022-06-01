@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Linq;
 
-namespace NetCoreCleanArchitecture.WebHosting.Attributes
+namespace NetCoreCleanArchitecture.Application.Common.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public sealed class EnumAuthorizeAttribute : AuthorizeAttribute

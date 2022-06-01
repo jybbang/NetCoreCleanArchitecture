@@ -33,15 +33,20 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
             _context = context;
         }
 
-        private DbSet<TEntity> Set => _context.Set<TEntity>();
+        private DbSet<TEntity> Set
+            => _context.Set<TEntity>();
 
-        public void Add(TEntity item) => Set.Add(item);
+        public void Add(TEntity item)
+            => Set.Add(item);
 
-        public Task AddAsync(TEntity item, CancellationToken cancellationToken = default) => Set.AddAsync(item, cancellationToken).AsTask();
+        public Task AddAsync(TEntity item, CancellationToken cancellationToken)
+            => Set.AddAsync(item, cancellationToken).AsTask();
 
-        public void AddRange(IEnumerable<TEntity> items) => Set.AddRange(items);
+        public void AddRange(IEnumerable<TEntity> items)
+            => Set.AddRange(items);
 
-        public Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default) => Set.AddRangeAsync(items, cancellationToken);
+        public Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
+            => Set.AddRangeAsync(items, cancellationToken);
 
         public void Remove(TEntity item)
         {
@@ -52,16 +57,18 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
             Set.Remove(entity);
         }
 
-        public async Task RemoveAsync(TEntity item, CancellationToken cancellationToken = default)
+        public async Task RemoveAsync(TEntity item, CancellationToken cancellationToken)
         {
             var entity = await Set.FindAsync(new object[] { item.Id }, cancellationToken);
 
             Set.Remove(entity);
         }
 
-        public void Update(Guid key, TEntity item) => Set.Update(item);
+        public void Update(Guid key, TEntity item)
+            => Set.Update(item);
 
-        public Task UpdateAsync(Guid key, TEntity item, CancellationToken cancellationToken = default) => Task.FromResult(Set.Update(item));
+        public Task UpdateAsync(Guid key, TEntity item, CancellationToken cancellationToken)
+            => Task.FromResult(Set.Update(item));
 
         public void UpdatePartial(Guid key, object item)
         {
@@ -70,16 +77,17 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
             _context.Entry(entity).CurrentValues.SetValues(item);
         }
 
-        public async Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken = default)
+        public async Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken)
         {
             var entity = await Set.FindAsync(new object[] { key }, cancellationToken);
 
             _context.Entry(entity).CurrentValues.SetValues(item);
         }
 
-        public void UpdateRange(IEnumerable<TEntity> items) => Set.UpdateRange(items);
+        public void UpdateRange(IEnumerable<TEntity> items)
+            => Set.UpdateRange(items);
 
-        public Task UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
+        public Task UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
         {
             Set.UpdateRange(items);
 

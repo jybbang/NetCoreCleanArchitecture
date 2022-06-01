@@ -8,10 +8,10 @@ namespace NetCoreCleanArchitecture.Domain.Common
         {
         }
 
-        public int BufferCount { get; set; } = 1000;
+        public int BufferCount { get; protected set; } = 1000;
 
-        public TimeSpan BufferTime { get; set; } = TimeSpan.FromMilliseconds(1000);
+        public TimeSpan BufferTime { get; protected set; } = TimeSpan.FromMilliseconds(1000);
 
-        public TimeSpan PublishTimeout { get; set; } = TimeSpan.FromMilliseconds(10000);
+        public TimeSpan PublishTimeout { get; protected set; } = TimeSpan.FromMilliseconds(10000);
     }
 }

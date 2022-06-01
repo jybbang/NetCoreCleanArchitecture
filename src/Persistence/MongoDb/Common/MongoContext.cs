@@ -14,7 +14,6 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using Mongo2Go;
 using MongoDB.Driver;
 using NetCoreCleanArchitecture.Domain.Common;
 using System;
@@ -27,44 +26,24 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
 {
     public abstract class MongoContext
     {
-        private readonly string _connectionString;
-        private readonly MongoContextOptions _options;
-
-        private readonly MongoDbRunner _runner;
         private readonly ConcurrentDictionary<Guid, Entity> _changeTracker = new();
         private readonly ConcurrentDictionary<Guid, Func<Guid, Entity, CancellationToken, Task>> _updateHandlers = new();
 
-        protected MongoContext(string connectionString, MongoContextOptions options)
-        {
-            _connectionString = connectionString;
-            _options = options;
-
-            if (_options.UseInMemory)
-            {
-                _runner = MongoDbRunner.Start();
-
-                DatabaseName = connectionString;
-
-                Database = new MongoClient(_runner.ConnectionString).GetDatabase(DatabaseName);
-            }
-            else
-            {
-                DatabaseName = new MongoUrl(_connectionString).DatabaseName;
-
-                Database = new MongoClient(_connectionString).GetDatabase(DatabaseName);
-            }
-        }
-
-        public string DatabaseName { get; }
-
         public IMongoDatabase Database { get; }
 
-        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        protected MongoContext(IMongoDatabase database)
+        {
+            Database = database;
+        }
+
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             var result = _changeTracker.Count;
 
             foreach (var (id, entity) in _changeTracker)
             {
+                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+
                 if (_updateHandlers.TryGetValue(id, out var handler))
                 {
                     if (handler is null) continue;
@@ -111,10 +90,5 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
                 AddTracking(entity, handler);
             }
         }
-    }
-
-    public record MongoContextOptions
-    {
-        public bool UseInMemory { get; init; } = false;
     }
 }

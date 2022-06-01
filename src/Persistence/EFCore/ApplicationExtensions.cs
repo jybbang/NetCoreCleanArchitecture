@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.Repositories;
 using System;
 
-namespace NetCoreCleanArchitecture.Persistence.EFCore
+namespace NetCoreCleanArchitecture.Persistence
 {
     public enum MigrationOptions
     {
@@ -13,7 +13,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
         Migrate
     }
 
-    public static class ServiceCollectionExtensions
+    public static class ApplicationExtensions
     {
         public static void AddNetCleanDbContext<T>(
             this IServiceCollection services,
@@ -47,7 +47,7 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
             }
         }
 
-        public static void AddNetCleanDbContextMemory<T>(this IServiceCollection services) where T : DbContext
+        public static void AddNetCleanDbContextInMemory<T>(this IServiceCollection services) where T : DbContext
         {
             services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
@@ -58,13 +58,6 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore
             services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<T>() as IUnitOfWork);
 
             services.BuildServiceProvider().GetRequiredService<T>().Database.EnsureCreated();
-        }
-
-        public static IHealthChecksBuilder AddNetCleanDbContextCheck(this IHealthChecksBuilder builder)
-        {
-            builder.AddDbContextCheck<DbContext>();
-
-            return builder;
         }
     }
 }

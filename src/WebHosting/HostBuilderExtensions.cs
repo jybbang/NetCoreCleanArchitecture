@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using NetCoreCleanArchitecture.WebHosting.Options;
 using Serilog;
 using Serilog.Core;
 using Serilog.Enrichers.Span;
@@ -9,11 +10,6 @@ namespace NetCoreCleanArchitecture.WebHosting
 {
     public static class HostBuilderExtensions
     {
-        private const string APP_NAME_SECTION = "AppName";
-        private const string APP_ID_SECTION = "AppId";
-        private const string SEQ_URL_SECTION = "SeqServerUrl";
-        private const string SEQ_APIKEY_SECTION = "SeqApiKey";
-
         public static IHostBuilder UseSerilog(this IHostBuilder builder, string[] args)
         {
             var configuration = new ConfigurationBuilder()
@@ -23,10 +19,7 @@ namespace NetCoreCleanArchitecture.WebHosting
                 .AddCommandLine(args)
                 .Build();
 
-            var appName = configuration.GetValue<string>(APP_NAME_SECTION);
-            var appId = configuration.GetValue<string>(APP_ID_SECTION);
-            var serverUrl = configuration.GetValue<string>(SEQ_URL_SECTION);
-            var apiKey = configuration.GetValue<string>(SEQ_APIKEY_SECTION);
+            var opt = configuration.GetValue<NetCoreCleanArchitectureOptions>("NetCoreCleanArchitecture");
 
             var levelSwitch = new LoggingLevelSwitch();
 
@@ -38,9 +31,9 @@ namespace NetCoreCleanArchitecture.WebHosting
                 .Enrich.WithThreadId()
                 .Enrich.WithClientIp()
                 .Enrich.WithSpan()
-                .Enrich.WithProperty("ApplicationName", string.IsNullOrWhiteSpace(appId) ? string.IsNullOrWhiteSpace(appName) ? "unknown" : appName : appId)
+                .Enrich.WithProperty("ApplicationName", string.IsNullOrWhiteSpace(opt.AppId) ? opt.AppName : opt.AppId)
                 .WriteTo.Console()
-                .WriteTo.Seq(string.IsNullOrWhiteSpace(serverUrl) ? "http://seq" : serverUrl, apiKey: apiKey, controlLevelSwitch: levelSwitch)
+                .WriteTo.Seq(opt.SeqServerUrl, apiKey: opt.SeqApiKey, controlLevelSwitch: levelSwitch)
                 .CreateLogger();
 
             SerilogHostBuilderExtensions.UseSerilog(builder);

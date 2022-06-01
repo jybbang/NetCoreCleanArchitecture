@@ -20,11 +20,11 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public DateTimeOffset Timestamp { get; set; }
 
-        public DomainEvent Publising(DateTimeOffset timestamp = default)
+        public DomainEvent Publising(DateTimeOffset timestamp)
         {
             EventId = Guid.NewGuid();
 
-            Timestamp = timestamp == default ? DateTimeOffset.UtcNow : timestamp;
+            Timestamp = Timestamp == default ? DateTimeOffset.UtcNow : timestamp;
 
             IsPublished = true;
 

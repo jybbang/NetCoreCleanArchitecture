@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Mongo2Go;
+using MongoDB.Driver;
 using NetCoreCleanArchitecture.Application.Common.Repositories;
 using NetCoreCleanArchitecture.Persistence.MongoDb.Common;
 using System;
 
-namespace NetCoreCleanArchitecture.Persistence.MongoDb
+namespace NetCoreCleanArchitecture.Persistence
 {
     public enum MigrationOptions
     {
@@ -12,12 +14,11 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb
         EnsureCreated,
     }
 
-    public static class ServiceCollectionExtensions
+    public static class ApplicationExtensions
     {
-        public static void AddNetCleanMongoContext<T>(
+        public static void AddNetCleanDbContext<T>(
             this IServiceCollection services,
             string connectionString,
-            MongoContextOptions options,
             MigrationOptions migration = MigrationOptions.EnsureCreated) where T : MongoContext
         {
             if (string.IsNullOrEmpty(connectionString))
@@ -25,14 +26,13 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb
                 throw new ArgumentException($"'{nameof(connectionString)}' is required.", nameof(connectionString));
             }
 
-            if (options is null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
-
             services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
-            var context = (T)Activator.CreateInstance(typeof(T), new object[] { connectionString, options });
+            var databaseName = new MongoUrl(connectionString).DatabaseName;
+
+            var database = new MongoClient(connectionString).GetDatabase(databaseName);
+
+            var context = (T)Activator.CreateInstance(typeof(T), database);
 
             services.AddSingleton<T>(context);
 
@@ -52,26 +52,21 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb
             }
         }
 
-        public static void AddNetCleanMongoContextMemory<T>(this IServiceCollection services) where T : MongoContext
+        public static void AddNetCleanDbContextInMemory<T>(this IServiceCollection services) where T : MongoContext
         {
+            var _runner = MongoDbRunner.Start();
+
+            var database = new MongoClient(_runner.ConnectionString).GetDatabase(typeof(T).Name);
+
             services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
-            var options = new MongoContextOptions { UseInMemory = true };
-
-            var context = (T)Activator.CreateInstance(typeof(T), new object[] { typeof(T).Name, options });
+            var context = (T)Activator.CreateInstance(typeof(T), database);
 
             services.AddSingleton<T>(context);
 
             services.AddScoped<MongoContext>(provider => provider.GetRequiredService<T>());
 
             services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<T>() as IUnitOfWork);
-        }
-
-        public static IHealthChecksBuilder AddNetCleanMongoContextCheck(this IHealthChecksBuilder builder, string connectionString)
-        {
-            builder.AddMongoDb(connectionString);
-
-            return builder;
         }
     }
 }
