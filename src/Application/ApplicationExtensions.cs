@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace NetCoreCleanArchitecture.Application
 {
-    public static class ServiceCollectionExtensions
+    public static class ApplicationExtensions
     {
         public static IServiceCollection AddNetCleanApplication(this IServiceCollection services, IConfiguration configuration)
         {

@@ -6,7 +6,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Interfaces
 {
     public interface IStateStore<T>
     {
-        Task<T> GetOrAddAsync(string key, T add, CancellationToken cancellationToken);
+        Task<T> GetOrAddAsync(string key, Func<T> add, CancellationToken cancellationToken);
 
         Task<T> GetAsync(string key, CancellationToken cancellationToken);
 
@@ -14,7 +14,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Interfaces
 
         Task DeleteAsync(string key, CancellationToken cancellationToken);
 
-        Task<T> GetOrAddAsync(Guid key, T add, CancellationToken cancellationToken)
+        Task<T> GetOrAddAsync(Guid key, Func<T> add, CancellationToken cancellationToken)
             => GetOrAddAsync(key.ToString(), add, cancellationToken);
 
         Task<T> GetAsync(Guid key, CancellationToken cancellationToken)

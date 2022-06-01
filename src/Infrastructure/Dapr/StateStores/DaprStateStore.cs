@@ -3,6 +3,7 @@ using Dapr.Client;
 using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.Common.Interfaces;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.Options;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,12 +20,14 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             _client = client;
         }
 
-        public async Task<T> GetOrAddAsync(string key, T item, CancellationToken cancellationToken = default)
+        public async Task<T> GetOrAddAsync(string key, Func<T> add, CancellationToken cancellationToken = default)
         {
             var result = await GetAsync(key, cancellationToken);
 
             if (result is null)
             {
+                var item = add();
+
                 await AddAsync(key, item, cancellationToken);
 
                 result = item;
