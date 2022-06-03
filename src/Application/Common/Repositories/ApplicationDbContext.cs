@@ -98,9 +98,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             {
                 if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
 
-                domainEvent.Publising(timestamp);
-
-                await _eventSource.PublishAsync(domainEvent, cancellationToken);
+                await _eventSource.PublishAsync(domainEvent, timestamp, cancellationToken);
             }
         }
     }

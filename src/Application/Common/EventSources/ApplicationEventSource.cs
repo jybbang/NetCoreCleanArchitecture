@@ -27,7 +27,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             _eventBuffer = eventBuffer;
         }
 
-        public async Task PublishAsync<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
+        public async Task PublishAsync<TDomainEvent>(TDomainEvent domainEvent, DateTimeOffset timestamp, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
         {
             var eventName = domainEvent.GetType().Name;
 
@@ -40,6 +40,8 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                 timer.Start();
 
                 logger.LogTrace("Publishing Event {Name} - {@Event}", eventName, domainEvent);
+
+                domainEvent.Publising(timestamp);
 
                 await PublishEventNotification(domainEvent, cancellationToken);
 
