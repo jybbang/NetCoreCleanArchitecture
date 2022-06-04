@@ -21,7 +21,7 @@ using NetCoreCleanArchitecture.Application.Common.Exceptions;
 using System;
 using System.Collections.Generic;
 
-namespace NetCoreCleanArchitecture.WebHosting.Filters
+namespace NetCoreCleanArchitecture.Api.Filters
 {
     public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     {

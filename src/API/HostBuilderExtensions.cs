@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using NetCoreCleanArchitecture.WebHosting.Options;
+using NetCoreCleanArchitecture.Api.Options;
 using Serilog;
 using Serilog.Core;
 using Serilog.Enrichers.Span;
 using System;
 
-namespace NetCoreCleanArchitecture.WebHosting
+namespace NetCoreCleanArchitecture.Api
 {
     public static class HostBuilderExtensions
     {
@@ -19,7 +19,7 @@ namespace NetCoreCleanArchitecture.WebHosting
                 .AddCommandLine(args)
                 .Build();
 
-            var opt = configuration.GetValue<NetCoreCleanArchitectureOptions>("NetCoreCleanArchitecture");
+            var opt = configuration.GetValue<ApiOptions>("NetCoreCleanArchitecture");
 
             var levelSwitch = new LoggingLevelSwitch();
 

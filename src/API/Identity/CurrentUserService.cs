@@ -2,7 +2,7 @@
 using NetCoreCleanArchitecture.Application.Common.Interfaces;
 using System.Security.Claims;
 
-namespace NetCoreCleanArchitecture.WebHosting.Identity
+namespace NetCoreCleanArchitecture.Api.Identity
 {
     public class CurrentUserService : ICurrentUserService
     {

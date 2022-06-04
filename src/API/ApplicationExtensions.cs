@@ -8,16 +8,16 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.Interfaces;
-using NetCoreCleanArchitecture.WebHosting.Filters;
-using NetCoreCleanArchitecture.WebHosting.Identity;
-using NetCoreCleanArchitecture.WebHosting.Options;
+using NetCoreCleanArchitecture.Api.Filters;
+using NetCoreCleanArchitecture.Api.Identity;
+using NetCoreCleanArchitecture.Api.Options;
 using Prometheus;
 
-namespace NetCoreCleanArchitecture.WebHosting
+namespace NetCoreCleanArchitecture.Api
 {
     public static class ApplicationExtensions
     {
-        public static IApplicationBuilder UseNetCleanWebHosting(this IApplicationBuilder app)
+        public static IApplicationBuilder UseNetCleanApi(this IApplicationBuilder app)
         {
             app.UseHttpsRedirection();
 
@@ -42,7 +42,7 @@ namespace NetCoreCleanArchitecture.WebHosting
             return app;
         }
 
-        public static IEndpointRouteBuilder MapNetCleanWebHosting(this IEndpointRouteBuilder endpoints)
+        public static IEndpointRouteBuilder MapNetCleanApi(this IEndpointRouteBuilder endpoints)
         {
             endpoints.MapControllers();
 
@@ -58,12 +58,12 @@ namespace NetCoreCleanArchitecture.WebHosting
             return endpoints;
         }
 
-        public static IServiceCollection AddNetCleanWebHosting(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddNetCleanApi(this IServiceCollection services, IConfiguration configuration)
         {
             // Identity
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
-            services.AddOptions<NetCoreCleanArchitectureOptions>("NetCoreCleanArchitecture");
+            services.AddOptions<ApiOptions>("Api");
 
             services.AddHttpContextAccessor();
 
@@ -76,7 +76,7 @@ namespace NetCoreCleanArchitecture.WebHosting
                 .AddJsonOptions(opt => opt.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)
                 .AddFluentValidation();
 
-            // Customise default API behaviour
+            // Customise default Api behaviour
             services.Configure<ApiBehaviorOptions>(options =>
                 options.SuppressModelStateInvalidFilter = true);
 

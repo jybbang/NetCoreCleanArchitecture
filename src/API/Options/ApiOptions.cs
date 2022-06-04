@@ -1,6 +1,6 @@
-﻿namespace NetCoreCleanArchitecture.WebHosting.Options
+﻿namespace NetCoreCleanArchitecture.Api.Options
 {
-    public record NetCoreCleanArchitectureOptions
+    public record ApiOptions
     {
         public string AppName { get; init; } = "unknown";
 
