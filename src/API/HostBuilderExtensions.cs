@@ -19,7 +19,7 @@ namespace NetCoreCleanArchitecture.Api
                 .AddCommandLine(args)
                 .Build();
 
-            var opt = configuration.GetValue<ApiOptions>("NetCoreCleanArchitecture");
+            var opt = configuration.GetValue<ApiOptions>("Api");
 
             var levelSwitch = new LoggingLevelSwitch();
 

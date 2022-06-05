@@ -53,7 +53,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
         {
             foreach (var entity in changedEntities)
             {
-                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
                 if (entity is not IAuditableEntity auditableEntity) return;
 
@@ -83,7 +83,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             {
                 while (domainevents.TryTake(out var domainEvent))
                 {
-                    if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                    if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
                     eventsToDispatch.Enqueue(domainEvent);
                 }
@@ -96,7 +96,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
         {
             while (events.TryTake(out var domainEvent))
             {
-                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
                 await _eventSource.PublishAsync(domainEvent, timestamp, cancellationToken);
             }

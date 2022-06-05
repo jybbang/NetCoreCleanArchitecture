@@ -37,7 +37,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
 
         public static IServiceCollection AddNetCleanInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddOptions<InfrastructureDaprOptions>();
+            services.AddOptions<InfrastructureDaprOptions>("Api:Dapr");
 
             // StateStore
             services.AddScoped(typeof(IStateStore<>), typeof(DaprStateStore<>));
