@@ -7,7 +7,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
     {
         public Guid Id { get; set; }
 
-        protected sealed override IEnumerable<object> Equals()
+        protected override IEnumerable<object> Equals()
         {
             yield return Id;
         }
