@@ -20,12 +20,17 @@ namespace NetCoreCleanArchitecture.Application.Common.Exceptions
 {
     public class NotFoundException : Exception
     {
+        public string Entity { get; }
+
         public NotFoundException() : base() { }
 
         public NotFoundException(string message) : base(message) { }
 
         public NotFoundException(string message, Exception innerException) : base(message, innerException) { }
 
-        public NotFoundException(string name, object key) : base($"{name} ({key}) was not found") { }
+        public NotFoundException(string entity, object key) : base($"{entity} ({key}) was not found")
+        {
+            Entity = entity;
+        }
     }
 }
