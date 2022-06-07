@@ -70,20 +70,6 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
         public Task UpdateAsync(Guid key, TEntity item, CancellationToken cancellationToken)
             => Task.FromResult(Set.Update(item));
 
-        public void UpdatePartial(Guid key, object item)
-        {
-            var entity = Set.Find(key);
-
-            _context.Entry(entity).CurrentValues.SetValues(item);
-        }
-
-        public async Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken)
-        {
-            var entity = await Set.FindAsync(new object[] { key }, cancellationToken);
-
-            _context.Entry(entity).CurrentValues.SetValues(item);
-        }
-
         public void UpdateRange(IEnumerable<TEntity> items)
             => Set.UpdateRange(items);
 

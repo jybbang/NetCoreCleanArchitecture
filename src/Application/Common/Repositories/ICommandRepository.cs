@@ -40,10 +40,6 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         Task UpdateAsync(Guid key, TEntity item, CancellationToken cancellationToken);
 
-        void UpdatePartial(Guid key, object item);
-
-        Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken);
-
         void UpdateRange(IEnumerable<TEntity> items);
 
         Task UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken);
