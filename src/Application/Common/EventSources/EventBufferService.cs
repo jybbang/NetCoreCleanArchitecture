@@ -25,7 +25,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             _logger = logger;
             _services = services;
 
-            _logger.LogInformation("{Class} Initialized", nameof(EventBufferService));
+            _logger.LogInformation("EventBufferService initialized");
         }
 
         public void BufferPublish<TDomainEvent>(string topic, TDomainEvent domainEvent) where TDomainEvent : BufferedDomainEvent
@@ -66,7 +66,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, "EventBufferService Unhandled Exception - {@Topic}", topic);
+                            _logger.LogError(ex, "EventBufferService unhandled exception occurred: {@Topic}", topic);
                         }
                     });
 

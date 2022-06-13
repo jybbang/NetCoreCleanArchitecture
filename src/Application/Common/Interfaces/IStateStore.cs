@@ -16,11 +16,11 @@ namespace NetCoreCleanArchitecture.Application.Common.Interfaces
 
         Task DeleteAsync(string key, CancellationToken cancellationToken);
 
-        Task<T> GetOrAddAsync(Guid key, Func<T> add, CancellationToken cancellationToken)
-            => GetOrAddAsync(key.ToString(), add, cancellationToken);
+        Task<T> GetOrAddAsync(Guid key, Func<T> factory, CancellationToken cancellationToken)
+            => GetOrAddAsync(key.ToString(), factory, cancellationToken);
 
-        Task<T> GetOrAddAsync(Guid key, Func<Task<T>> addAsync, CancellationToken cancellationToken)
-            => GetOrAddAsync(key.ToString(), addAsync, cancellationToken);
+        Task<T> GetOrAddAsync(Guid key, Func<Task<T>> factoryAsync, CancellationToken cancellationToken)
+            => GetOrAddAsync(key.ToString(), factoryAsync, cancellationToken);
 
         Task<T> GetAsync(Guid key, CancellationToken cancellationToken)
             => GetAsync(key.ToString(), cancellationToken);

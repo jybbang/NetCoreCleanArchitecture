@@ -41,7 +41,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
             {
                 var requestName = typeof(TRequest).Name;
 
-                _logger.LogError(ex, "Send Request Unhandled Exception {Name} - {@Request}", requestName, request);
+                _logger.LogError(ex, "Unhandled exception occurred: {Name} - {@Request}", requestName, request);
 
                 throw;
             }
