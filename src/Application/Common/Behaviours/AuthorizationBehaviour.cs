@@ -17,7 +17,7 @@
 using MediatR;
 using NetCoreCleanArchitecture.Application.Common.Attributes;
 using NetCoreCleanArchitecture.Application.Common.Exceptions;
-using NetCoreCleanArchitecture.Application.Common.Interfaces;
+using NetCoreCleanArchitecture.Application.Common.Identities;
 using System;
 using System.Linq;
 using System.Threading;

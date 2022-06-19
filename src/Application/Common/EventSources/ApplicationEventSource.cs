@@ -57,7 +57,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 var elapsedMilliseconds = timer.ElapsedMilliseconds;
 
-                if (elapsedMilliseconds > 1000)
+                if (elapsedMilliseconds > 2000)
                 {
                     logger.LogWarning("Publishing Event Long Running {Name} ({ElapsedMilliseconds} milliseconds) - {@Event}",
                         eventName, elapsedMilliseconds, domainEvent);
@@ -81,6 +81,8 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 return;
             }
+
+            if (_eventBus is null) return;
 
             await _eventBus.PublishAsync(domainEvent.Topic, domainEvent, cancellationToken);
         }

@@ -3,16 +3,16 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.EventSources;
-using NetCoreCleanArchitecture.Application.Common.Interfaces;
+using NetCoreCleanArchitecture.Application.Common.StateStores;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.EventBus;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.Options;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores;
 
 namespace NetCoreCleanArchitecture.Infrastructure
 {
-    public static class ApplicationExtensions
+    public static class ServiceExtensions
     {
-        public static IApplicationBuilder UseNetCleanInfrastructure(this IApplicationBuilder app)
+        public static IApplicationBuilder UseNetCleanDapr(this IApplicationBuilder app)
         {
             // CloudEvents
             app.UseCloudEvents();
@@ -20,14 +20,14 @@ namespace NetCoreCleanArchitecture.Infrastructure
             return app;
         }
 
-        public static IEndpointRouteBuilder MapNetCleanInfrastructure(this IEndpointRouteBuilder endpoints)
+        public static IEndpointRouteBuilder MapNetCleanDapr(this IEndpointRouteBuilder endpoints)
         {
             endpoints.MapSubscribeHandler();
 
             return endpoints;
         }
 
-        public static IMvcBuilder AddNetCleanInfrastructure(this IMvcBuilder builder)
+        public static IMvcBuilder AddNetCleanDapr(this IMvcBuilder builder)
         {
             // Controller with custom validator
             var mvcBuilder = builder.AddDapr();
@@ -35,7 +35,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
             return mvcBuilder;
         }
 
-        public static IServiceCollection AddNetCleanInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddNetCleanDapr(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOptions<InfrastructureDaprOptions>("Api:Dapr");
 

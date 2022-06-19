@@ -16,7 +16,7 @@
 
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
-using NetCoreCleanArchitecture.Application.Common.Interfaces;
+using NetCoreCleanArchitecture.Application.Common.Identities;
 using System.Threading;
 using System.Threading.Tasks;
 

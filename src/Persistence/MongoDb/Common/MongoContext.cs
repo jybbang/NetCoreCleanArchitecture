@@ -26,8 +26,8 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
 {
     public abstract class MongoContext
     {
-        private readonly ConcurrentDictionary<Guid, Entity> _changeTracker = new();
-        private readonly ConcurrentDictionary<Guid, Func<Guid, Entity, CancellationToken, Task>> _updateHandlers = new();
+        private readonly ConcurrentDictionary<Guid, Entity> _changeTracker = new ConcurrentDictionary<Guid, Entity>();
+        private readonly ConcurrentDictionary<Guid, Func<Guid, Entity, CancellationToken, Task>> _updateHandlers = new ConcurrentDictionary<Guid, Func<Guid, Entity, CancellationToken, Task>>();
 
         public IMongoDatabase Database { get; }
 
@@ -40,15 +40,15 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
         {
             var result = _changeTracker.Count;
 
-            foreach (var (id, entity) in _changeTracker)
+            foreach (var track in _changeTracker)
             {
                 if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
 
-                if (_updateHandlers.TryGetValue(id, out var handler))
+                if (_updateHandlers.TryGetValue(track.Key, out var handler))
                 {
                     if (handler is null) continue;
 
-                    await handler.Invoke(id, entity, cancellationToken);
+                    await handler.Invoke(track.Key, track.Value, cancellationToken);
                 }
             }
 

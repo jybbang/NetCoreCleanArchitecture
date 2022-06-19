@@ -1,5 +1,5 @@
 ﻿using NetCoreCleanArchitecture.Application.Common.EventSources;
-using NetCoreCleanArchitecture.Application.Common.Interfaces;
+using NetCoreCleanArchitecture.Application.Common.Identities;
 using NetCoreCleanArchitecture.Domain.Common;
 using System;
 using System.Collections.Concurrent;

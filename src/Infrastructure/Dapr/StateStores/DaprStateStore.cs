@@ -1,7 +1,7 @@
 ﻿
 using Dapr.Client;
 using Microsoft.Extensions.Options;
-using NetCoreCleanArchitecture.Application.Common.Interfaces;
+using NetCoreCleanArchitecture.Application.Common.StateStores;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.Options;
 using System;
 using System.Threading;
@@ -20,13 +20,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             _client = client;
         }
 
-        public async Task<T> GetOrAddAsync(string key, Func<T> add, CancellationToken cancellationToken = default)
+        public async Task<T> GetOrCreateAsync(string key, Func<Task<T>> factory, CancellationToken cancellationToken = default)
         {
             var result = await GetAsync(key, cancellationToken);
 
             if (result is null)
             {
-                var item = add();
+                var item = await factory();
 
                 await AddAsync(key, item, cancellationToken);
 
@@ -42,7 +42,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
         public Task AddAsync(string key, T item, CancellationToken cancellationToken = default)
             => _client.SaveStateAsync(_opt.StoreName, key, item, cancellationToken: cancellationToken);
 
-        public Task DeleteAsync(string key, CancellationToken cancellationToken = default)
+        public Task RemoveAsync(string key, CancellationToken cancellationToken = default)
             => _client.DeleteStateAsync(_opt.StoreName, key, cancellationToken: cancellationToken);
     }
 }

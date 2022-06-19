@@ -16,7 +16,7 @@
 
 using MediatR;
 using Microsoft.Extensions.Logging;
-using NetCoreCleanArchitecture.Application.Common.Interfaces;
+using NetCoreCleanArchitecture.Application.Common.Identities;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,7 +52,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
 
             var elapsedMilliseconds = _timer.ElapsedMilliseconds;
 
-            if (elapsedMilliseconds > 1000)
+            if (elapsedMilliseconds > 2000)
             {
                 var requestName = typeof(TRequest).Name;
                 var userId = _currentUserService.UserId ?? string.Empty;

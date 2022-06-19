@@ -17,7 +17,7 @@
 using Results.Fluent;
 using System.Threading.Tasks;
 
-namespace NetCoreCleanArchitecture.Application.Common.Interfaces
+namespace NetCoreCleanArchitecture.Application.Common.Identities
 {
     public interface IIdentityService
     {
