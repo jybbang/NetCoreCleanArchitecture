@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<LangVersion>8.0</LangVersion>
 		<RootNamespace>NetCoreCleanArchitecture.Application</RootNamespace>
 		<PackageId>NetCoreCleanArchitecture.Application</PackageId>
 		<Authors>Junyoung Bang</Authors>
@@ -16,9 +17,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.0.2" />
-		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.0.3" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
 		<PackageReference Include="Results.Fluent" Version="1.1.1" />

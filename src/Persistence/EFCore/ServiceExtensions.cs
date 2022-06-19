@@ -13,7 +13,7 @@ namespace NetCoreCleanArchitecture.Persistence
         Migrate
     }
 
-    public static class ApplicationExtensions
+    public static class ServiceExtensions
     {
         public static void AddNetCleanDbContext<T>(
             this IServiceCollection services,

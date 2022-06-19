@@ -16,7 +16,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
         private readonly ILogger<EventBufferService> _logger;
         private readonly IServiceProvider _services;
 
-        private readonly ConcurrentDictionary<string, Subject<object>> _buffers = new();
+        private readonly ConcurrentDictionary<string, Subject<object>> _buffers = new ConcurrentDictionary<string, Subject<object>>();
 
         public EventBufferService(
             ILogger<EventBufferService> logger,
@@ -54,18 +54,20 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                     {
                         if (!events.Any()) return;
 
+                        var cts = new CancellationTokenSource(domainEvent.PublishTimeout);
+
                         try
                         {
                             using var scope = _services.CreateScope();
 
                             var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
-                            var cts = new CancellationTokenSource(domainEvent.PublishTimeout);
-
                             await eventBus.PublishAsync(topic, events, cts.Token);
                         }
                         catch (Exception ex)
                         {
+                            cts.Dispose();
+
                             _logger.LogError(ex, "EventBufferService unhandled exception occurred: {@Topic}", topic);
                         }
                     });

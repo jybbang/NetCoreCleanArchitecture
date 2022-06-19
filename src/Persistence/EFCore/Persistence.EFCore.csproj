@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<LangVersion>8.0</LangVersion>
 		<AssemblyName>NetCoreCleanArchitecture.Persistence.EFCore</AssemblyName>
 		<RootNamespace>NetCoreCleanArchitecture.Persistence.EFCore</RootNamespace>
 		<Authors>Junyoung Bang</Authors>
@@ -17,8 +18,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.17" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.17" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.26" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.26" />
 	</ItemGroup>
 
 	<ItemGroup>

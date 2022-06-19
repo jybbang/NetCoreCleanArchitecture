@@ -55,7 +55,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             {
                 if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
-                if (entity is not IAuditableEntity auditableEntity) return;
+                if (!(entity is IAuditableEntity auditableEntity)) return;
 
                 if (auditableEntity.CreatedAt == default)
                 {
