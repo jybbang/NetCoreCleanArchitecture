@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using NetCoreCleanArchitecture.Application.Common.Interfaces;
+using NetCoreCleanArchitecture.Application.Common.Identities;
 using System.Security.Claims;
 
 namespace NetCoreCleanArchitecture.Api.Identity

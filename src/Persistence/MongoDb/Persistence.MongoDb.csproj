@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
 		<LangVersion>8.0</LangVersion>
 		<AssemblyName>NetCoreCleanArchitecture.Persistence.MongoDb</AssemblyName>
 		<RootNamespace>NetCoreCleanArchitecture.Persistence.MongoDb</RootNamespace>
@@ -15,11 +15,19 @@
 		<Version>2.0.0</Version>
 	</PropertyGroup>
 
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+		<PackageReference Include="Mongo2Go" Version="3.1.3" />
+		<PackageReference Include="MongoDB.Driver" Version="2.16.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+		<PackageReference Include="Mongo2Go" Version="3.1.3" />
+		<PackageReference Include="MongoDB.Driver" Version="2.16.0" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-		<PackageReference Include="Mongo2Go" Version="3.1.3" />
-		<PackageReference Include="MongoDB.Driver" Version="2.16.0" />
 	</ItemGroup>
 
 	<ItemGroup>

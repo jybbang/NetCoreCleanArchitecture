@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NetCoreCleanArchitecture.Application.Common.Interfaces;
 using NetCoreCleanArchitecture.Api.Filters;
 using NetCoreCleanArchitecture.Api.Identity;
 using NetCoreCleanArchitecture.Api.Options;
 using Prometheus;
+using NetCoreCleanArchitecture.Application.Common.Identities;
 
 namespace NetCoreCleanArchitecture.Api
 {

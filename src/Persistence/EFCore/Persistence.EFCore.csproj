@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
 		<LangVersion>8.0</LangVersion>
 		<AssemblyName>NetCoreCleanArchitecture.Persistence.EFCore</AssemblyName>
 		<RootNamespace>NetCoreCleanArchitecture.Persistence.EFCore</RootNamespace>
@@ -16,12 +16,20 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.26" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.26" />
 	</ItemGroup>
 
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.17" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.17" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+	</ItemGroup>
+	
 	<ItemGroup>
 		<ProjectReference Include="..\..\Application\Application.csproj" />
 	</ItemGroup>
