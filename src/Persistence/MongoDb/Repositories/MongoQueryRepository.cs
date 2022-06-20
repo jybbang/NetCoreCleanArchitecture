@@ -65,23 +65,29 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
         public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
             => _collection.CountDocumentsAsync(where, cancellationToken: cancellationToken);
 
-        public TEntity Get(Guid key)
+        public TEntity Find(Guid key)
             => _collection.Find(item => item.Id == key).SingleOrDefault();
 
-        public Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken)
+        public Task<TEntity> FindAsync(Guid key, CancellationToken cancellationToken)
             => _collection.Find(item => item.Id == key).SingleOrDefaultAsync(cancellationToken);
 
-        public List<TEntity> List()
-            => _collection.Find(NotId(Guid.Empty)).ToList();
+        public TEntity Find(Expression<Func<TEntity, bool>> where)
+            => _collection.Find(where).SingleOrDefault();
 
-        public Task<List<TEntity>> ListAsync(CancellationToken cancellationToken)
-            => _collection.Find(NotId(Guid.Empty)).ToListAsync(cancellationToken);
+        public Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+            => _collection.Find(where).SingleOrDefaultAsync(cancellationToken);
 
-        public List<TEntity> List(Expression<Func<TEntity, bool>> where)
+        public List<TEntity> FindMany(Expression<Func<TEntity, bool>> where)
             => _collection.Find(where).ToList();
 
-        public Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+        public Task<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
             => _collection.Find(where).ToListAsync(cancellationToken);
+
+        public List<TEntity> FindMany()
+            => _collection.Find(NotId(Guid.Empty)).ToList();
+
+        public Task<List<TEntity>> FindManyAsync(CancellationToken cancellationToken)
+            => _collection.Find(NotId(Guid.Empty)).ToListAsync(cancellationToken);
 
         private FilterDefinition<TEntity> Id(Guid value)
         {

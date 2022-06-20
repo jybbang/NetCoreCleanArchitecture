@@ -48,26 +48,28 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
         public Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
             => Set.AddRangeAsync(items, cancellationToken);
 
-        public void Remove(TEntity item)
+        public void Remove(Guid key)
         {
-            var entity = Set.Find(item.Id);
+            var entity = Set.Find(key);
 
             if (entity is null) return;
 
             Set.Remove(entity);
         }
 
-        public async Task RemoveAsync(TEntity item, CancellationToken cancellationToken)
+        public async Task RemoveAsync(Guid key, CancellationToken cancellationToken)
         {
-            var entity = await Set.FindAsync(new object[] { item.Id }, cancellationToken);
+            var entity = await Set.FindAsync(new object[] { key }, cancellationToken);
+
+            if (entity is null) return;
 
             Set.Remove(entity);
         }
 
-        public void Update(Guid key, TEntity item)
+        public void Update(TEntity item)
             => Set.Update(item);
 
-        public Task UpdateAsync(Guid key, TEntity item, CancellationToken cancellationToken)
+        public Task UpdateAsync(TEntity item, CancellationToken cancellationToken)
             => Task.FromResult(Set.Update(item));
 
         public void UpdateRange(IEnumerable<TEntity> items)

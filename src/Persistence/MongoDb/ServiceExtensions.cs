@@ -14,7 +14,7 @@ namespace NetCoreCleanArchitecture.Persistence
         EnsureCreated,
     }
 
-    public static class ApplicationExtensions
+    public static class ServiceExtensions
     {
         public static void AddNetCleanDbContext<T>(
             this IServiceCollection services,

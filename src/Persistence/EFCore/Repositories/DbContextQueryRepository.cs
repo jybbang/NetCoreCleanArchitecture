@@ -67,22 +67,28 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
         public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
             => _queryableAsNoTracking.LongCountAsync(where, cancellationToken);
 
-        public TEntity Get(Guid key)
+        public TEntity Find(Guid key)
             => _context.Set<TEntity>().Find(key);
 
-        public Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken)
+        public Task<TEntity> FindAsync(Guid key, CancellationToken cancellationToken)
             => _context.Set<TEntity>().FindAsync(new object[] { key }, cancellationToken).AsTask();
 
-        public List<TEntity> List()
-            => _queryableAsNoTracking.ToList();
+        public TEntity Find(Expression<Func<TEntity, bool>> where)
+            => _queryableAsNoTracking.Where(where).SingleOrDefault();
 
-        public Task<List<TEntity>> ListAsync(CancellationToken cancellationToken)
-            => _queryableAsNoTracking.ToListAsync(cancellationToken);
+        public Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+            => _queryableAsNoTracking.Where(where).SingleOrDefaultAsync(cancellationToken);
 
-        public List<TEntity> List(Expression<Func<TEntity, bool>> where)
+        public List<TEntity> FindMany(Expression<Func<TEntity, bool>> where)
             => _queryableAsNoTracking.Where(where).ToList();
 
-        public Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+        public Task<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
             => _queryableAsNoTracking.Where(where).ToListAsync(cancellationToken);
+
+        public List<TEntity> FindMany()
+            => _queryableAsNoTracking.ToList();
+
+        public Task<List<TEntity>> FindManyAsync(CancellationToken cancellationToken)
+            => _queryableAsNoTracking.ToListAsync(cancellationToken);
     }
 }

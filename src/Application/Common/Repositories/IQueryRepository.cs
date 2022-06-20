@@ -44,16 +44,20 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
 
-        TEntity Get(Guid key);
+        TEntity Find(Guid key);
 
-        Task<TEntity> GetAsync(Guid key, CancellationToken cancellationToken);
+        Task<TEntity> FindAsync(Guid key, CancellationToken cancellationToken);
 
-        List<TEntity> List();
+        TEntity Find(Expression<Func<TEntity, bool>> where);
 
-        List<TEntity> List(Expression<Func<TEntity, bool>> where);
+        Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
 
-        Task<List<TEntity>> ListAsync(CancellationToken cancellationToken);
+        List<TEntity> FindMany(Expression<Func<TEntity, bool>> where);
 
-        Task<List<TEntity>> ListAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
+        Task<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
+
+        List<TEntity> FindMany();
+
+        Task<List<TEntity>> FindManyAsync(CancellationToken cancellationToken);
     }
 }

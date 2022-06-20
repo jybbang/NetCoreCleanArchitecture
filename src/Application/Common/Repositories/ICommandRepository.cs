@@ -32,13 +32,13 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken);
 
-        void Remove(TEntity item);
+        void Remove(Guid key);
 
-        Task RemoveAsync(TEntity item, CancellationToken cancellationToken);
+        Task RemoveAsync(Guid key, CancellationToken cancellationToken);
 
-        void Update(Guid key, TEntity item);
+        void Update(TEntity item);
 
-        Task UpdateAsync(Guid key, TEntity item, CancellationToken cancellationToken);
+        Task UpdateAsync(TEntity item, CancellationToken cancellationToken);
 
         void UpdateRange(IEnumerable<TEntity> items);
 
