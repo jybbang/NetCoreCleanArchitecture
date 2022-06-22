@@ -72,14 +72,14 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
                 if (entity is BaseAuditableEntity auditableEntity)
                 {
-                    if (auditableEntity.Created == default)
+                    if (auditableEntity.CreatedAt == default)
                     {
                         auditableEntity.CreatedBy = _currentUser.UserId;
-                        auditableEntity.Created = timestamp;
+                        auditableEntity.CreatedAt = timestamp;
                     }
 
                     auditableEntity.LastModifiedBy = _currentUser.UserId;
-                    auditableEntity.LastModified = timestamp;
+                    auditableEntity.LastModifiedAt = timestamp;
                 }
             }
         }
