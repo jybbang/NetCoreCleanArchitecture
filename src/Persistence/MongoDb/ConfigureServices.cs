@@ -9,21 +9,20 @@ namespace NetCoreCleanArchitecture.Persistence
 {
     public enum MigrationOptions
     {
-        None,
         EnsureDeleteAndCreated,
         EnsureCreated,
     }
 
     public static class ConfigureServices
     {
-        public static void AddNetCleanDbContext<T>(
+        public static void AddNetCleanUnitOfWork<T>(
             this IServiceCollection services,
             string connectionString,
             MigrationOptions migration = MigrationOptions.EnsureCreated) where T : MongoContext
         {
             if (string.IsNullOrEmpty(connectionString))
             {
-                throw new ArgumentException($"'{nameof(connectionString)}' is required.", nameof(connectionString));
+                throw new ArgumentNullException(nameof(connectionString), $"'{nameof(connectionString)}' is required.");
             }
 
             var databaseName = new MongoUrl(connectionString).DatabaseName;
@@ -32,7 +31,7 @@ namespace NetCoreCleanArchitecture.Persistence
 
             var context = Activator.CreateInstance(typeof(T), database) as T;
 
-            if (context is null) throw new NullReferenceException("Could not resolve MongoDatabase");
+            if (context is null) throw new NullReferenceException("Could not resolve MongoContext");
 
             services.AddSingleton<T>(context);
 
@@ -50,7 +49,7 @@ namespace NetCoreCleanArchitecture.Persistence
             }
         }
 
-        public static void AddNetCleanDbContextInMemory<T>(this IServiceCollection services) where T : MongoContext
+        public static void AddNetCleanUnitOfWorkInMemory<T>(this IServiceCollection services) where T : MongoContext
         {
             var _runner = MongoDbRunner.Start();
 
@@ -60,7 +59,7 @@ namespace NetCoreCleanArchitecture.Persistence
 
             var context = Activator.CreateInstance(typeof(T), database) as T;
 
-            if (context is null) throw new NullReferenceException("Could not resolve MongoDatabase");
+            if (context is null) throw new NullReferenceException("Could not resolve MongoContext");
 
             services.AddSingleton<T>(context);
 

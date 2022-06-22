@@ -15,7 +15,7 @@ namespace NetCoreCleanArchitecture.Persistence
 
     public static class ConfigureServices
     {
-        public static void AddNetCleanDbContext<T>(
+        public static void AddNetCleanUnitOfWork<T>(
             this IServiceCollection services,
             Action<DbContextOptionsBuilder> options,
             MigrationOptions migration = MigrationOptions.Migrate) where T : DbContext
@@ -45,7 +45,7 @@ namespace NetCoreCleanArchitecture.Persistence
             }
         }
 
-        public static void AddNetCleanDbContextInMemory<T>(this IServiceCollection services) where T : DbContext
+        public static void AddNetCleanUnitOfWorkInMemory<T>(this IServiceCollection services) where T : DbContext
         {
             services.AddDbContextPool<T>(options => options.UseInMemoryDatabase(typeof(T).Name));
 
