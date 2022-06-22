@@ -35,15 +35,22 @@ namespace NetCoreCleanArchitecture.Infrastructure
             return mvcBuilder;
         }
 
-        public static IServiceCollection AddNetCleanDapr(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddNetCleanDaprEventBus(this IServiceCollection services)
+        {
+            services.AddOptions<DaprOptions>("Api:Dapr");
+
+            // EventBus
+            services.AddScoped<IEventBus, DaprEventBus>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddNetCleanDaprStateStore(this IServiceCollection services)
         {
             services.AddOptions<DaprOptions>("Api:Dapr");
 
             // StateStore
             services.AddScoped(typeof(IStateStore<>), typeof(DaprStateStore<>));
-
-            // EventBus
-            services.AddScoped<IEventBus, DaprEventBus>();
 
             return services;
         }
