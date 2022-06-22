@@ -15,12 +15,12 @@
 //
 
 using MediatR;
-using System.Reflection;
 using NetCoreCleanArchitecture.Application.Common.Attributes;
 using NetCoreCleanArchitecture.Application.Common.Exceptions;
 using NetCoreCleanArchitecture.Application.Common.Identities;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 

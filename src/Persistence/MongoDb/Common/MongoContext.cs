@@ -15,9 +15,7 @@
 //
 
 using MongoDB.Driver;
-using NetCoreCleanArchitecture.Application.Common.Repositories;
 using NetCoreCleanArchitecture.Domain.Common;
-using NetCoreCleanArchitecture.Persistence.MongoDb.Repositories;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
