@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
 		<LangVersion>8.0</LangVersion>
+		<Nullable>enable</Nullable>
 		<RootNamespace>NetCoreCleanArchitecture.Domain</RootNamespace>
 		<PackageId>NetCoreCleanArchitecture.Domain</PackageId>
 		<Authors>Junyoung Bang</Authors>
@@ -20,6 +21,10 @@
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>NetCoreCleanArchitecture.Application</_Parameter1>
 		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="System.Text.Json" Version="6.0.5" />
 	</ItemGroup>
 
 </Project>

@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 {
-    public class MongoQueryRepository<TEntity> : IQueryRepository<TEntity> where TEntity : Entity
+    public class MongoQueryRepository<TEntity> : IQueryRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly IMongoCollection<TEntity> _collection;
 
@@ -42,10 +42,10 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
         public IQueryable<TEntity> Queryable { get; }
 
         public bool Any()
-            => _collection.Find(NotId(Guid.Empty)).Any();
+            => Queryable.Any();
 
         public bool Any(Expression<Func<TEntity, bool>> where)
-            => _collection.Find(where).Any();
+            => Queryable.Where(where).Any();
 
         public Task<bool> AnyAsync(CancellationToken cancellationToken)
             => _collection.Find(NotId(Guid.Empty)).AnyAsync(cancellationToken);
@@ -54,10 +54,10 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
             => _collection.Find(where).AnyAsync(cancellationToken);
 
         public long Count()
-            => _collection.Find(NotId(Guid.Empty)).CountDocuments();
+            => Queryable.LongCount();
 
         public long Count(Expression<Func<TEntity, bool>> where)
-            => _collection.CountDocuments(where);
+            => Queryable.Where(where).LongCount();
 
         public Task<long> CountAsync(CancellationToken cancellationToken)
             => _collection.Find(NotId(Guid.Empty)).CountDocumentsAsync(cancellationToken);
@@ -65,29 +65,29 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
         public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
             => _collection.CountDocumentsAsync(where, cancellationToken: cancellationToken);
 
-        public TEntity Find(Guid key)
+        public TEntity? Find(Guid key)
             => _collection.Find(item => item.Id == key).SingleOrDefault();
 
-        public Task<TEntity> FindAsync(Guid key, CancellationToken cancellationToken)
-            => _collection.Find(item => item.Id == key).SingleOrDefaultAsync(cancellationToken);
+        public TEntity? Find(Expression<Func<TEntity, bool>> where)
+            => Queryable.Where(where).SingleOrDefault();
 
-        public TEntity Find(Expression<Func<TEntity, bool>> where)
-            => _collection.Find(where).SingleOrDefault();
+        public async Task<TEntity?> FindAsync(Guid key, CancellationToken cancellationToken)
+            => await _collection.Find(item => item.Id == key).SingleOrDefaultAsync(cancellationToken);
 
-        public Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-            => _collection.Find(where).SingleOrDefaultAsync(cancellationToken);
-
-        public List<TEntity> FindMany(Expression<Func<TEntity, bool>> where)
-            => _collection.Find(where).ToList();
-
-        public Task<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-            => _collection.Find(where).ToListAsync(cancellationToken);
+        public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+            => await _collection.Find(where).SingleOrDefaultAsync(cancellationToken);
 
         public List<TEntity> FindMany()
-            => _collection.Find(NotId(Guid.Empty)).ToList();
+            => Queryable.ToList();
+
+        public List<TEntity> FindMany(Expression<Func<TEntity, bool>> where)
+            => Queryable.Where(where).ToList();
 
         public Task<List<TEntity>> FindManyAsync(CancellationToken cancellationToken)
             => _collection.Find(NotId(Guid.Empty)).ToListAsync(cancellationToken);
+
+        public Task<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+            => _collection.Find(where).ToListAsync(cancellationToken);
 
         private FilterDefinition<TEntity> Id(Guid value)
         {

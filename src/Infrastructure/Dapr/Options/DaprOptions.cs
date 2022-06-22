@@ -1,6 +1,6 @@
 ﻿namespace NetCoreCleanArchitecture.Infrastructure.Dapr.Options
 {
-    public record InfrastructureDaprOptions
+    public record DaprOptions
     {
         public string PubSubName { get; init; } = "eventbus";
 

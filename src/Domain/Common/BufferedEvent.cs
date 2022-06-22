@@ -2,9 +2,9 @@
 
 namespace NetCoreCleanArchitecture.Domain.Common
 {
-    public abstract class BufferedDomainEvent : DomainEvent
+    public abstract class BufferedEvent : BaseEvent
     {
-        protected BufferedDomainEvent(string topic) : base(topic)
+        protected BufferedEvent(string topic) : base(topic)
         {
         }
 

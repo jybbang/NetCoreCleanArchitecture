@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 {
-    public class MongoCommandRepository<TEntity> : ICommandRepository<TEntity> where TEntity : Entity
+    public class MongoCommandRepository<TEntity> : ICommandRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly MongoContext _context;
         private readonly IMongoCollection<TEntity> _collection;
@@ -115,14 +115,14 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
             return _collection.BulkWriteAsync(CreateUpdates(items), cancellationToken: cancellationToken);
         }
 
-        public void UpdatePartial(Guid key, object item)
+        private void UpdatePartial(Guid key, object item)
         {
-            _collection.ReplaceOne(Id(key), item as TEntity);
+            _collection.ReplaceOne(Id(key), (TEntity)item);
         }
 
-        public Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken)
+        private Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken)
         {
-            return _collection.ReplaceOneAsync(Id(key), item as TEntity, cancellationToken: cancellationToken);
+            return _collection.ReplaceOneAsync(Id(key), (TEntity)item, cancellationToken: cancellationToken);
         }
 
         private IEnumerable<WriteModel<TEntity>> CreateUpdates(IEnumerable<TEntity> items)

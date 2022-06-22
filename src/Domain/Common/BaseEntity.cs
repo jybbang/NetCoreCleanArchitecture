@@ -14,29 +14,41 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using FluentValidation;
-using Results.Fluent;
-using System.Threading.Tasks;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
-namespace NetCoreCleanArchitecture.Application.Common.Validations
+namespace NetCoreCleanArchitecture.Domain.Common
 {
-    public static class ValidationExtensions
+    public abstract class BaseEntity : IEquatable<BaseEntity?>
     {
-        public static async Task<Result> ValidationAsync<T>(this IValidator<T> validator, T instance) where T : class
+        public Guid Id { get; set; }
+
+        private readonly ConcurrentQueue<BaseEvent> _domainEvents = new ConcurrentQueue<BaseEvent>();
+
+        [JsonIgnore]
+        public IProducerConsumerCollection<BaseEvent> DomainEvents => _domainEvents;
+
+        public void Commit(BaseEvent domainEvent)
         {
-            if (instance is null)
-            {
-                return Result.Failure();
-            }
+            _domainEvents.Enqueue(domainEvent);
+        }
 
-            var result = await validator.ValidateAsync(instance);
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as BaseEntity);
+        }
 
-            if (result.IsValid)
-            {
-                return Result.Success();
-            }
+        public bool Equals(BaseEntity? other)
+        {
+            return other != null &&
+                   Id.Equals(other.Id);
+        }
 
-            return Result.Failure(result.ToString());
+        public override int GetHashCode()
+        {
+            return 2108858624 + Id.GetHashCode();
         }
     }
 }

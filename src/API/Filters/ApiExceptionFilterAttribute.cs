@@ -65,9 +65,9 @@ namespace NetCoreCleanArchitecture.Api.Filters
             HandleUnknownException(context);
         }
 
-        private void HandleValidationException(ExceptionContext context)
+        private static void HandleValidationException(ExceptionContext context)
         {
-            var exception = context.Exception as ValidationException;
+            var exception = (ValidationException)context.Exception;
 
             var details = new ValidationProblemDetails(exception.Errors)
             {
@@ -79,7 +79,7 @@ namespace NetCoreCleanArchitecture.Api.Filters
             context.ExceptionHandled = true;
         }
 
-        private void HandleInvalidModelStateException(ExceptionContext context)
+        private static void HandleInvalidModelStateException(ExceptionContext context)
         {
             var details = new ValidationProblemDetails(context.ModelState)
             {
@@ -91,7 +91,7 @@ namespace NetCoreCleanArchitecture.Api.Filters
             context.ExceptionHandled = true;
         }
 
-        private void HandleNotFoundException(ExceptionContext context)
+        private static void HandleNotFoundException(ExceptionContext context)
         {
             var details = new ProblemDetails()
             {
@@ -105,7 +105,7 @@ namespace NetCoreCleanArchitecture.Api.Filters
             context.ExceptionHandled = true;
         }
 
-        private void HandleUnauthorizedAccessException(ExceptionContext context)
+        private static void HandleUnauthorizedAccessException(ExceptionContext context)
         {
             var details = new ProblemDetails
             {
@@ -123,7 +123,7 @@ namespace NetCoreCleanArchitecture.Api.Filters
             context.ExceptionHandled = true;
         }
 
-        private void HandleForbiddenAccessException(ExceptionContext context)
+        private static void HandleForbiddenAccessException(ExceptionContext context)
         {
             var details = new ProblemDetails
             {
@@ -141,7 +141,7 @@ namespace NetCoreCleanArchitecture.Api.Filters
             context.ExceptionHandled = true;
         }
 
-        private void HandleUnknownException(ExceptionContext context)
+        private static void HandleUnknownException(ExceptionContext context)
         {
             var details = new ProblemDetails
             {

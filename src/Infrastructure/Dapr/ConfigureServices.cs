@@ -10,7 +10,7 @@ using NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores;
 
 namespace NetCoreCleanArchitecture.Infrastructure
 {
-    public static class ServiceExtensions
+    public static class ConfigureServices
     {
         public static IApplicationBuilder UseNetCleanDapr(this IApplicationBuilder app)
         {
@@ -37,7 +37,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
 
         public static IServiceCollection AddNetCleanDapr(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddOptions<InfrastructureDaprOptions>("Api:Dapr");
+            services.AddOptions<DaprOptions>("Api:Dapr");
 
             // StateStore
             services.AddScoped(typeof(IStateStore<>), typeof(DaprStateStore<>));

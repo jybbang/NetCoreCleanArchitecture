@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 {
-    public class DbContextCommandRepository<TEntity> : ICommandRepository<TEntity> where TEntity : Entity
+    public class DbContextCommandRepository<TEntity> : ICommandRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly DbContext _context;
 
@@ -33,20 +33,15 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
             _context = context;
         }
 
-        private DbSet<TEntity> Set
-            => _context.Set<TEntity>();
+        private DbSet<TEntity> Set => _context.Set<TEntity>();
 
-        public void Add(TEntity item)
-            => Set.Add(item);
+        public void Add(TEntity item) => Set.Add(item);
 
-        public Task AddAsync(TEntity item, CancellationToken cancellationToken)
-            => Set.AddAsync(item, cancellationToken).AsTask();
+        public Task AddAsync(TEntity item, CancellationToken cancellationToken) => Set.AddAsync(item, cancellationToken).AsTask();
 
-        public void AddRange(IEnumerable<TEntity> items)
-            => Set.AddRange(items);
+        public void AddRange(IEnumerable<TEntity> items) => Set.AddRange(items);
 
-        public Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
-            => Set.AddRangeAsync(items, cancellationToken);
+        public Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken) => Set.AddRangeAsync(items, cancellationToken);
 
         public void Remove(Guid key)
         {
@@ -66,14 +61,11 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
             Set.Remove(entity);
         }
 
-        public void Update(TEntity item)
-            => Set.Update(item);
+        public void Update(TEntity item) => Set.Update(item);
 
-        public Task UpdateAsync(TEntity item, CancellationToken cancellationToken)
-            => Task.FromResult(Set.Update(item));
+        public Task UpdateAsync(TEntity item, CancellationToken cancellationToken) => Task.FromResult(Set.Update(item));
 
-        public void UpdateRange(IEnumerable<TEntity> items)
-            => Set.UpdateRange(items);
+        public void UpdateRange(IEnumerable<TEntity> items) => Set.UpdateRange(items);
 
         public Task UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
         {

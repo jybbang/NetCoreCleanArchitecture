@@ -14,7 +14,7 @@ namespace NetCoreCleanArchitecture.Persistence
         EnsureCreated,
     }
 
-    public static class ServiceExtensions
+    public static class ConfigureServices
     {
         public static void AddNetCleanDbContext<T>(
             this IServiceCollection services,
@@ -26,26 +26,24 @@ namespace NetCoreCleanArchitecture.Persistence
                 throw new ArgumentException($"'{nameof(connectionString)}' is required.", nameof(connectionString));
             }
 
-            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
-
             var databaseName = new MongoUrl(connectionString).DatabaseName;
 
             var database = new MongoClient(connectionString).GetDatabase(databaseName);
 
-            var context = (T)Activator.CreateInstance(typeof(T), database);
+            var context = Activator.CreateInstance(typeof(T), database) as T;
+
+            if (context is null) throw new NullReferenceException("Could not resolve MongoDatabase");
 
             services.AddSingleton<T>(context);
 
             services.AddScoped<MongoContext>(provider => provider.GetRequiredService<T>());
 
-            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<T>() as IUnitOfWork);
+            services.AddScoped<IUnitOfWork>(provider => (IUnitOfWork)provider.GetRequiredService<T>());
 
             switch (migration)
             {
                 case MigrationOptions.EnsureDeleteAndCreated:
-                    {
-                        services.BuildServiceProvider().GetRequiredService<T>().DropCollections();
-                    }
+                    services.BuildServiceProvider().GetRequiredService<T>().DropCollections();
                     break;
                 default:
                     break;
@@ -60,13 +58,15 @@ namespace NetCoreCleanArchitecture.Persistence
 
             services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
-            var context = (T)Activator.CreateInstance(typeof(T), database);
+            var context = Activator.CreateInstance(typeof(T), database) as T;
+
+            if (context is null) throw new NullReferenceException("Could not resolve MongoDatabase");
 
             services.AddSingleton<T>(context);
 
             services.AddScoped<MongoContext>(provider => provider.GetRequiredService<T>());
 
-            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<T>() as IUnitOfWork);
+            services.AddScoped<IUnitOfWork>(provider => (IUnitOfWork)provider.GetRequiredService<T>());
         }
     }
 }

@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
+		<Nullable>enable</Nullable>
 		<RootNamespace>NetCoreCleanArchitecture.Infrastructure.Dapr</RootNamespace>
 		<PackageId>NetCoreCleanArchitecture.Infrastructure.Dapr</PackageId>
 		<Authors>Junyoung Bang</Authors>
@@ -23,7 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Application\Application.csproj" />
+		<ProjectReference Include="..\..\Application\Application.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -18,14 +18,14 @@ using System;
 
 namespace NetCoreCleanArchitecture.Domain.Common
 {
-    public interface IAuditableEntity
+    public abstract class BaseAuditableEntity : BaseEntity
     {
-        string CreateUserId { get; set; }
+        public DateTimeOffset Created { get; set; }
 
-        string UpdateUserId { get; set; }
+        public string? CreatedBy { get; set; }
 
-        DateTimeOffset? CreatedAt { get; set; }
+        public DateTimeOffset? LastModified { get; set; }
 
-        DateTimeOffset? UpdatedAt { get; set; }
+        public string? LastModifiedBy { get; set; }
     }
 }

@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 {
-    public class DbContextQueryRepository<TEntity> : IQueryRepository<TEntity> where TEntity : Entity
+    public class DbContextQueryRepository<TEntity> : IQueryRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly DbContext _context;
 
@@ -67,17 +67,17 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
         public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
             => _queryableAsNoTracking.LongCountAsync(where, cancellationToken);
 
-        public TEntity Find(Guid key)
+        public TEntity? Find(Guid key)
             => _context.Set<TEntity>().Find(key);
 
-        public Task<TEntity> FindAsync(Guid key, CancellationToken cancellationToken)
-            => _context.Set<TEntity>().FindAsync(new object[] { key }, cancellationToken).AsTask();
+        public async Task<TEntity?> FindAsync(Guid key, CancellationToken cancellationToken)
+            => await _context.Set<TEntity>().FindAsync(new object[] { key }, cancellationToken);
 
-        public TEntity Find(Expression<Func<TEntity, bool>> where)
+        public TEntity? Find(Expression<Func<TEntity, bool>> where)
             => _queryableAsNoTracking.Where(where).SingleOrDefault();
 
-        public Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-            => _queryableAsNoTracking.Where(where).SingleOrDefaultAsync(cancellationToken);
+        public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+            => await _queryableAsNoTracking.Where(where).SingleOrDefaultAsync(cancellationToken);
 
         public List<TEntity> FindMany(Expression<Func<TEntity, bool>> where)
             => _queryableAsNoTracking.Where(where).ToList();

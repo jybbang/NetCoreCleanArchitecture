@@ -23,7 +23,7 @@ namespace NetCoreCleanArchitecture.Api
 
             var levelSwitch = new LoggingLevelSwitch();
 
-            Log.Logger = new LoggerConfiguration().ReadFrom
+            var loggerConfiguration = new LoggerConfiguration().ReadFrom
                 .Configuration(configuration)
                 .MinimumLevel.ControlledBy(levelSwitch)
                 .Enrich.FromLogContext()
@@ -32,9 +32,14 @@ namespace NetCoreCleanArchitecture.Api
                 .Enrich.WithClientIp()
                 .Enrich.WithSpan()
                 .Enrich.WithProperty("ApplicationName", string.IsNullOrWhiteSpace(opt.AppId) ? opt.AppName : opt.AppId)
-                .WriteTo.Console()
-                .WriteTo.Seq(opt.SeqServerUrl, apiKey: opt.SeqApiKey, controlLevelSwitch: levelSwitch)
-                .CreateLogger();
+                .WriteTo.Console();
+
+            if (!string.IsNullOrEmpty(opt.SeqServerUrl))
+            {
+                loggerConfiguration = loggerConfiguration.WriteTo.Seq(opt.SeqServerUrl, apiKey: opt.SeqApiKey, controlLevelSwitch: levelSwitch);
+            }
+
+            Log.Logger = loggerConfiguration.CreateLogger();
 
             SerilogHostBuilderExtensions.UseSerilog(builder);
 

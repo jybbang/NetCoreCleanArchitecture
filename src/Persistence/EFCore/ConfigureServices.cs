@@ -13,20 +13,18 @@ namespace NetCoreCleanArchitecture.Persistence
         Migrate
     }
 
-    public static class ServiceExtensions
+    public static class ConfigureServices
     {
         public static void AddNetCleanDbContext<T>(
             this IServiceCollection services,
             Action<DbContextOptionsBuilder> options,
             MigrationOptions migration = MigrationOptions.Migrate) where T : DbContext
         {
-            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
-
             services.AddDbContextPool<T>(options);
 
             services.AddScoped<DbContext>(provider => provider.GetRequiredService<T>());
 
-            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<T>() as IUnitOfWork);
+            services.AddScoped<IUnitOfWork>(provider => (IUnitOfWork)provider.GetRequiredService<T>());
 
             switch (migration)
             {
@@ -49,13 +47,11 @@ namespace NetCoreCleanArchitecture.Persistence
 
         public static void AddNetCleanDbContextInMemory<T>(this IServiceCollection services) where T : DbContext
         {
-            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
-
             services.AddDbContextPool<T>(options => options.UseInMemoryDatabase(typeof(T).Name));
 
             services.AddScoped<DbContext>(provider => provider.GetRequiredService<T>());
 
-            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<T>() as IUnitOfWork);
+            services.AddScoped<IUnitOfWork>(provider => (IUnitOfWork)provider.GetRequiredService<T>());
 
             services.BuildServiceProvider().GetRequiredService<T>().Database.EnsureCreated();
         }

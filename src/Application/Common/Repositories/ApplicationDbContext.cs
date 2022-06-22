@@ -1,4 +1,20 @@
-﻿using NetCoreCleanArchitecture.Application.Common.EventSources;
+﻿// 
+// Copyright (c) 2019 Jason Taylor <https://github.com/jasontaylordev>
+// 
+// All rights reserved.
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+
+using NetCoreCleanArchitecture.Application.Common.EventSources;
 using NetCoreCleanArchitecture.Application.Common.Identities;
 using NetCoreCleanArchitecture.Domain.Common;
 using System;
@@ -26,10 +42,10 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             _currentUser = currentUser;
         }
 
-        public ICommandRepository<TEntity> CommandSet<TEntity>() where TEntity : Entity
+        public ICommandRepository<TEntity> CommandSet<TEntity>() where TEntity : BaseEntity
             => _unitOfWork.CommandSet<TEntity>();
 
-        public IQueryRepository<TEntity> QuerySet<TEntity>() where TEntity : Entity
+        public IQueryRepository<TEntity> QuerySet<TEntity>() where TEntity : BaseEntity
             => _unitOfWork.QuerySet<TEntity>();
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
@@ -49,52 +65,50 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             return result;
         }
 
-        private void UpdateAuditable(IEnumerable<Entity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken)
+        private void UpdateAuditable(IEnumerable<BaseEntity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken)
         {
             foreach (var entity in changedEntities)
             {
                 if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
-                if (!(entity is IAuditableEntity auditableEntity)) return;
-
-                if (auditableEntity.CreatedAt == default)
+                if (entity is BaseAuditableEntity auditableEntity)
                 {
-                    auditableEntity.CreateUserId = _currentUser.UserId;
-                    auditableEntity.CreatedAt = timestamp;
+                    if (auditableEntity.Created == default)
+                    {
+                        auditableEntity.CreatedBy = _currentUser.UserId;
+                        auditableEntity.Created = timestamp;
+                    }
+
+                    auditableEntity.LastModifiedBy = _currentUser.UserId;
+                    auditableEntity.LastModified = timestamp;
                 }
-
-                auditableEntity.UpdateUserId = _currentUser.UserId;
-                auditableEntity.UpdatedAt = timestamp;
-
-                break;
             }
         }
 
-        private IProducerConsumerCollection<DomainEvent> GetEventsToDispatch(IEnumerable<Entity> changedEntities, CancellationToken cancellationToken)
+        private static IReadOnlyCollection<BaseEvent> GetEventsToDispatch(IEnumerable<BaseEntity> changedEntities, CancellationToken cancellationToken)
         {
-            var eventsToDispatch = new ConcurrentQueue<DomainEvent>();
+            var eventsToDispatch = new List<BaseEvent>();
 
             var domainEventsList = changedEntities
-                .Where(e => e is EntityWithDomainEvent entity && entity.DomainEvents.Any())
-                .Select(e => e as EntityWithDomainEvent)
+                .Where(e => e.DomainEvents.Any())
                 .Select(e => e.DomainEvents);
 
-            foreach (var domainevents in domainEventsList)
+            foreach (var domainEvents in domainEventsList)
             {
-                while (domainevents.TryTake(out var domainEvent))
+                while (domainEvents.TryTake(out var domainEvent))
                 {
                     if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
-                    eventsToDispatch.Enqueue(domainEvent);
+                    eventsToDispatch.Add(domainEvent);
                 }
             }
 
-            return eventsToDispatch;
+            return eventsToDispatch.AsReadOnly();
         }
 
-        private async Task DispatchEvents(IProducerConsumerCollection<DomainEvent> events, DateTimeOffset timestamp, CancellationToken cancellationToken)
+        private async Task DispatchEvents(IReadOnlyCollection<BaseEvent> domainEvents, DateTimeOffset timestamp, CancellationToken cancellationToken)
         {
-            while (events.TryTake(out var domainEvent))
+            foreach (var domainEvent in domainEvents)
             {
                 if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 

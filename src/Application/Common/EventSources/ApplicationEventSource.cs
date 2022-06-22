@@ -1,4 +1,20 @@
-﻿using MediatR;
+﻿// 
+// Copyright (c) 2019 Jason Taylor <https://github.com/jasontaylordev>
+// 
+// All rights reserved.
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+
+using MediatR;
 using Microsoft.Extensions.Logging;
 using NetCoreCleanArchitecture.Domain.Common;
 using System;
@@ -27,7 +43,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             _eventBuffer = eventBuffer;
         }
 
-        public async Task PublishAsync<TDomainEvent>(TDomainEvent domainEvent, DateTimeOffset timestamp, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
+        public async Task PublishAsync<TDomainEvent>(TDomainEvent domainEvent, DateTimeOffset timestamp, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
             var eventName = domainEvent.GetType().Name;
 
@@ -39,7 +55,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             {
                 timer.Start();
 
-                logger.LogTrace("Publishing Event {Name} - {@Event}", eventName, domainEvent);
+                logger.LogTrace("Publish event: {Name} - {@Event}", eventName, domainEvent);
 
                 domainEvent.Publising(timestamp);
 
@@ -49,7 +65,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Publishing Event Unhandled Exception {Name} - {@Event}", eventName, domainEvent);
+                logger.LogError(ex, "Publish event unhandled exception: {Name} - {@Event}", eventName, domainEvent);
             }
             finally
             {
@@ -57,32 +73,34 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 var elapsedMilliseconds = timer.ElapsedMilliseconds;
 
-                if (elapsedMilliseconds > 2000)
+                if (elapsedMilliseconds > 1000)
                 {
-                    logger.LogWarning("Publishing Event Long Running {Name} ({ElapsedMilliseconds} milliseconds) - {@Event}",
+                    logger.LogWarning("Publish event long running: {Name} ({ElapsedMilliseconds} milliseconds) - {@Event}",
                         eventName, elapsedMilliseconds, domainEvent);
                 }
             }
         }
 
-        private Task PublishEventNotification<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
+        private Task PublishEventNotification<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
-            var notification = (INotification)Activator.CreateInstance(
+            var notification = (INotification?)Activator.CreateInstance(
                 typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), domainEvent);
 
-            return _mediator.Publish(notification, cancellationToken);
+            return notification is null
+                ? Task.CompletedTask
+                : _mediator.Publish(notification, cancellationToken);
         }
 
-        private async Task PublishToEventbus<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : DomainEvent
+        private async Task PublishToEventbus<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
-            if (domainEvent is BufferedDomainEvent bufferedEvent)
+            if (_eventBus is null) return;
+
+            if (domainEvent is BufferedEvent bufferedEvent && bufferedEvent.BufferCount > 0)
             {
                 _eventBuffer.BufferPublish(domainEvent.Topic, bufferedEvent);
 
                 return;
             }
-
-            if (_eventBus is null) return;
 
             await _eventBus.PublishAsync(domainEvent.Topic, domainEvent, cancellationToken);
         }

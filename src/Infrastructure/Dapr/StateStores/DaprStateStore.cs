@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
 {
-    public class DaprStateStore<T> : IStateStore<T>
+    public class DaprStateStore<T> : IStateStore<T> where T : class
     {
-        private readonly InfrastructureDaprOptions _opt;
+        private readonly DaprOptions _options;
         private readonly DaprClient _client;
 
-        public DaprStateStore(IOptions<InfrastructureDaprOptions> opt, DaprClient client)
+        public DaprStateStore(IOptions<DaprOptions> options, DaprClient client)
         {
-            _opt = opt.Value;
+            _options = options.Value;
             _client = client;
         }
 
@@ -36,13 +36,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             return result;
         }
 
-        public Task<T> GetAsync(string key, CancellationToken cancellationToken = default)
-            => _client.GetStateAsync<T>(_opt.StoreName, key, cancellationToken: cancellationToken);
+        public async Task<T?> GetAsync(string key, CancellationToken cancellationToken = default)
+            => await _client.GetStateAsync<T>(_options.StoreName, key, cancellationToken: cancellationToken);
 
         public Task AddAsync(string key, T item, CancellationToken cancellationToken = default)
-            => _client.SaveStateAsync(_opt.StoreName, key, item, cancellationToken: cancellationToken);
+            => _client.SaveStateAsync(_options.StoreName, key, item, cancellationToken: cancellationToken);
 
         public Task RemoveAsync(string key, CancellationToken cancellationToken = default)
-            => _client.DeleteStateAsync(_opt.StoreName, key, cancellationToken: cancellationToken);
+            => _client.DeleteStateAsync(_options.StoreName, key, cancellationToken: cancellationToken);
     }
 }

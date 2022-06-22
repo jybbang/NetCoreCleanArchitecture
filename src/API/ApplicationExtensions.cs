@@ -58,7 +58,7 @@ namespace NetCoreCleanArchitecture.Api
             return endpoints;
         }
 
-        public static IServiceCollection AddNetCleanApi(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddNetCleanApi(this IServiceCollection services)
         {
             // Identity
             services.AddSingleton<ICurrentUserService, CurrentUserService>();

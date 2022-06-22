@@ -15,6 +15,7 @@
 //
 
 using MediatR;
+using System.Reflection;
 using NetCoreCleanArchitecture.Application.Common.Attributes;
 using NetCoreCleanArchitecture.Application.Common.Exceptions;
 using NetCoreCleanArchitecture.Application.Common.Identities;
@@ -40,7 +41,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            var authorizeAttributes = request.GetType().GetCustomAttributes(typeof(AuthorizeAttribute), false).OfType<AuthorizeAttribute>();
+            var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>();
 
             if (authorizeAttributes.Any())
             {

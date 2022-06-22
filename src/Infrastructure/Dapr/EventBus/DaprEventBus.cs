@@ -9,18 +9,18 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.EventBus
 {
     public class DaprEventBus : IEventBus
     {
-        private readonly InfrastructureDaprOptions _opt;
+        private readonly DaprOptions _options;
         private readonly DaprClient _client;
 
-        public DaprEventBus(IOptions<InfrastructureDaprOptions> opt, DaprClient client)
+        public DaprEventBus(IOptions<DaprOptions> options, DaprClient client)
         {
-            _opt = opt.Value;
+            _options = options.Value;
             _client = client;
         }
 
         public async Task PublishAsync<T>(string topic, T message, CancellationToken cancellationToken)
         {
-            await _client.PublishEventAsync(_opt.PubSubName, topic, message, cancellationToken);
+            await _client.PublishEventAsync(_options.PubSubName, topic, message, cancellationToken);
         }
     }
 }

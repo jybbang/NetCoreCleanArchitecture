@@ -27,7 +27,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             _logger.LogInformation("EventBufferService initialized");
         }
 
-        public void BufferPublish<TDomainEvent>(string topic, TDomainEvent domainEvent) where TDomainEvent : BufferedDomainEvent
+        public void BufferPublish<TDomainEvent>(string topic, TDomainEvent domainEvent) where TDomainEvent : BufferedEvent
         {
             if (_buffers.TryGetValue(topic, out var buffer))
             {
@@ -49,27 +49,27 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                             .Buffer(domainEvent.BufferTime));
                     }
 
-                    observer.Subscribe(async events =>
-                    {
-                        if (!events.Any()) return;
-
-                        var cts = new CancellationTokenSource(domainEvent.PublishTimeout);
-
-                        try
+                    observer
+                        .Where(events => events.Any())
+                        .Subscribe(async events =>
                         {
-                            using var scope = _services.CreateScope();
+                            var cts = new CancellationTokenSource(domainEvent.PublishTimeout);
 
-                            var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+                            try
+                            {
+                                using var scope = _services.CreateScope();
 
-                            await eventBus.PublishAsync(topic, events, cts.Token);
-                        }
-                        catch (Exception ex)
-                        {
-                            cts.Dispose();
+                                var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
-                            _logger.LogError(ex, "EventBufferService unhandled exception occurred: {@Topic}", topic);
-                        }
-                    });
+                                await eventBus.PublishAsync(topic, events, cts.Token);
+                            }
+                            catch (Exception ex)
+                            {
+                                cts.Dispose();
+
+                                _logger.LogError(ex, "EventBufferService unhandled exception: {@Topic}", topic);
+                            }
+                        });
 
                     buffer.OnNext(domainEvent);
                 }

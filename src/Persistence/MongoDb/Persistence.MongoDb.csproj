@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
 		<LangVersion>8.0</LangVersion>
+		<Nullable>enable</Nullable>
 		<AssemblyName>NetCoreCleanArchitecture.Persistence.MongoDb</AssemblyName>
 		<RootNamespace>NetCoreCleanArchitecture.Persistence.MongoDb</RootNamespace>
 		<Authors>Junyoung Bang</Authors>

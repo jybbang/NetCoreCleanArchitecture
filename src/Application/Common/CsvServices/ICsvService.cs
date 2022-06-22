@@ -15,16 +15,16 @@
 //
 
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace NetCoreCleanArchitecture.Application.Common.Attributes
+namespace NetCoreCleanArchitecture.Application.Common.CsvServices
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-    public sealed class EnumAuthorizeAttribute : AuthorizeAttribute
+    public interface ICsvService
     {
-        public EnumAuthorizeAttribute(params object[] roles)
-        {
-            Roles = string.Join(",", roles.Select(role => Enum.GetName(role.GetType(), role)));
-        }
+        IEnumerable<T> ReadCsv<T>(IReadOnlyCollection<string> lines, char separator) where T : new();
+
+        IEnumerable<string> WriteCsv<T>(IReadOnlyCollection<T> items, char separator);
     }
 }

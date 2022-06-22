@@ -20,7 +20,6 @@ using NetCoreCleanArchitecture.Application.Common.Models;
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace NetCoreCleanArchitecture.Application.Common.Mappers
 {
     public static class MappingExtensions

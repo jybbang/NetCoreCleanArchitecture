@@ -28,8 +28,8 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
 {
     public abstract class MongoContext
     {
-        private readonly ConcurrentDictionary<Guid, Entity> _changeTracker = new ConcurrentDictionary<Guid, Entity>();
-        private readonly ConcurrentDictionary<Guid, Func<Guid, Entity, CancellationToken, Task>> _updateHandlers = new ConcurrentDictionary<Guid, Func<Guid, Entity, CancellationToken, Task>>();
+        private readonly ConcurrentDictionary<Guid, BaseEntity> _changeTracker = new ConcurrentDictionary<Guid, BaseEntity>();
+        private readonly ConcurrentDictionary<Guid, Func<Guid, BaseEntity, CancellationToken, Task>> _updateHandlers = new ConcurrentDictionary<Guid, Func<Guid, BaseEntity, CancellationToken, Task>>();
 
         public IMongoDatabase Database { get; }
 
@@ -44,7 +44,7 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
 
             foreach (var track in _changeTracker)
             {
-                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
                 if (_updateHandlers.TryGetValue(track.Key, out var handler))
                 {
@@ -61,7 +61,7 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
             return result;
         }
 
-        public IEnumerable<Entity> ChangeTracking()
+        public IEnumerable<BaseEntity> ChangeTracking()
         {
             return _changeTracker.Values;
         }
@@ -78,14 +78,14 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
             }
         }
 
-        internal void AddTracking(Entity entity, Func<Guid, Entity, CancellationToken, Task> handler)
+        internal void AddTracking(BaseEntity entity, Func<Guid, BaseEntity, CancellationToken, Task> handler)
         {
             _changeTracker.AddOrUpdate(entity.Id, entity, (k, v) => entity);
 
             _updateHandlers.AddOrUpdate(entity.Id, handler, (k, v) => handler);
         }
 
-        internal void AddTrackingRange(IEnumerable<Entity> entities, Func<Guid, Entity, CancellationToken, Task> handler)
+        internal void AddTrackingRange(IEnumerable<BaseEntity> entities, Func<Guid, BaseEntity, CancellationToken, Task> handler)
         {
             foreach (var entity in entities)
             {

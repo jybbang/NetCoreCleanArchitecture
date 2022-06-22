@@ -47,7 +47,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
             }
 
             _logger.LogTrace("Request: {Name} - {@UserId} {@UserName} {@Request}",
-            requestName, userId, userName, request);
+                requestName, userId, userName, request);
         }
     }
 }

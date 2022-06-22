@@ -7,7 +7,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Timeseries
 {
     public interface ITimeseriesRepository
     {
-        Task<IEnumerable<KeyValuePair<DateTimeOffset, double>>> GetAsync(Guid id, DateTimeOffset from, DateTimeOffset to, CancellationToken cancellationToken);
+        Task<IReadOnlyCollection<(DateTimeOffset, double)>> GetAsync(Guid id, DateTimeOffset from, DateTimeOffset to = default, CancellationToken cancellationToken = default);
 
         Task AddAsync(Guid id, DateTimeOffset timestamp, double value, CancellationToken cancellationToken);
 

@@ -14,34 +14,48 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using NetCoreCleanArchitecture.Domain.Common;
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Linq;
+using System.Text;
 
-namespace NetCoreCleanArchitecture.Application.Common.Repositories
+namespace NetCoreCleanArchitecture.Domain.Common
 {
-    public interface ICommandRepository<TEntity> where TEntity : BaseEntity
+    public abstract class ValueObject
     {
-        void Add(TEntity item);
+        protected static bool EqualOperator(ValueObject left, ValueObject right)
+        {
+            if (left is null ^ right is null)
+            {
+                return false;
+            }
 
-        Task AddAsync(TEntity item, CancellationToken cancellationToken);
+            return left?.Equals(right!) != false;
+        }
 
-        void AddRange(IEnumerable<TEntity> items);
+        protected static bool NotEqualOperator(ValueObject left, ValueObject right)
+        {
+            return !(EqualOperator(left, right));
+        }
 
-        Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken);
+        protected abstract IEnumerable<object> GetEqualityComponents();
 
-        void Remove(Guid key);
+        public override bool Equals(object? obj)
+        {
+            if (obj == null || obj.GetType() != GetType())
+            {
+                return false;
+            }
 
-        Task RemoveAsync(Guid key, CancellationToken cancellationToken);
+            var other = (ValueObject)obj;
+            return GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
+        }
 
-        void Update(TEntity item);
-
-        Task UpdateAsync(TEntity item, CancellationToken cancellationToken);
-
-        void UpdateRange(IEnumerable<TEntity> items);
-
-        Task UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken);
+        public override int GetHashCode()
+        {
+            return GetEqualityComponents()
+                .Select(x => x != null ? x.GetHashCode() : 0)
+                .Aggregate((x, y) => x ^ y);
+        }
     }
 }

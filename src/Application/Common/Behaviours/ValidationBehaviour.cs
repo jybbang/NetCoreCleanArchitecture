@@ -48,8 +48,9 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
                     .ToList();
 
                 if (failures.Any())
-                    throw new NetCoreCleanArchitecture.Application.Common.Exceptions.ValidationException(failures);
+                    throw new Exceptions.ValidationException(failures);
             }
+
             return await next();
         }
     }

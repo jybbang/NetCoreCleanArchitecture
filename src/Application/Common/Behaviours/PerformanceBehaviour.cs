@@ -52,7 +52,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
 
             var elapsedMilliseconds = _timer.ElapsedMilliseconds;
 
-            if (elapsedMilliseconds > 2000)
+            if (elapsedMilliseconds > 1000)
             {
                 var requestName = typeof(TRequest).Name;
                 var userId = _currentUserService.UserId ?? string.Empty;
@@ -63,7 +63,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
                     userName = await _identityService.GetUserNameAsync(userId);
                 }
 
-                _logger.LogWarning("Long running request: {Name} ({ElapsedMilliseconds} milliseconds) - {@UserId} {@UserName} {@Request}",
+                _logger.LogWarning("Request long running: {Name} ({ElapsedMilliseconds} milliseconds) - {@UserId} {@UserName} {@Request}",
                     requestName, elapsedMilliseconds, userId, userName, request);
             }
 

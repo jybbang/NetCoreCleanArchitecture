@@ -16,62 +16,59 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace NetCoreCleanArchitecture.Domain.Common
 {
-    public abstract class Base<T> : IEquatable<Base<T>>
+    public abstract class BaseEvent : IEquatable<BaseEvent?>
     {
-        public static bool operator !=(Base<T> a, Base<T> b)
+        protected BaseEvent(string topic)
         {
-            return !(a == b);
+            Topic = topic;
         }
 
-        public static bool operator ==(Base<T> a, Base<T> b)
+        [JsonInclude]
+        public string Topic { get; }
+
+        [JsonInclude]
+        public Guid EventId { get; private set; }
+
+        [JsonInclude]
+        public bool IsPublished { get; private set; }
+
+        public DateTimeOffset Timestamp { get; set; }
+
+        public BaseEvent Publising(DateTimeOffset timestamp = default)
         {
-            if (a is null && b is null)
-            {
-                return true;
-            }
+            EventId = Guid.NewGuid();
 
-            if (a is null || b is null)
-            {
-                return false;
-            }
+            IsPublished = true;
 
-            return a.Equals(b);
+            Timestamp = Timestamp == default
+                ? timestamp == default ? DateTimeOffset.UtcNow : timestamp
+                : Timestamp;
+
+            return this;
         }
 
-        public sealed override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            return Equals(obj as Base<T>);
+            return Equals(obj as BaseEvent);
         }
 
-        public bool Equals(Base<T> other)
+        public bool Equals(BaseEvent? other)
         {
-            if (other is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            if (GetType() != other.GetType())
-            {
-                return false;
-            }
-
-            return Equals().SequenceEqual(other.Equals());
+            return other != null &&
+                   Topic == other.Topic &&
+                   Timestamp.Equals(other.Timestamp);
         }
 
         public override int GetHashCode()
         {
-            return Equals().Aggregate(0, (a, b) => (a * 97) + b.GetHashCode());
+            var hashCode = 63862983;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Topic);
+            hashCode = hashCode * -1521134295 + Timestamp.GetHashCode();
+            return hashCode;
         }
-
-        protected abstract IEnumerable<object> Equals();
     }
 }

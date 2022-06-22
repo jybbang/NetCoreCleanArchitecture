@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Application.Common.Repositories
 {
-    public interface IQueryRepository<TEntity> where TEntity : Entity
+    public interface IQueryRepository<TEntity> where TEntity : BaseEntity
     {
         IQueryable<TEntity> Queryable { get; }
 
@@ -44,20 +44,20 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
 
-        TEntity Find(Guid key);
+        TEntity? Find(Guid key);
 
-        Task<TEntity> FindAsync(Guid key, CancellationToken cancellationToken);
+        TEntity? Find(Expression<Func<TEntity, bool>> where);
 
-        TEntity Find(Expression<Func<TEntity, bool>> where);
+        Task<TEntity?> FindAsync(Guid key, CancellationToken cancellationToken);
 
-        Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
-
-        List<TEntity> FindMany(Expression<Func<TEntity, bool>> where);
-
-        Task<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
+        Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
 
         List<TEntity> FindMany();
 
+        List<TEntity> FindMany(Expression<Func<TEntity, bool>> where);
+
         Task<List<TEntity>> FindManyAsync(CancellationToken cancellationToken);
+
+        Task<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
     }
 }
