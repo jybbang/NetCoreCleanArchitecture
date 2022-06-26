@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NetCoreCleanArchitecture.Api.Options
+namespace NetCoreCleanArchitecture.Host.Options
 {
     public record ApiOptions
     {

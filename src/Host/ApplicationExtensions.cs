@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using NetCoreCleanArchitecture.Api.Filters;
-using NetCoreCleanArchitecture.Api.Identity;
-using NetCoreCleanArchitecture.Api.Options;
+using NetCoreCleanArchitecture.Host.Filters;
+using NetCoreCleanArchitecture.Host.Identity;
+using NetCoreCleanArchitecture.Host.Options;
 using NetCoreCleanArchitecture.Application.Common.Identities;
 using Prometheus;
 
-namespace NetCoreCleanArchitecture.Api
+namespace NetCoreCleanArchitecture.Host
 {
     public static class ApplicationExtensions
     {

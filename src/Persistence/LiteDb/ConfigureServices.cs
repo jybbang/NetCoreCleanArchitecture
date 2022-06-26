@@ -26,9 +26,8 @@ namespace NetCoreCleanArchitecture.Persistence
 
             var database = new LiteDatabase(connectionString);
 
-            var context = Activator.CreateInstance(typeof(T), database) as T;
-
-            if (context is null) throw new NullReferenceException("Could not resolve LiteDbContext");
+            if (!(Activator.CreateInstance(typeof(T), database) is T context)) 
+                throw new NullReferenceException("Could not resolve LiteDbContext");
 
             services.AddSingleton<T>(context);
 

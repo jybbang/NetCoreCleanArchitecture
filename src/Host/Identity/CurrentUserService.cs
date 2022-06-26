@@ -2,7 +2,7 @@
 using NetCoreCleanArchitecture.Application.Common.Identities;
 using System.Security.Claims;
 
-namespace NetCoreCleanArchitecture.Api.Identity
+namespace NetCoreCleanArchitecture.Host.Identity
 {
     public class CurrentUserService : ICurrentUserService
     {

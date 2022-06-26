@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,11 +23,13 @@ namespace NetCoreCleanArchitecture.Application.Common.StateStores
 {
     public interface IStateStore<T> where T : class
     {
-        Task<T> GetOrCreateAsync(string key, Func<Task<T>> factory, CancellationToken cancellationToken);
+        Task<T> GetOrCreateAsync(string key, Func<Task<T>> factory, CancellationToken cancellationToken, int ttlSeconds = -1);
 
         Task<T?> GetAsync(string key, CancellationToken cancellationToken);
 
-        Task AddAsync(string key, T item, CancellationToken cancellationToken);
+        Task<IEnumerable<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken);
+
+        Task AddAsync(string key, T item, CancellationToken cancellationToken, int ttlSeconds = -1);
 
         Task RemoveAsync(string key, CancellationToken cancellationToken);
     }

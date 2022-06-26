@@ -4,6 +4,9 @@ using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.Common.StateStores;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.Options;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,7 +23,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             _client = client;
         }
 
-        public async Task<T> GetOrCreateAsync(string key, Func<Task<T>> factory, CancellationToken cancellationToken = default)
+        public async Task<T> GetOrCreateAsync(string key, Func<Task<T>> factory, CancellationToken cancellationToken, int ttlSeconds = -1)
         {
             var result = await GetAsync(key, cancellationToken);
 
@@ -28,7 +31,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             {
                 var item = await factory();
 
-                await AddAsync(key, item, cancellationToken);
+                await AddAsync(key, item, cancellationToken, ttlSeconds);
 
                 result = item;
             }
@@ -36,13 +39,29 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             return result;
         }
 
-        public async Task<T?> GetAsync(string key, CancellationToken cancellationToken = default)
+        public async Task<T?> GetAsync(string key, CancellationToken cancellationToken)
             => await _client.GetStateAsync<T>(_options.StoreName, key, cancellationToken: cancellationToken);
 
-        public Task AddAsync(string key, T item, CancellationToken cancellationToken = default)
-            => _client.SaveStateAsync(_options.StoreName, key, item, cancellationToken: cancellationToken);
+        public Task AddAsync(string key, T item, CancellationToken cancellationToken, int ttlSeconds = -1)
+        {
+            var metadata = new Dictionary<string, string>
+            {
+                {"ttlInSeconds",ttlSeconds.ToString() },
+            };
 
-        public Task RemoveAsync(string key, CancellationToken cancellationToken = default)
+            return _client.SaveStateAsync(_options.StoreName, key, item, metadata: metadata, cancellationToken: cancellationToken);
+        }
+
+        public Task RemoveAsync(string key, CancellationToken cancellationToken)
             => _client.DeleteStateAsync(_options.StoreName, key, cancellationToken: cancellationToken);
+
+        public async Task<IEnumerable<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken)
+        {
+            var stream = await _client.GetBulkStateAsync(_options.StoreName, keys, null, cancellationToken: cancellationToken);
+
+            if (stream.Count == 0) return null;
+
+            return stream.OfType<T>();
+        }
     }
 }

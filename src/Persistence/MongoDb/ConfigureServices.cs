@@ -29,9 +29,8 @@ namespace NetCoreCleanArchitecture.Persistence
 
             var database = new MongoClient(connectionString).GetDatabase(databaseName);
 
-            var context = Activator.CreateInstance(typeof(T), database) as T;
-
-            if (context is null) throw new NullReferenceException("Could not resolve MongoContext");
+            if (!(Activator.CreateInstance(typeof(T), database) is T context))
+                throw new NullReferenceException("Could not resolve MongoContext");
 
             services.AddSingleton<T>(context);
 
@@ -57,9 +56,8 @@ namespace NetCoreCleanArchitecture.Persistence
 
             services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
-            var context = Activator.CreateInstance(typeof(T), database) as T;
-
-            if (context is null) throw new NullReferenceException("Could not resolve MongoContext");
+            if (!(Activator.CreateInstance(typeof(T), database) is T context))
+                throw new NullReferenceException("Could not resolve MongoContext");
 
             services.AddSingleton<T>(context);
 

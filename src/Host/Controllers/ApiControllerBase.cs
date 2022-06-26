@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace NetCoreCleanArchitecture.Api.Controllers
+namespace NetCoreCleanArchitecture.Host.Controllers
 {
     [ApiController]
     [EnableCors]
