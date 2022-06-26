@@ -27,7 +27,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         IQueryRepository<TEntity> QuerySet<TEntity>() where TEntity : BaseEntity;
 
-        IEnumerable<BaseEntity> ChangeTracking();
+        IReadOnlyList<BaseEntity> ChangeTracking();
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

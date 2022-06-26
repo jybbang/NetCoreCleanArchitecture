@@ -28,9 +28,9 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         Task AddAsync(TEntity item, CancellationToken cancellationToken);
 
-        void AddRange(IEnumerable<TEntity> items);
+        void AddRange(IReadOnlyList<TEntity> items);
 
-        Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken);
+        Task AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken);
 
         void Remove(Guid key);
 
@@ -40,8 +40,8 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         Task UpdateAsync(TEntity item, CancellationToken cancellationToken);
 
-        void UpdateRange(IEnumerable<TEntity> items);
+        void UpdateRange(IReadOnlyList<TEntity> items);
 
-        Task UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken);
+        Task UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken);
     }
 }

@@ -64,7 +64,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             return result;
         }
 
-        private void UpdateAuditable(IEnumerable<BaseEntity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken)
+        private void UpdateAuditable(IReadOnlyList<BaseEntity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken)
         {
             foreach (var entity in changedEntities)
             {
@@ -84,7 +84,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             }
         }
 
-        private static IReadOnlyCollection<BaseEvent> GetEventsToDispatch(IEnumerable<BaseEntity> changedEntities, CancellationToken cancellationToken)
+        private static IReadOnlyList<BaseEvent> GetEventsToDispatch(IReadOnlyList<BaseEntity> changedEntities, CancellationToken cancellationToken)
         {
             var eventsToDispatch = new List<BaseEvent>();
 
@@ -105,7 +105,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             return eventsToDispatch.AsReadOnly();
         }
 
-        private async Task DispatchEvents(IReadOnlyCollection<BaseEvent> domainEvents, DateTimeOffset timestamp, CancellationToken cancellationToken)
+        private async Task DispatchEvents(IReadOnlyList<BaseEvent> domainEvents, DateTimeOffset timestamp, CancellationToken cancellationToken)
         {
             foreach (var domainEvent in domainEvents)
             {

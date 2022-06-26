@@ -31,7 +31,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Exceptions
 
         public IDictionary<string, string[]> Errors { get; }
 
-        public ValidationException(IEnumerable<ValidationFailure> failures)
+        public ValidationException(IReadOnlyList<ValidationFailure> failures)
             : this()
         {
             Errors = failures

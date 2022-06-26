@@ -51,14 +51,14 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
             return Task.CompletedTask;
         }
 
-        public void AddRange(IEnumerable<TEntity> items)
+        public void AddRange(IReadOnlyList<TEntity> items)
         {
             _context.AddTrackingRange(items, UpdatePartialAsync);
 
             _collection.InsertBulk(items);
         }
 
-        public Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
+        public Task AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
             AddRange(items);
 
@@ -97,7 +97,7 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
             return Task.CompletedTask;
         }
 
-        public void UpdateRange(IEnumerable<TEntity> items)
+        public void UpdateRange(IReadOnlyList<TEntity> items)
         {
             _context.AddTrackingRange(items, UpdatePartialAsync);
 
@@ -107,7 +107,7 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
             }
         }
 
-        public Task UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
+        public Task UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
             UpdateRange(items);
 

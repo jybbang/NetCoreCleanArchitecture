@@ -37,7 +37,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
             return !(EqualOperator(left, right));
         }
 
-        protected abstract IEnumerable<object> GetEqualityComponents();
+        protected abstract IReadOnlyList<object> GetEqualityComponents();
 
         public override bool Equals(object? obj)
         {

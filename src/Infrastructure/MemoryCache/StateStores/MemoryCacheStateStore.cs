@@ -16,7 +16,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
             _client = client;
         }
 
-        public async Task<IEnumerable<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken)
         {
             var result = new List<T>();
 
@@ -32,27 +32,27 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
             return result;
         }
 
-        public async Task<T?> GetAsync(string key, CancellationToken cancellationToken = default)
+        public async Task<T?> GetAsync(string key, CancellationToken cancellationToken)
         {
             var item = _client.Get<T>(key);
 
             return await Task.FromResult(item);
         }
 
-        public Task<T> GetOrCreateAsync(string key, Func<Task<T>> factory, CancellationToken cancellationToken, int ttlSeconds = -1)
+        public Task<T> GetOrCreateAsync(string key, Func<Task<T>> factory, int ttlSeconds, CancellationToken cancellationToken)
         {
             return _client.GetOrCreateAsync<T>(key, entry =>
             {
                 if (ttlSeconds > 0)
                 {
-                    entry.SlidingExpiration = TimeSpan.FromSeconds(ttlSeconds);
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(ttlSeconds);
                 }
 
                 return factory();
             });
         }
 
-        public Task AddAsync(string key, T item, CancellationToken cancellationToken, int ttlSeconds = -1)
+        public Task AddAsync(string key, T item, int ttlSeconds, CancellationToken cancellationToken)
         {
             if (ttlSeconds > 0)
             {
@@ -66,7 +66,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
             return Task.CompletedTask;
         }
 
-        public Task RemoveAsync(string key, CancellationToken cancellationToken = default)
+        public Task RemoveAsync(string key, CancellationToken cancellationToken)
         {
             _client.Remove(key);
 

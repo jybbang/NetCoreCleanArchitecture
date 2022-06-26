@@ -20,8 +20,8 @@ namespace NetCoreCleanArchitecture.Application.Common.CsvServices
 {
     public interface ICsvService
     {
-        IEnumerable<T> ReadCsv<T>(IReadOnlyCollection<string> lines, char separator) where T : new();
+        IReadOnlyList<T> ReadCsv<T>(IReadOnlyList<string> lines, char separator) where T : new();
 
-        IEnumerable<string> WriteCsv<T>(IReadOnlyCollection<T> items, char separator);
+        IReadOnlyList<string> WriteCsv<T>(IReadOnlyList<T> items, char separator);
     }
 }

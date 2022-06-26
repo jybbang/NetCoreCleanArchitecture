@@ -23,21 +23,21 @@ namespace NetCoreCleanArchitecture.Application.Common.CsvServices
 {
     public class CsvService : ICsvService
     {
-        public IEnumerable<T> ReadCsv<T>(IReadOnlyCollection<string> lines, char separator) where T : new()
+        public IReadOnlyList<T> ReadCsv<T>(IReadOnlyList<string> lines, char separator) where T : new()
         {
+            var items = new List<T>();
+
             if (lines.Count < 2)
             {
-                return Enumerable.Empty<T>();
+                return items;
             }
 
-            var columns = lines.First().Split(separator);
+            var columns = lines[0].Split(separator);
 
             if (columns.Length == 0)
             {
-                return Enumerable.Empty<T>();
+                return items;
             }
-
-            var items = new List<T>();
 
             foreach (var line in lines.Skip(1))
             {
@@ -70,16 +70,18 @@ namespace NetCoreCleanArchitecture.Application.Common.CsvServices
             return items;
         }
 
-        public IEnumerable<string> WriteCsv<T>(IReadOnlyCollection<T> items, char separator)
+        public IReadOnlyList<string> WriteCsv<T>(IReadOnlyList<T> items, char separator)
         {
+            var lines = new List<string>();
+
             if (items is null)
             {
-                return Enumerable.Empty<string>();
+                return lines;
             }
 
             var columns = typeof(T).GetProperties().Select(property => property.Name).ToList();
 
-            var lines = new List<string> { string.Join(separator.ToString(), columns) };
+            lines.Add(string.Join(separator.ToString(), columns));
 
             lines.AddRange(items.Select(item => columns.Select(column => typeof(T).GetProperty(column)?.GetValue(item, null))).Select(values => string.Join(separator.ToString(), values)));
 

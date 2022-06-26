@@ -23,13 +23,13 @@ namespace NetCoreCleanArchitecture.Application.Common.StateStores
 {
     public interface IStateStore<T> where T : class
     {
-        Task<T> GetOrCreateAsync(string key, Func<Task<T>> factory, CancellationToken cancellationToken, int ttlSeconds = -1);
+        Task<T> GetOrCreateAsync(string key, Func<Task<T>> factory, int ttlSeconds, CancellationToken cancellationToken);
 
         Task<T?> GetAsync(string key, CancellationToken cancellationToken);
 
-        Task<IEnumerable<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken);
+        Task<IReadOnlyList<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken);
 
-        Task AddAsync(string key, T item, CancellationToken cancellationToken, int ttlSeconds = -1);
+        Task AddAsync(string key, T item, int ttlSeconds, CancellationToken cancellationToken);
 
         Task RemoveAsync(string key, CancellationToken cancellationToken);
     }

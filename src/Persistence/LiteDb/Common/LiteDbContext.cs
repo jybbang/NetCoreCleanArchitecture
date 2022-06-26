@@ -1,8 +1,10 @@
 ﻿using LiteDB;
+using NetCoreCleanArchitecture.Application.Common.Repositories;
 using NetCoreCleanArchitecture.Domain.Common;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,9 +45,9 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDb.Common
             return result;
         }
 
-        public IEnumerable<BaseEntity> ChangeTracking()
+        public IReadOnlyList<BaseEntity> ChangeTracking()
         {
-            return _changeTracker.Values;
+            return _changeTracker.Values.ToList();
         }
 
         public void DropCollections()
@@ -67,7 +69,7 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDb.Common
             _updateHandlers.AddOrUpdate(entity.Id, handler, (k, v) => handler);
         }
 
-        internal void AddTrackingRange(IEnumerable<BaseEntity> entities, Func<Guid, BaseEntity, CancellationToken, Task> handler)
+        internal void AddTrackingRange(IReadOnlyList<BaseEntity> entities, Func<Guid, BaseEntity, CancellationToken, Task> handler)
         {
             foreach (var entity in entities)
             {

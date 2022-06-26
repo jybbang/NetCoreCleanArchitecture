@@ -25,9 +25,9 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
 {
     public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly IEnumerable<IValidator<TRequest>> _validators;
+        private readonly IReadOnlyList<IValidator<TRequest>> _validators;
 
-        public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
+        public ValidationBehaviour(IReadOnlyList<IValidator<TRequest>> validators)
         {
             _validators = validators;
         }
