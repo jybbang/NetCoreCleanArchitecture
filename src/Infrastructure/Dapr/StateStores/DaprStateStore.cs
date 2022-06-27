@@ -2,7 +2,7 @@
 using Dapr.Client;
 using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.Common.StateStores;
-using NetCoreCleanArchitecture.Infrastructure.Dapr.Options;
+using NetCoreCleanArchitecture.Infrastructure.Dapr.Common.Options;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,13 +23,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             _client = client;
         }
 
-        public async Task<IEnumerable<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken)
         {
             var stream = await _client.GetBulkStateAsync(_options.StoreName, keys, null, cancellationToken: cancellationToken);
 
             if (stream.Count == 0) return null;
 
-            return stream.OfType<T>();
+            return stream.OfType<T>().ToList();
         }
 
         public async Task<T?> GetAsync(string key, CancellationToken cancellationToken)

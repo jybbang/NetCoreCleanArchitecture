@@ -9,7 +9,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
         public static IServiceCollection AddNetCleanMemoryCacheStateStore(this IServiceCollection services)
         {
             // StateStore
-            services.AddScoped(typeof(IStateStore<>), typeof(MemoryCacheStateStore<>));
+            services.AddSingleton(typeof(IStateStore<>), typeof(MemoryCacheStateStore<>));
 
             return services;
         }

@@ -29,18 +29,18 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
         private readonly ILoggerFactory _logFactory;
         private readonly IEventBus _eventBus;
         private readonly IPublisher _mediator;
-        private readonly EventBufferService _eventBuffer;
+        private readonly BulkEventService _bulkEvent;
 
         public ApplicationEventSource(
             ILoggerFactory logFactory,
             IEventBus eventBus,
             IPublisher mediator,
-            EventBufferService eventBuffer)
+            BulkEventService eventBuffer)
         {
             _logFactory = logFactory;
             _eventBus = eventBus;
             _mediator = mediator;
-            _eventBuffer = eventBuffer;
+            _bulkEvent = eventBuffer;
         }
 
         public async Task PublishAsync<TDomainEvent>(TDomainEvent domainEvent, DateTimeOffset timestamp, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
@@ -97,7 +97,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
             if (domainEvent is BufferedEvent bufferedEvent && bufferedEvent.BufferCount > 0)
             {
-                _eventBuffer.BufferPublish(domainEvent.Topic, bufferedEvent);
+                _bulkEvent.BufferPublish(domainEvent.Topic, bufferedEvent);
 
                 return;
             }

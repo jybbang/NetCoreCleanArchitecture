@@ -10,15 +10,15 @@ using System.Threading;
 
 namespace NetCoreCleanArchitecture.Application.Common.EventSources
 {
-    public class EventBufferService
+    public class BulkEventService
     {
-        private readonly ILogger<EventBufferService> _logger;
+        private readonly ILogger<BulkEventService> _logger;
         private readonly IServiceProvider _services;
 
         private readonly ConcurrentDictionary<string, Subject<object>> _buffers = new ConcurrentDictionary<string, Subject<object>>();
 
-        public EventBufferService(
-            ILogger<EventBufferService> logger,
+        public BulkEventService(
+            ILogger<BulkEventService> logger,
             IServiceProvider services)
         {
             _logger = logger;
@@ -59,15 +59,20 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                             {
                                 using var scope = _services.CreateScope();
 
+                                var e = new BulkEvent(topic)
+                                {
+                                    DomainEvents = events
+                                };
+
                                 var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
 
-                                await eventBus.PublishAsync(topic, events, cts.Token);
+                                await eventBus.PublishAsync(topic, e, cts.Token);
                             }
                             catch (Exception ex)
                             {
                                 cts.Dispose();
 
-                                _logger.LogError(ex, "EventBufferService unhandled exception: {@Topic}", topic);
+                                _logger.LogError(ex, "BulkEventService unhandled exception: {@Topic}", topic);
                             }
                         });
 

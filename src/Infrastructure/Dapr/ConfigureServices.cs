@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.EventSources;
 using NetCoreCleanArchitecture.Application.Common.StateStores;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.EventBus;
-using NetCoreCleanArchitecture.Infrastructure.Dapr.Options;
+using NetCoreCleanArchitecture.Infrastructure.Dapr.Common.Options;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores;
 
 namespace NetCoreCleanArchitecture.Infrastructure
@@ -40,7 +40,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
             services.AddOptions<DaprOptions>("Api:Dapr");
 
             // EventBus
-            services.AddScoped<IEventBus, DaprEventBus>();
+            services.AddSingleton<IEventBus, DaprEventBus>();
 
             return services;
         }
@@ -50,7 +50,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
             services.AddOptions<DaprOptions>("Api:Dapr");
 
             // StateStore
-            services.AddScoped(typeof(IStateStore<>), typeof(DaprStateStore<>));
+            services.AddSingleton(typeof(IStateStore<>), typeof(DaprStateStore<>));
 
             return services;
         }
