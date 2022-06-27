@@ -39,9 +39,9 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 
         public Task AddAsync(TEntity item, CancellationToken cancellationToken) => Set.AddAsync(item, cancellationToken).AsTask();
 
-        public void AddRange(IEnumerable<TEntity> items) => Set.AddRange(items);
+        public void AddRange(IReadOnlyList<TEntity> items) => Set.AddRange(items);
 
-        public Task AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken) => Set.AddRangeAsync(items, cancellationToken);
+        public Task AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken) => Set.AddRangeAsync(items, cancellationToken);
 
         public void Remove(Guid key)
         {
@@ -65,9 +65,9 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 
         public Task UpdateAsync(TEntity item, CancellationToken cancellationToken) => Task.FromResult(Set.Update(item));
 
-        public void UpdateRange(IEnumerable<TEntity> items) => Set.UpdateRange(items);
+        public void UpdateRange(IReadOnlyList<TEntity> items) => Set.UpdateRange(items);
 
-        public Task UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
+        public Task UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
             Set.UpdateRange(items);
 

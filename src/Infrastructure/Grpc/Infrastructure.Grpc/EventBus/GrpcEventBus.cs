@@ -24,6 +24,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Grpc.EventBus
             = new ConcurrentDictionary<string, ManualResetEventSlim>();
 
         private readonly Server _server;
+        private bool _isDisposed;
 
         public GrpcEventBus(IOptions<GrpcOptions> options)
         {
@@ -38,11 +39,18 @@ namespace NetCoreCleanArchitecture.Infrastructure.Grpc.EventBus
 
         public void Dispose()
         {
-            _subscribes.Clear();
+            if (!_isDisposed)
+            {
+                _subscribes.Clear();
 
-            _unsubscribes.Values.ToList().ForEach(x => x.Dispose());
+                _unsubscribes.Values.ToList().ForEach(x => x.Dispose());
 
-            _unsubscribes.Clear();
+                _unsubscribes.Clear();
+
+                GC.SuppressFinalize(this);
+
+                _isDisposed = true;
+            }
         }
 
         public Task PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
@@ -104,9 +112,9 @@ namespace NetCoreCleanArchitecture.Infrastructure.Grpc.EventBus
                 if (_subscribes.TryGetValue(topic, out var subscribe))
                 {
                     subscribe.TryRemove(key, out _);
-                }
 
-                if (subscribe.IsEmpty) _subscribes.TryRemove(topic, out _);
+                    if (subscribe.IsEmpty) _subscribes.TryRemove(topic, out _);
+                }
 
                 mrs.Dispose();
 
