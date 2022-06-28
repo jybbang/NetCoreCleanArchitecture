@@ -42,6 +42,8 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
 
             foreach (var track in _changeTracker)
             {
+                if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
                 if (_updateHandlers.TryGetValue(track.Key, out var handler))
                 {
                     if (handler is null) continue;
@@ -62,15 +64,15 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
             return _changeTracker.Values;
         }
 
-        public void DropCollections()
+        public void DropCollections(CancellationToken cancellationToken = default)
         {
-            var collections = Database.ListCollectionNames();
+            var collections = Database.ListCollectionNames(cancellationToken: cancellationToken);
 
-            collections.MoveNext();
+            collections.MoveNext(cancellationToken);
 
             foreach (var collection in collections.Current)
             {
-                Database.DropCollection(collection);
+                Database.DropCollection(collection, cancellationToken: cancellationToken);
             }
         }
 
@@ -81,10 +83,12 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
             _updateHandlers.AddOrUpdate(entity.Id, handler, (k, v) => handler);
         }
 
-        internal void AddTrackingRange(in IReadOnlyList<BaseEntity> entities, Func<Guid, BaseEntity, CancellationToken, Task> handler)
+        internal void AddTrackingRange(in IReadOnlyList<BaseEntity> entities, Func<Guid, BaseEntity, CancellationToken, Task> handler, CancellationToken cancellationToken = default)
         {
             foreach (var entity in entities)
             {
+                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+
                 AddTracking(entity, handler);
             }
         }

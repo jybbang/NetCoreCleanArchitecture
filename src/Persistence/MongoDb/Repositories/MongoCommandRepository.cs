@@ -60,7 +60,7 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 
         public Task AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
-            _context.AddTrackingRange(items, UpdatePartialAsync);
+            _context.AddTrackingRange(items, UpdatePartialAsync, cancellationToken);
 
             return _collection.InsertManyAsync(items, cancellationToken: cancellationToken);
         }
@@ -116,7 +116,7 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 
         public Task UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
-            _context.AddTrackingRange(items, UpdatePartialAsync);
+            _context.AddTrackingRange(items, UpdatePartialAsync, cancellationToken);
 
             return _collection.BulkWriteAsync(CreateUpdates(items, cancellationToken), cancellationToken: cancellationToken);
         }

@@ -28,6 +28,8 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDb.Common
 
             foreach (var track in _changeTracker)
             {
+                if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
                 if (_updateHandlers.TryGetValue(track.Key, out var handler))
                 {
                     if (handler is null) continue;
@@ -48,7 +50,7 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDb.Common
             return _changeTracker.Values.ToList();
         }
 
-        public void DropCollections()
+        public void DropCollections(CancellationToken cancellationToken = default)
         {
             var collections = Database.GetCollectionNames();
 
@@ -56,6 +58,8 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDb.Common
 
             foreach (var collection in collections)
             {
+                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+
                 Database.DropCollection(collection);
             }
         }
@@ -67,10 +71,12 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDb.Common
             _updateHandlers.AddOrUpdate(entity.Id, handler, (k, v) => handler);
         }
 
-        internal void AddTrackingRange(in IReadOnlyList<BaseEntity> entities, in Func<Guid, BaseEntity, CancellationToken, Task> handler)
+        internal void AddTrackingRange(in IReadOnlyList<BaseEntity> entities, in Func<Guid, BaseEntity, CancellationToken, Task> handler, CancellationToken cancellationToken = default)
         {
             foreach (var entity in entities)
             {
+                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+
                 AddTracking(entity, handler);
             }
         }
