@@ -67,7 +67,7 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDb.Common
             _updateHandlers.AddOrUpdate(entity.Id, handler, (k, v) => handler);
         }
 
-        internal void AddTrackingRange(IReadOnlyList<BaseEntity> entities, Func<Guid, BaseEntity, CancellationToken, Task> handler)
+        internal void AddTrackingRange(in IReadOnlyList<BaseEntity> entities, in Func<Guid, BaseEntity, CancellationToken, Task> handler)
         {
             foreach (var entity in entities)
             {

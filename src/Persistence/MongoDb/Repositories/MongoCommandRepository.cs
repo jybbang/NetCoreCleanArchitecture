@@ -118,7 +118,7 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
         {
             _context.AddTrackingRange(items, UpdatePartialAsync);
 
-            return _collection.BulkWriteAsync(CreateUpdates(items), cancellationToken: cancellationToken);
+            return _collection.BulkWriteAsync(CreateUpdates(items, cancellationToken), cancellationToken: cancellationToken);
         }
 
         private void UpdatePartial(Guid key, object item)

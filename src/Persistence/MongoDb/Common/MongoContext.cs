@@ -42,8 +42,6 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
 
             foreach (var track in _changeTracker)
             {
-                if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
-
                 if (_updateHandlers.TryGetValue(track.Key, out var handler))
                 {
                     if (handler is null) continue;
@@ -83,7 +81,7 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
             _updateHandlers.AddOrUpdate(entity.Id, handler, (k, v) => handler);
         }
 
-        internal void AddTrackingRange(IEnumerable<BaseEntity> entities, Func<Guid, BaseEntity, CancellationToken, Task> handler)
+        internal void AddTrackingRange(in IReadOnlyList<BaseEntity> entities, Func<Guid, BaseEntity, CancellationToken, Task> handler)
         {
             foreach (var entity in entities)
             {

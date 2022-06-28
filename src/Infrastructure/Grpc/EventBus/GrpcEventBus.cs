@@ -39,9 +39,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.Grpc.EventBus
 
                 foreach (var subscribe in subscribes!.Values.ToList())
                 {
+#if NETCOREAPP
+                    await subscribe.WriteAsync(response, cancellationToken);
+#else
                     if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
                     await subscribe.WriteAsync(response);
+#endif
                 }
             }
         }
