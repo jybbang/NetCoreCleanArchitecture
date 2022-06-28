@@ -40,7 +40,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
             services.AddOptions<DaprOptions>("Api:Dapr");
 
             // EventBus
-            services.AddSingleton<IEventBus, DaprEventBus>();
+            services.AddScoped<IEventBus, DaprEventBus>();
 
             return services;
         }
@@ -50,7 +50,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
             services.AddOptions<DaprOptions>("Api:Dapr");
 
             // StateStore
-            services.AddSingleton(typeof(IStateStore<>), typeof(DaprStateStore<>));
+            services.AddScoped(typeof(IStateStore<>), typeof(DaprStateStore<>));
 
             return services;
         }

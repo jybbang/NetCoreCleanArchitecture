@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.EventSources;
 using NetCoreCleanArchitecture.Application.Common.StateStores;
 using NetCoreCleanArchitecture.Infrastructure.Grpc.Common.Options;
+using NetCoreCleanArchitecture.Infrastructure.Grpc.Common.Rpcs;
 using NetCoreCleanArchitecture.Infrastructure.Grpc.EventBus;
 
 namespace NetCoreCleanArchitecture.Infrastructure
@@ -15,8 +16,10 @@ namespace NetCoreCleanArchitecture.Infrastructure
         {
             services.AddOptions<GrpcOptions>("Api:Grpc");
 
+            services.AddSingleton<GrpcEventBusRpc>();
+
             // EventBus
-            services.AddSingleton<IEventBus, GrpcEventBus>();
+            services.AddScoped<IEventBus, GrpcEventBus>();
 
             return services;
         }
