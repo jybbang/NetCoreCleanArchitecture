@@ -25,7 +25,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
+namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
 {
     public class LiteDbQueryRepository<TEntity> : IQueryRepository<TEntity> where TEntity : BaseEntity
     {
