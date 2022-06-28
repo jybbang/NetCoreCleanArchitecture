@@ -18,12 +18,14 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Application.Common.CsvServices
 {
     public class CsvService : ICsvService
     {
-        public IReadOnlyList<T> ReadCsv<T>(IReadOnlyList<string> lines, char separator) where T : new()
+        public IReadOnlyList<T> ReadCsv<T>(in IReadOnlyList<string> lines, char separator, CancellationToken cancellationToken) where T : new()
         {
             var items = new List<T>();
 
@@ -47,6 +49,8 @@ namespace NetCoreCleanArchitecture.Application.Common.CsvServices
 
                 for (var i = 0; i < columns.Length; i++)
                 {
+                    if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+
                     try
                     {
                         var property = item.GetType().GetProperty(columns[i]);
@@ -70,7 +74,7 @@ namespace NetCoreCleanArchitecture.Application.Common.CsvServices
             return items;
         }
 
-        public IReadOnlyList<string> WriteCsv<T>(IReadOnlyList<T> items, char separator)
+        public IReadOnlyList<string> WriteCsv<T>(in IReadOnlyList<T> items, char separator)
         {
             var lines = new List<string>();
 

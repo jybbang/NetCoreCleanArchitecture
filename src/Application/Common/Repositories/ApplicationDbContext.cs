@@ -64,11 +64,11 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             return result;
         }
 
-        private void UpdateAuditable(IReadOnlyList<BaseEntity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken)
+        private void UpdateAuditable(in IReadOnlyList<BaseEntity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken)
         {
             foreach (var entity in changedEntities)
             {
-                if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
 
                 if (entity is BaseAuditableEntity auditableEntity)
                 {
@@ -84,7 +84,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             }
         }
 
-        private static IReadOnlyList<BaseEvent> GetEventsToDispatch(IReadOnlyList<BaseEntity> changedEntities, CancellationToken cancellationToken)
+        private static IReadOnlyList<BaseEvent> GetEventsToDispatch(in IReadOnlyList<BaseEntity> changedEntities, CancellationToken cancellationToken)
         {
             var eventsToDispatch = new List<BaseEvent>();
 
@@ -96,7 +96,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             {
                 while (domainEvents.TryTake(out var domainEvent))
                 {
-                    if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+                    if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
 
                     eventsToDispatch.Add(domainEvent);
                 }
@@ -109,8 +109,6 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
         {
             foreach (var domainEvent in domainEvents)
             {
-                if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
-
                 await _eventSource.PublishAsync(domainEvent, timestamp, cancellationToken);
             }
         }

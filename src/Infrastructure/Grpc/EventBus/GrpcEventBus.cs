@@ -25,7 +25,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Grpc.EventBus
             _server = server;
         }
 
-        public Task PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
+        public async Task PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
             if (_server.TryGetSubscribes(topic, out var subscribes))
             {
@@ -37,11 +37,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.Grpc.EventBus
                     DomainEvent = Google.Protobuf.ByteString.CopyFrom(eventBytes)
                 };
 
-                subscribes!.Values.ToList()
-                    .ForEach(async subscribe => await subscribe.WriteAsync(response));
-            }
+                foreach (var subscribe in subscribes!.Values.ToList())
+                {
+                    if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
-            return Task.CompletedTask;
+                    await subscribe.WriteAsync(response);
+                }
+            }
         }
     }
 }

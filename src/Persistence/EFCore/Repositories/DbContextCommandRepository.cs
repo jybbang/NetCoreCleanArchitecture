@@ -19,6 +19,7 @@ using NetCoreCleanArchitecture.Application.Common.Repositories;
 using NetCoreCleanArchitecture.Domain.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -59,6 +60,20 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
             if (entity is null) return;
 
             Set.Remove(entity);
+        }
+
+        public void RemoveAll()
+        {
+            var entities = Set.AsNoTracking().ToList();
+
+            Set.RemoveRange(entities);
+        }
+
+        public async Task RemoveAllAsync(CancellationToken cancellationToken)
+        {
+            var entities = await Set.AsNoTracking().ToListAsync(cancellationToken);
+
+            Set.RemoveRange(entities);
         }
 
         public void Update(TEntity item) => Set.Update(item);

@@ -36,6 +36,10 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         Task RemoveAsync(Guid key, CancellationToken cancellationToken);
 
+        void RemoveAll();
+
+        Task RemoveAllAsync(CancellationToken cancellationToken);
+
         void Update(TEntity item);
 
         Task UpdateAsync(TEntity item, CancellationToken cancellationToken);

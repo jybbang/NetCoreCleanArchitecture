@@ -15,13 +15,15 @@
 //
 
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Application.Common.CsvServices
 {
     public interface ICsvService
     {
-        IReadOnlyList<T> ReadCsv<T>(IReadOnlyList<string> lines, char separator) where T : new();
+        IReadOnlyList<T> ReadCsv<T>(in IReadOnlyList<string> lines, char separator, CancellationToken cancellationToken) where T : new();
 
-        IReadOnlyList<string> WriteCsv<T>(IReadOnlyList<T> items, char separator);
+        IReadOnlyList<string> WriteCsv<T>(in IReadOnlyList<T> items, char separator);
     }
 }

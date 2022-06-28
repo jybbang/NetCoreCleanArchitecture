@@ -71,14 +71,24 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
 
             if (item is null) return;
 
-            _context.AddTracking(item, UpdatePartialAsync);
-
             _collection.Delete(key);
         }
 
         public Task RemoveAsync(Guid key, CancellationToken cancellationToken)
         {
             Remove(key);
+
+            return Task.CompletedTask;
+        }
+
+        public void RemoveAll()
+        {
+            _collection.DeleteAll();
+        }
+
+        public Task RemoveAllAsync(CancellationToken cancellationToken)
+        {
+            RemoveAll();
 
             return Task.CompletedTask;
         }

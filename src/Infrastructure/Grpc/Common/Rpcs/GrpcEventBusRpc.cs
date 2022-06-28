@@ -85,12 +85,12 @@ namespace NetCoreCleanArchitecture.Infrastructure.Grpc.Common.Rpcs
             });
         }
 
-        internal bool TryGetSubscribes(in string topic, out ConcurrentDictionary<string, IServerStreamWriter<SubscribeResponse>>? subscribes)
+        internal bool TryGetSubscribes(string topic, out ConcurrentDictionary<string, IServerStreamWriter<SubscribeResponse>>? subscribes)
         {
             return _subscribes.TryGetValue(topic, out subscribes);
         }
 
-        private bool Unsubscribing(in string topic, in string key)
+        private bool Unsubscribing(string topic, in string key)
         {
             if (_unsubscribes.TryRemove(key, out var mrs))
             {

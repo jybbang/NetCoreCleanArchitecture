@@ -22,8 +22,6 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
 
             foreach (var key in keys)
             {
-                if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
-
                 var state = await GetAsync(key, cancellationToken);
 
                 if (!(state is null)) result.Add(state);
@@ -34,6 +32,8 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
 
         public async Task<T?> GetAsync(string key, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
             var item = _client.Get<T>(key);
 
             return await Task.FromResult(item);

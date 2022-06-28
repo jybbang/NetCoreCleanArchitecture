@@ -71,8 +71,6 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 
             if (item is null) return;
 
-            _context.AddTracking(item, UpdatePartialAsync);
-
             _collection.DeleteOne(Id(key));
         }
 
@@ -82,9 +80,17 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
 
             if (item is null) return;
 
-            _context.AddTracking(item, UpdatePartialAsync);
-
             await _collection.DeleteOneAsync(Id(key), cancellationToken: cancellationToken);
+        }
+
+        public void RemoveAll()
+        {
+            _collection.DeleteMany(NotId(Guid.Empty));
+        }
+
+        public Task RemoveAllAsync(CancellationToken cancellationToken)
+        {
+            return _collection.DeleteManyAsync(NotId(Guid.Empty), cancellationToken);
         }
 
         public void Update(TEntity item)
@@ -125,12 +131,14 @@ namespace NetCoreCleanArchitecture.Persistence.MongoDb.Repositories
             return _collection.ReplaceOneAsync(Id(key), (TEntity)item, cancellationToken: cancellationToken);
         }
 
-        private IEnumerable<WriteModel<TEntity>> CreateUpdates(IEnumerable<TEntity> items)
+        private IEnumerable<WriteModel<TEntity>> CreateUpdates(in IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
         {
             var updates = new List<WriteModel<TEntity>>();
 
             foreach (var item in items)
             {
+                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+
                 if (item.Id == Guid.Empty) continue;
 
                 updates.Add(new ReplaceOneModel<TEntity>(Id(item.Id), item));
