@@ -41,6 +41,8 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
 
         public Task<T> GetOrCreateAsync(string key, Func<Task<T>> factory, int ttlSeconds, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
             return _client.GetOrCreateAsync<T>(key, entry =>
             {
                 if (ttlSeconds > 0)
@@ -54,6 +56,8 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
 
         public Task AddAsync(string key, T item, int ttlSeconds, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
             if (ttlSeconds > 0)
             {
                 _client.Set<T>(key, item, TimeSpan.FromSeconds(ttlSeconds));
@@ -68,6 +72,8 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
 
         public Task RemoveAsync(string key, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
             _client.Remove(key);
 
             return Task.CompletedTask;

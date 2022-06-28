@@ -78,12 +78,19 @@ namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 
         public void Update(TEntity item) => Set.Update(item);
 
-        public Task UpdateAsync(TEntity item, CancellationToken cancellationToken) => Task.FromResult(Set.Update(item));
+        public Task UpdateAsync(TEntity item, CancellationToken cancellationToken)
+        {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
+            return Task.FromResult(Set.Update(item));
+        }
 
         public void UpdateRange(IReadOnlyList<TEntity> items) => Set.UpdateRange(items);
 
         public Task UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
             Set.UpdateRange(items);
 
             return Task.CompletedTask;

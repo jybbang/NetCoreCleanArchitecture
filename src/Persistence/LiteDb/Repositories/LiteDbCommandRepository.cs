@@ -46,6 +46,8 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
 
         public Task AddAsync(TEntity item, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
             Add(item);
 
             return Task.CompletedTask;
@@ -60,6 +62,8 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
 
         public Task AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
             AddRange(items);
 
             return Task.CompletedTask;
@@ -76,6 +80,8 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
 
         public Task RemoveAsync(Guid key, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
             Remove(key);
 
             return Task.CompletedTask;
@@ -88,6 +94,8 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
 
         public Task RemoveAllAsync(CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
             RemoveAll();
 
             return Task.CompletedTask;
@@ -102,6 +110,8 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
 
         public Task UpdateAsync(TEntity item, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
             Update(item);
 
             return Task.CompletedTask;
@@ -119,6 +129,8 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
 
         public Task UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
             UpdateRange(items);
 
             return Task.CompletedTask;
@@ -131,6 +143,8 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
 
         private Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
             UpdatePartial(key, item);
 
             return Task.CompletedTask;

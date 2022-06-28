@@ -45,10 +45,18 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
             => _collection.Exists(where);
 
         public Task<bool> AnyAsync(CancellationToken cancellationToken)
-            => Task.FromResult(Any());
+        {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
+            return Task.FromResult(Any());
+        }
 
         public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-            => Task.FromResult(Any(where));
+        {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
+            return Task.FromResult(Any(where));
+        }
 
         public long Count()
             => _collection.LongCount();
@@ -57,10 +65,18 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
             => _collection.LongCount(where);
 
         public Task<long> CountAsync(CancellationToken cancellationToken)
-            => Task.FromResult(Count());
+        {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
+            return Task.FromResult(Count());
+        }
 
         public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-            => Task.FromResult(Count(where));
+        {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
+            return Task.FromResult(Count(where));
+        }
 
         public TEntity? Find(Guid key)
             => _collection.FindById(key);
@@ -69,10 +85,18 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
             => _collection.Find(where).SingleOrDefault();
 
         public Task<TEntity?> FindAsync(Guid key, CancellationToken cancellationToken)
-            => Task.FromResult(Find(key));
+        {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
+            return Task.FromResult(Find(key));
+        }
 
         public Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-            => Task.FromResult(Find(where));
+        {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
+            return Task.FromResult(Find(where));
+        }
 
         public List<TEntity> FindMany()
             => _collection.FindAll().ToList();
@@ -81,9 +105,17 @@ namespace NetCoreCleanArchitecture.Persistence.LiteDbDb.Repositories
             => _collection.Find(where).ToList();
 
         public Task<List<TEntity>> FindManyAsync(CancellationToken cancellationToken)
-            => Task.FromResult(FindMany());
+        {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
+            return Task.FromResult(FindMany());
+        }
 
         public Task<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-            => Task.FromResult(FindMany(where));
+        {
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+
+            return Task.FromResult(FindMany(where));
+        }
     }
 }
