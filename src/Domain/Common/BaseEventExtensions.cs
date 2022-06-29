@@ -25,7 +25,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
             return entitiy;
         }
 
-        public static T WithUpdatedEvent<T>(this T entitiy, object oldIdentifier, object identifier, string topic = "") where T : BaseEntity
+        public static T WithUpdatedEvent<T>(this T entitiy, object originalIdentifier, object identifier, string topic = "") where T : BaseEntity
         {
             var entitiyName = entitiy.GetType().Name;
 
@@ -35,7 +35,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
             {
                 EntityName = entitiyName,
                 Id = entitiy.Id,
-                OldIdentifier = oldIdentifier,
+                OriginalIdentifier = originalIdentifier,
                 Identifier = identifier,
             };
 
@@ -86,7 +86,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public Guid Id { get; set; }
 
-        public object OldIdentifier { get; set; } = null!;
+        public object OriginalIdentifier { get; set; } = null!;
 
         public object Identifier { get; set; } = null!;
     }
