@@ -62,11 +62,18 @@ namespace NetCoreCleanArchitecture.Infrastructure.Grpc.Common.Rpcs
 
             if (_unsubscribes.TryAdd(entryKey, mrs))
             {
-                var subscribes = _subscribes.GetOrAdd(request.Topic, _ => new ConcurrentDictionary<string, IServerStreamWriter<SubscribeResponse>>());
+                try
+                {
+                    var subscribes = _subscribes.GetOrAdd(request.Topic, _ => new ConcurrentDictionary<string, IServerStreamWriter<SubscribeResponse>>());
 
-                subscribes.TryAdd(entryKey, responseStream);
+                    subscribes.TryAdd(entryKey, responseStream);
 
-                mrs.Wait();
+                    mrs.Wait(context.CancellationToken);
+                }
+                finally
+                {
+                    Unsubscribing(request.Topic, entryKey);
+                }
             }
 
             return Task.CompletedTask;
@@ -94,16 +101,23 @@ namespace NetCoreCleanArchitecture.Infrastructure.Grpc.Common.Rpcs
         {
             if (_unsubscribes.TryRemove(key, out var mrs))
             {
-                if (_subscribes.TryGetValue(topic, out var subscribe))
+                try
                 {
-                    subscribe.TryRemove(key, out _);
+                    if (_subscribes.TryGetValue(topic, out var subscribe))
+                    {
+                        subscribe.TryRemove(key, out _);
 
-                    if (subscribe.IsEmpty) _subscribes.TryRemove(topic, out _);
+                        if (subscribe.IsEmpty) _subscribes.TryRemove(topic, out _);
+                    }
+
+                    mrs.Set();
+
+                    return true;
                 }
-
-                mrs.Dispose();
-
-                return true;
+                finally
+                {
+                    mrs.Dispose();
+                }
             }
 
             return false;
