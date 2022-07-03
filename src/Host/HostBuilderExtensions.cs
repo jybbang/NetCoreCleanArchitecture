@@ -19,12 +19,12 @@ namespace NetCoreCleanArchitecture.Host
                 .AddCommandLine(args)
                 .Build();
 
-            var opt = configuration.GetValue<ApiOptions>("Api");
+            var opt = configuration.GetValue<ApiOptions>("Api") ?? new ApiOptions();
 
             var levelSwitch = new LoggingLevelSwitch();
 
-            var loggerConfiguration = new LoggerConfiguration().ReadFrom
-                .Configuration(configuration)
+            var loggerConfiguration = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
                 .MinimumLevel.ControlledBy(levelSwitch)
                 .Enrich.FromLogContext()
                 .Enrich.WithMachineName()

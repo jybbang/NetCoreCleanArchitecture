@@ -11,12 +11,13 @@ using NetCoreCleanArchitecture.Host.Identity;
 using NetCoreCleanArchitecture.Host.Options;
 using NetCoreCleanArchitecture.Application.Common.Identities;
 using Prometheus;
+using System.Text.Json.Serialization;
 
 namespace NetCoreCleanArchitecture.Host
 {
     public static class ApplicationExtensions
     {
-        public static IApplicationBuilder UseNetCleanApi(this IApplicationBuilder app)
+        public static IApplicationBuilder UseNetCleanHost(this IApplicationBuilder app)
         {
             app.UseHttpsRedirection();
 
@@ -41,7 +42,7 @@ namespace NetCoreCleanArchitecture.Host
             return app;
         }
 
-        public static IEndpointRouteBuilder MapNetCleanApi(this IEndpointRouteBuilder endpoints)
+        public static IEndpointRouteBuilder MapNetCleanHost(this IEndpointRouteBuilder endpoints)
         {
             endpoints.MapControllers();
 
@@ -57,7 +58,7 @@ namespace NetCoreCleanArchitecture.Host
             return endpoints;
         }
 
-        public static IServiceCollection AddNetCleanApi(this IServiceCollection services)
+        public static IServiceCollection AddNetCleanHost(this IServiceCollection services)
         {
             // Identity
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
@@ -72,7 +73,12 @@ namespace NetCoreCleanArchitecture.Host
 
             // Controller with custom validator
             var builder = services.AddControllers(options => options.Filters.Add<ApiExceptionFilterAttribute>())
-                .AddJsonOptions(opt => opt.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)
+                .AddJsonOptions(options =>
+                {
+                    var enumConverter = new JsonStringEnumConverter();
+                    options.JsonSerializerOptions.Converters.Add(enumConverter);
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                })
                 .AddFluentValidation();
 
             // Customise default Api behaviour
@@ -94,8 +100,7 @@ namespace NetCoreCleanArchitecture.Host
         public static IHealthChecksBuilder AddNetCleanHealthChecks(this IHealthChecksBuilder builder)
         {
             // ASP.NET Core health check status metrics
-            builder
-                .ForwardToPrometheus();
+            builder.ForwardToPrometheus();
 
             return builder;
         }

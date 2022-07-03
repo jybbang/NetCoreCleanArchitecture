@@ -18,6 +18,7 @@ using MediatR;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Host.Controllers
 {
@@ -29,5 +30,10 @@ namespace NetCoreCleanArchitecture.Host.Controllers
         private ISender _mediator = null!;
 
         protected ISender Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<ISender>();
+
+        protected async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
+        {
+            return await Mediator.Send(request, HttpContext.RequestAborted);
+        }
     }
 }
