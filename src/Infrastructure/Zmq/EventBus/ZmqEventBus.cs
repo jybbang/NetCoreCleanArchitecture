@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.Common.EventSources;
 using NetCoreCleanArchitecture.Domain.Common;
 using NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Options;
-
+using NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs;
 using NetMQ;
 using NetMQ.Sockets;
 
@@ -21,27 +21,16 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.EventBus
 {
     public class ZmqEventBus : IEventBus
     {
-        private readonly IOptions<ZmqOptions> _options;
-        private readonly PublisherSocket _pubSocket;
+        private readonly ZmqPublisher _pubsub;
 
-        public ZmqEventBus(IOptions<ZmqOptions> options)
+        public ZmqEventBus(ZmqPublisher pubsub)
         {
-            _options = options;
-
-            _pubSocket = new PublisherSocket();
-
-            _pubSocket.Options.SendHighWatermark = _options.Value.SendHighWatermark;
-
-            _pubSocket.Bind($"tcp://*:{_options.Value.Port}");
+            _pubsub = pubsub;
         }
 
         public Task PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
-            var payload = JsonSerializer.SerializeToUtf8Bytes(message);
-
-            _pubSocket.SendMoreFrame(topic).SendFrame(payload);
-
-            return Task.CompletedTask;
+            return _pubsub.PublishAsync(topic, message, cancellationToken);
         }
     }
 }

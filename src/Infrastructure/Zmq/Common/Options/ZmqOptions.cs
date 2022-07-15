@@ -2,6 +2,8 @@
 {
     public class ZmqOptions
     {
+        public string Host { get; set; } = "localhost";
+
         public int Port { get; set; } = 5005;
 
         public int SendHighWatermark { get; set; } = 1000;
