@@ -4,9 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.EventSources;
 using NetCoreCleanArchitecture.Application.Common.StateStores;
-using NetCoreCleanArchitecture.Infrastructure.Grpc.Common.Options;
-using NetCoreCleanArchitecture.Infrastructure.Grpc.Common.Rpcs;
-using NetCoreCleanArchitecture.Infrastructure.Grpc.EventBus;
+using NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Options;
+using NetCoreCleanArchitecture.Infrastructure.Zmq.EventBus;
 
 namespace NetCoreCleanArchitecture.Infrastructure
 {
@@ -14,12 +13,10 @@ namespace NetCoreCleanArchitecture.Infrastructure
     {
         public static IServiceCollection AddNetCleanGrpcEventBus(this IServiceCollection services)
         {
-            services.AddOptions<GrpcOptions>("Api:Grpc");
-
-            services.AddSingleton<GrpcEventBusRpc>();
+            services.AddOptions<ZmqOptions>("Api:Zmq");
 
             // EventBus
-            services.AddScoped<IEventBus, GrpcEventBus>();
+            services.AddScoped<IEventBus, ZmqEventBus>();
 
             return services;
         }
