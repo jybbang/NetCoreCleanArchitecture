@@ -14,15 +14,15 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using Microsoft.EntityFrameworkCore;
-using NetCoreCleanArchitecture.Application.Common.Repositories;
-using NetCoreCleanArchitecture.Domain.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using NetCoreCleanArchitecture.Application.Common.Repositories;
+using NetCoreCleanArchitecture.Domain.Common;
 
 namespace NetCoreCleanArchitecture.Persistence.EFCore.Repositories
 {

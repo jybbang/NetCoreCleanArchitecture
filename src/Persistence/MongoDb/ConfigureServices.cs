@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using Mongo2Go;
 using MongoDB.Driver;
 using NetCoreCleanArchitecture.Application.Common.Repositories;
 using NetCoreCleanArchitecture.Persistence.MongoDb.Common;
-using System;
 
 namespace NetCoreCleanArchitecture.Persistence
 {

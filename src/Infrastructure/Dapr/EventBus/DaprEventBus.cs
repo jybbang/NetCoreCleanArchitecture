@@ -1,10 +1,10 @@
-﻿using Dapr.Client;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Dapr.Client;
 using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.Common.EventSources;
 using NetCoreCleanArchitecture.Domain.Common;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.Common.Options;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NetCoreCleanArchitecture.Infrastructure.Dapr.EventBus
 {

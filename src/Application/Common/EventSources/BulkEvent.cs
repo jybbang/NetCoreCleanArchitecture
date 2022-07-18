@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using NetCoreCleanArchitecture.Domain.Common;
 
 namespace NetCoreCleanArchitecture.Application.Common.EventSources

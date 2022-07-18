@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using System;
+﻿using System;
+using AutoMapper;
 
 namespace NetCoreCleanArchitecture.Application.Common.Mappers
 {

@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using NetCoreCleanArchitecture.Application.Common.StateStores;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
+using NetCoreCleanArchitecture.Application.Common.StateStores;
 
 namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
 {

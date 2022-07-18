@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.EventSources;
 using NetCoreCleanArchitecture.Application.Common.StateStores;
-using NetCoreCleanArchitecture.Infrastructure.Dapr.EventBus;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.Common.Options;
+using NetCoreCleanArchitecture.Infrastructure.Dapr.EventBus;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores;
 
 namespace NetCoreCleanArchitecture.Infrastructure

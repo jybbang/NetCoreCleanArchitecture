@@ -1,4 +1,5 @@
-﻿using FluentValidation.AspNetCore;
+﻿using System.Text.Json.Serialization;
+using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -6,12 +7,11 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using NetCoreCleanArchitecture.Application.Common.Identities;
 using NetCoreCleanArchitecture.Host.Filters;
 using NetCoreCleanArchitecture.Host.Identity;
 using NetCoreCleanArchitecture.Host.Options;
-using NetCoreCleanArchitecture.Application.Common.Identities;
 using Prometheus;
-using System.Text.Json.Serialization;
 
 namespace NetCoreCleanArchitecture.Host
 {

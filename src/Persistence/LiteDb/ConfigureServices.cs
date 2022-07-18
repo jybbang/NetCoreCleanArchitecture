@@ -1,8 +1,8 @@
-﻿using LiteDB;
+﻿using System;
+using LiteDB;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.Repositories;
 using NetCoreCleanArchitecture.Persistence.LiteDb.Common;
-using System;
 
 namespace NetCoreCleanArchitecture.Persistence
 {
@@ -26,7 +26,7 @@ namespace NetCoreCleanArchitecture.Persistence
 
             var database = new LiteDatabase(connectionString);
 
-            if (!(Activator.CreateInstance(typeof(T), database) is T context)) 
+            if (!(Activator.CreateInstance(typeof(T), database) is T context))
                 throw new NullReferenceException("Could not resolve LiteDbContext");
 
             services.AddSingleton<T>(context);

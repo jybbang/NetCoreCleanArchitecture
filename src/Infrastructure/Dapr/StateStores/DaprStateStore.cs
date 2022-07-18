@@ -1,14 +1,13 @@
 ﻿
-using Dapr.Client;
-using Microsoft.Extensions.Options;
-using NetCoreCleanArchitecture.Application.Common.StateStores;
-using NetCoreCleanArchitecture.Infrastructure.Dapr.Common.Options;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapr.Client;
+using Microsoft.Extensions.Options;
+using NetCoreCleanArchitecture.Application.Common.StateStores;
+using NetCoreCleanArchitecture.Infrastructure.Dapr.Common.Options;
 
 namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
 {

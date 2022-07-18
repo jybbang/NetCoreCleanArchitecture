@@ -14,13 +14,13 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using MongoDB.Driver;
-using NetCoreCleanArchitecture.Domain.Common;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MongoDB.Driver;
+using NetCoreCleanArchitecture.Domain.Common;
 
 namespace NetCoreCleanArchitecture.Persistence.MongoDb.Common
 {

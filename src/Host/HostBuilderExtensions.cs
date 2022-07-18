@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using NetCoreCleanArchitecture.Host.Options;
 using Serilog;
 using Serilog.Core;
 using Serilog.Enrichers.Span;
-using System;
 
 namespace NetCoreCleanArchitecture.Host
 {
