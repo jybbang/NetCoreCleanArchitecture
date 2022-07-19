@@ -10,14 +10,14 @@ namespace NetCoreCleanArchitecture.Interface
 {
     public static class HostBuilderExtensions
     {
-        public static IHostBuilder UseSerilog(this IHostBuilder builder, IConfiguration configuration)
+        public static IHostBuilder UseSerilog(this IHostBuilder builder, string[] args)
         {
-            //var configuration = new ConfigurationBuilder()
-            //    .AddJsonFile("appsettings.json", false, true)
-            //    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", true, true)
-            //    .AddEnvironmentVariables()
-            //    .AddCommandLine(args)
-            //    .Build();
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", true, true)
+                .AddEnvironmentVariables()
+                .AddCommandLine(args)
+                .Build();
 
             var opt = configuration.GetValue<ApiOptions>("Api") ?? new ApiOptions();
 
