@@ -1,27 +1,11 @@
-﻿
-/* 'Persistence.LiteDb (net5.0)' 프로젝트에서 병합되지 않은 변경 내용
-이전:
-using LiteDB;
-using NetCoreCleanArchitecture.Application.Common.Repositories;
-using NetCoreCleanArchitecture.Domain.Common;
-이후:
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-*/
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LiteDB;
-using NetCoreCleanArchitecture.
-/* 'Persistence.LiteDb (net5.0)' 프로젝트에서 병합되지 않은 변경 내용
-이전:
-using LiteDB;
 using NetCoreCleanArchitecture.Domain.Common;
-이후:
-using NetCoreCleanArchitecture.Domain.Common;
-*/
-Domain.Common;
 
 namespace NetCoreCleanArchitecture.Persistence.LiteDb.Common
 {
