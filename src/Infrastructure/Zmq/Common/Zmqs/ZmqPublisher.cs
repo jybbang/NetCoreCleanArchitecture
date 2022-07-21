@@ -25,10 +25,10 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs
 
         public async Task PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
+            await _sync.WaitAsync(cancellationToken);
+
             try
             {
-                await _sync.WaitAsync(cancellationToken);
-
                 var payload = JsonSerializer.SerializeToUtf8Bytes(message);
 
                 _pubSocket.SendMoreFrame(topic).SendFrame(payload);

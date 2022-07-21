@@ -6,11 +6,14 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.Identities;
 using NetCoreCleanArchitecture.Interface.Http.Filters;
 using NetCoreCleanArchitecture.Interface.Http.Identity;
 using NetCoreCleanArchitecture.Interface.Http.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Prometheus;
 
 namespace NetCoreCleanArchitecture.Interface
@@ -19,8 +22,6 @@ namespace NetCoreCleanArchitecture.Interface
     {
         public static IApplicationBuilder UseNetCleanHttp(this IApplicationBuilder app)
         {
-            app.UseHttpsRedirection();
-
             app.UseStaticFiles();
 
             app.UseRouting();

@@ -19,7 +19,7 @@ namespace NetCoreCleanArchitecture.Interface
                 .AddCommandLine(args)
                 .Build();
 
-            var opt = configuration.GetValue<ApiOptions>("Api") ?? new ApiOptions();
+            var apiOptions = configuration.GetValue<ApiOptions>("Api") ?? new ApiOptions();
 
             var levelSwitch = new LoggingLevelSwitch();
 
@@ -31,12 +31,12 @@ namespace NetCoreCleanArchitecture.Interface
                 .Enrich.WithThreadId()
                 .Enrich.WithClientIp()
                 .Enrich.WithSpan()
-                .Enrich.WithProperty("ApplicationName", string.IsNullOrWhiteSpace(opt.AppId) ? opt.AppName : opt.AppId)
+                .Enrich.WithProperty("ApplicationName", string.IsNullOrWhiteSpace(apiOptions.AppId) ? apiOptions.AppName : apiOptions.AppId)
                 .WriteTo.Console();
 
-            if (!string.IsNullOrEmpty(opt.SeqServerUrl))
+            if (!string.IsNullOrEmpty(apiOptions.SeqServerUrl))
             {
-                loggerConfiguration = loggerConfiguration.WriteTo.Seq(opt.SeqServerUrl, apiKey: opt.SeqApiKey, controlLevelSwitch: levelSwitch);
+                loggerConfiguration = loggerConfiguration.WriteTo.Seq(apiOptions.SeqServerUrl, apiKey: apiOptions.SeqApiKey, controlLevelSwitch: levelSwitch);
             }
 
             Log.Logger = loggerConfiguration.CreateLogger();

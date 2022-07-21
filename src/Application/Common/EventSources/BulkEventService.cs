@@ -23,8 +23,6 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
         {
             _logger = logger;
             _services = services;
-
-            _logger.LogInformation("EventBufferService initialized");
         }
 
         public void BufferPublish<TDomainEvent>(string topic, TDomainEvent domainEvent) where TDomainEvent : BufferedEvent
