@@ -51,10 +51,10 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                         .Where(events => events.Any())
                         .Subscribe(async events =>
                         {
-                            var cts = new CancellationTokenSource(domainEvent.PublishTimeout);
-
                             try
                             {
+                                using var cts = new CancellationTokenSource(domainEvent.PublishTimeout);
+
                                 using var scope = _services.CreateScope();
 
                                 var e = new BulkEvent(topic)
@@ -68,9 +68,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                             }
                             catch (Exception ex)
                             {
-                                cts.Dispose();
-
-                                _logger.LogError(ex, "BulkEventService unhandled exception: {@Topic}", topic);
+                                _logger.LogError(ex, "BulkEventService unhandled exception: {Topic}", topic);
                             }
                         });
 
