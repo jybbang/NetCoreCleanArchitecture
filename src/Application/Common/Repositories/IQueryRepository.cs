@@ -32,32 +32,32 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
         bool Any(Expression<Func<TEntity, bool>> where);
 
-        Task<bool> AnyAsync(CancellationToken cancellationToken);
+        ValueTask<bool> AnyAsync(CancellationToken cancellationToken);
 
-        Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
+        ValueTask<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
 
         long Count();
 
         long Count(Expression<Func<TEntity, bool>> where);
 
-        Task<long> CountAsync(CancellationToken cancellationToken);
+        ValueTask<long> CountAsync(CancellationToken cancellationToken);
 
-        Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
+        ValueTask<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
 
         TEntity? Find(Guid key);
 
         TEntity? Find(Expression<Func<TEntity, bool>> where);
 
-        Task<TEntity?> FindAsync(Guid key, CancellationToken cancellationToken);
+        ValueTask<TEntity?> FindAsync(Guid key, CancellationToken cancellationToken);
 
-        Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
+        ValueTask<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
 
         List<TEntity> FindMany();
 
         List<TEntity> FindMany(Expression<Func<TEntity, bool>> where);
 
-        Task<List<TEntity>> FindManyAsync(CancellationToken cancellationToken);
+        ValueTask<List<TEntity>> FindManyAsync(CancellationToken cancellationToken);
 
-        Task<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
+        ValueTask<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
     }
 }

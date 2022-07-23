@@ -43,7 +43,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
             _bulkEvent = eventBuffer;
         }
 
-        public async Task PublishAsync<TDomainEvent>(TDomainEvent domainEvent, DateTimeOffset timestamp, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
+        public async ValueTask PublishAsync<TDomainEvent>(TDomainEvent domainEvent, DateTimeOffset timestamp, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
             var eventName = domainEvent.GetType().Name;
 
@@ -91,18 +91,18 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                 : _mediator.Publish(notification, cancellationToken);
         }
 
-        private async Task PublishToEventbus<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
+        private ValueTask PublishToEventbus<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
-            if (_eventBus is null) return;
+            if (_eventBus is null) return new ValueTask();
 
             if (domainEvent is BufferedEvent bufferedEvent && bufferedEvent.BufferCount > 0)
             {
                 _bulkEvent.BufferPublish(domainEvent.Topic, bufferedEvent);
 
-                return;
+                return new ValueTask();
             }
 
-            await _eventBus.PublishAsync(domainEvent.Topic, domainEvent, cancellationToken);
+            return _eventBus.PublishAsync(domainEvent.Topic, domainEvent, cancellationToken);
         }
     }
 }

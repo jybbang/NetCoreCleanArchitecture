@@ -44,18 +44,18 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
         public bool Any(Expression<Func<TEntity, bool>> where)
             => _collection.Exists(where);
 
-        public Task<bool> AnyAsync(CancellationToken cancellationToken)
+        public ValueTask<bool> AnyAsync(CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
-            return Task.FromResult(Any());
+            return new ValueTask<bool>(Any());
         }
 
-        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+        public ValueTask<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
-            return Task.FromResult(Any(where));
+            return new ValueTask<bool>(Any(where));
         }
 
         public long Count()
@@ -64,18 +64,18 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
         public long Count(Expression<Func<TEntity, bool>> where)
             => _collection.LongCount(where);
 
-        public Task<long> CountAsync(CancellationToken cancellationToken)
+        public ValueTask<long> CountAsync(CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
-            return Task.FromResult(Count());
+            return new ValueTask<long>(Count());
         }
 
-        public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+        public ValueTask<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
-            return Task.FromResult(Count(where));
+            return new ValueTask<long>(Count(where));
         }
 
         public TEntity? Find(Guid key)
@@ -84,18 +84,18 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
         public TEntity? Find(Expression<Func<TEntity, bool>> where)
             => _collection.Find(where).SingleOrDefault();
 
-        public Task<TEntity?> FindAsync(Guid key, CancellationToken cancellationToken)
+        public ValueTask<TEntity?> FindAsync(Guid key, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
-            return Task.FromResult(Find(key));
+            return new ValueTask<TEntity?>(Find(key));
         }
 
-        public Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+        public ValueTask<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
-            return Task.FromResult(Find(where));
+            return new ValueTask<TEntity?>(Find(where));
         }
 
         public List<TEntity> FindMany()
@@ -104,18 +104,18 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
         public List<TEntity> FindMany(Expression<Func<TEntity, bool>> where)
             => _collection.Find(where).ToList();
 
-        public Task<List<TEntity>> FindManyAsync(CancellationToken cancellationToken)
+        public ValueTask<List<TEntity>> FindManyAsync(CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
-            return Task.FromResult(FindMany());
+            return new ValueTask<List<TEntity>>(FindMany());
         }
 
-        public Task<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+        public ValueTask<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
-            return Task.FromResult(FindMany(where));
+            return new ValueTask<List<TEntity>>(FindMany(where));
         }
     }
 }

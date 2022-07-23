@@ -47,11 +47,11 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
         public bool Any(Expression<Func<TEntity, bool>> where)
             => Queryable.Where(where).Any();
 
-        public Task<bool> AnyAsync(CancellationToken cancellationToken)
-            => _collection.Find(NotId(Guid.Empty)).AnyAsync(cancellationToken);
+        public async ValueTask<bool> AnyAsync(CancellationToken cancellationToken)
+            => await _collection.Find(NotId(Guid.Empty)).AnyAsync(cancellationToken);
 
-        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-            => _collection.Find(where).AnyAsync(cancellationToken);
+        public async ValueTask<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+            => await _collection.Find(where).AnyAsync(cancellationToken);
 
         public long Count()
             => Queryable.LongCount();
@@ -59,11 +59,11 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
         public long Count(Expression<Func<TEntity, bool>> where)
             => Queryable.Where(where).LongCount();
 
-        public Task<long> CountAsync(CancellationToken cancellationToken)
-            => _collection.Find(NotId(Guid.Empty)).CountDocumentsAsync(cancellationToken);
+        public async ValueTask<long> CountAsync(CancellationToken cancellationToken)
+            => await _collection.Find(NotId(Guid.Empty)).CountDocumentsAsync(cancellationToken);
 
-        public Task<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-            => _collection.CountDocumentsAsync(where, cancellationToken: cancellationToken);
+        public async ValueTask<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+            => await _collection.CountDocumentsAsync(where, cancellationToken: cancellationToken);
 
         public TEntity? Find(Guid key)
             => _collection.Find(item => item.Id == key).SingleOrDefault();
@@ -71,10 +71,10 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
         public TEntity? Find(Expression<Func<TEntity, bool>> where)
             => Queryable.Where(where).SingleOrDefault();
 
-        public async Task<TEntity?> FindAsync(Guid key, CancellationToken cancellationToken)
+        public async ValueTask<TEntity?> FindAsync(Guid key, CancellationToken cancellationToken)
             => await _collection.Find(item => item.Id == key).SingleOrDefaultAsync(cancellationToken);
 
-        public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+        public async ValueTask<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
             => await _collection.Find(where).SingleOrDefaultAsync(cancellationToken);
 
         public List<TEntity> FindMany()
@@ -83,11 +83,11 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
         public List<TEntity> FindMany(Expression<Func<TEntity, bool>> where)
             => Queryable.Where(where).ToList();
 
-        public Task<List<TEntity>> FindManyAsync(CancellationToken cancellationToken)
-            => _collection.Find(NotId(Guid.Empty)).ToListAsync(cancellationToken);
+        public async ValueTask<List<TEntity>> FindManyAsync(CancellationToken cancellationToken)
+            => await _collection.Find(NotId(Guid.Empty)).ToListAsync(cancellationToken);
 
-        public Task<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-            => _collection.Find(where).ToListAsync(cancellationToken);
+        public async ValueTask<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+            => await _collection.Find(where).ToListAsync(cancellationToken);
 
         private FilterDefinition<TEntity> Id(Guid value)
         {

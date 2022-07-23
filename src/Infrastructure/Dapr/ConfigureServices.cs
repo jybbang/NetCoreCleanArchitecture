@@ -13,7 +13,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
     {
         public static IApplicationBuilder UseNetCleanDapr(this IApplicationBuilder app)
         {
-            // CloudEvents
+            // CloudEventsx
             app.UseCloudEvents();
 
             return app;

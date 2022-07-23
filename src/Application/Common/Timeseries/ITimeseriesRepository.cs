@@ -7,10 +7,10 @@ namespace NetCoreCleanArchitecture.Application.Common.Timeseries
 {
     public interface ITimeseriesRepository
     {
-        Task<IReadOnlyList<(DateTimeOffset, double)>> GetAsync(Guid id, DateTimeOffset from, DateTimeOffset to = default, CancellationToken cancellationToken = default);
+        ValueTask<IReadOnlyList<(DateTimeOffset, double)>> GetAsync(Guid id, DateTimeOffset from, DateTimeOffset to = default, CancellationToken cancellationToken = default);
 
-        Task AddAsync(Guid id, DateTimeOffset timestamp, double value, CancellationToken cancellationToken);
+        ValueTask AddAsync(Guid id, DateTimeOffset timestamp, double value, CancellationToken cancellationToken);
 
-        Task RemoveAsync(Guid id, DateTimeOffset from = default, DateTimeOffset to = default, CancellationToken cancellationToken = default);
+        ValueTask RemoveAsync(Guid id, DateTimeOffset from = default, DateTimeOffset to = default, CancellationToken cancellationToken = default);
     }
 }

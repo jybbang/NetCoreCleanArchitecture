@@ -15,7 +15,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.EventBus
             _pubsub = pubsub;
         }
 
-        public Task PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
+        public ValueTask PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
             return _pubsub.PublishAsync(topic, message, cancellationToken);
         }

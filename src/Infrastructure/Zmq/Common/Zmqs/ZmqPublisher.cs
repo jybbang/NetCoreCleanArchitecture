@@ -24,7 +24,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs
             _pubSocket.Bind($"tcp://*:{options.Value.Port}");
         }
 
-        public async Task PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
+        public async ValueTask PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
             await _sync.WaitAsync(cancellationToken);
 

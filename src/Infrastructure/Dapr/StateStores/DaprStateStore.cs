@@ -22,7 +22,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             _client = client;
         }
 
-        public async Task<IReadOnlyList<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken)
+        public async ValueTask<IReadOnlyList<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken)
         {
             var stream = await _client.GetBulkStateAsync(_options.StoreName, keys, null, cancellationToken: cancellationToken);
 
@@ -31,10 +31,10 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             return stream.OfType<T>().ToList();
         }
 
-        public async Task<T?> GetAsync(string key, CancellationToken cancellationToken)
+        public async ValueTask<T?> GetAsync(string key, CancellationToken cancellationToken)
             => await _client.GetStateAsync<T>(_options.StoreName, key, cancellationToken: cancellationToken);
 
-        public async Task<T> GetOrCreateAsync(string key, Func<Task<T>> factory, int ttlSeconds, CancellationToken cancellationToken)
+        public async ValueTask<T> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken)
         {
             var result = await GetAsync(key, cancellationToken);
 
@@ -50,17 +50,17 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             return result;
         }
 
-        public Task AddAsync(string key, T item, int ttlSeconds, CancellationToken cancellationToken)
+        public async ValueTask AddAsync(string key, T item, int ttlSeconds, CancellationToken cancellationToken)
         {
             var metadata = new Dictionary<string, string>
             {
                 {"ttlInSeconds",ttlSeconds.ToString() },
             };
 
-            return _client.SaveStateAsync(_options.StoreName, key, item, metadata: metadata, cancellationToken: cancellationToken);
+            await _client.SaveStateAsync(_options.StoreName, key, item, metadata: metadata, cancellationToken: cancellationToken);
         }
 
-        public Task RemoveAsync(string key, CancellationToken cancellationToken)
-            => _client.DeleteStateAsync(_options.StoreName, key, cancellationToken: cancellationToken);
+        public async ValueTask RemoveAsync(string key, CancellationToken cancellationToken)
+            => await _client.DeleteStateAsync(_options.StoreName, key, cancellationToken: cancellationToken);
     }
 }

@@ -44,11 +44,11 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
             _collection.InsertOne(item);
         }
 
-        public Task AddAsync(TEntity item, CancellationToken cancellationToken)
+        public async ValueTask AddAsync(TEntity item, CancellationToken cancellationToken)
         {
             _context.AddTracking(item, UpdatePartialAsync);
 
-            return _collection.InsertOneAsync(item, cancellationToken: cancellationToken);
+            await _collection.InsertOneAsync(item, cancellationToken: cancellationToken);
         }
 
         public void AddRange(IReadOnlyList<TEntity> items)
@@ -58,11 +58,11 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
             _collection.InsertMany(items);
         }
 
-        public Task AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public async ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
             _context.AddTrackingRange(items, UpdatePartialAsync, cancellationToken);
 
-            return _collection.InsertManyAsync(items, cancellationToken: cancellationToken);
+            await _collection.InsertManyAsync(items, cancellationToken: cancellationToken);
         }
 
         public void Remove(Guid key)
@@ -74,7 +74,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
             _collection.DeleteOne(Id(key));
         }
 
-        public async Task RemoveAsync(Guid key, CancellationToken cancellationToken)
+        public async ValueTask RemoveAsync(Guid key, CancellationToken cancellationToken)
         {
             var item = await _collection.Find(item => item.Id == key).SingleOrDefaultAsync(cancellationToken);
 
@@ -88,9 +88,9 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
             _collection.DeleteMany(NotId(Guid.Empty));
         }
 
-        public Task RemoveAllAsync(CancellationToken cancellationToken)
+        public async ValueTask RemoveAllAsync(CancellationToken cancellationToken)
         {
-            return _collection.DeleteManyAsync(NotId(Guid.Empty), cancellationToken);
+            await _collection.DeleteManyAsync(NotId(Guid.Empty), cancellationToken);
         }
 
         public void Update(TEntity item)
@@ -100,11 +100,11 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
             _collection.ReplaceOne(Id(item.Id), item);
         }
 
-        public Task UpdateAsync(TEntity item, CancellationToken cancellationToken)
+        public async ValueTask UpdateAsync(TEntity item, CancellationToken cancellationToken)
         {
             _context.AddTracking(item, UpdatePartialAsync);
 
-            return _collection.ReplaceOneAsync(Id(item.Id), item, cancellationToken: cancellationToken);
+            await _collection.ReplaceOneAsync(Id(item.Id), item, cancellationToken: cancellationToken);
         }
 
         public void UpdateRange(IReadOnlyList<TEntity> items)
@@ -114,11 +114,11 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
             _collection.BulkWrite(CreateUpdates(items));
         }
 
-        public Task UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public async ValueTask UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
             _context.AddTrackingRange(items, UpdatePartialAsync, cancellationToken);
 
-            return _collection.BulkWriteAsync(CreateUpdates(items, cancellationToken), cancellationToken: cancellationToken);
+            await _collection.BulkWriteAsync(CreateUpdates(items, cancellationToken), cancellationToken: cancellationToken);
         }
 
         private void UpdatePartial(Guid key, object item)
@@ -126,9 +126,9 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
             _collection.ReplaceOne(Id(key), (TEntity)item);
         }
 
-        private Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken)
+        private async ValueTask UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken)
         {
-            return _collection.ReplaceOneAsync(Id(key), (TEntity)item, cancellationToken: cancellationToken);
+            await _collection.ReplaceOneAsync(Id(key), (TEntity)item, cancellationToken: cancellationToken);
         }
 
         private IEnumerable<WriteModel<TEntity>> CreateUpdates(in IEnumerable<TEntity> items, CancellationToken cancellationToken = default)

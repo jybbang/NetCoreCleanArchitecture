@@ -23,6 +23,6 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 {
     public interface IApplicationEventSource
     {
-        Task PublishAsync<TDomainEvent>(TDomainEvent domainEvent, DateTimeOffset timestamp, CancellationToken cancellationToken) where TDomainEvent : BaseEvent;
+        ValueTask PublishAsync<TDomainEvent>(TDomainEvent domainEvent, DateTimeOffset timestamp, CancellationToken cancellationToken) where TDomainEvent : BaseEvent;
     }
 }

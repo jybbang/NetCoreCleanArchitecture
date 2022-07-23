@@ -44,13 +44,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
             _collection.Insert(item);
         }
 
-        public Task AddAsync(TEntity item, CancellationToken cancellationToken)
+        public ValueTask AddAsync(TEntity item, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
             Add(item);
 
-            return Task.CompletedTask;
+            return new ValueTask();
         }
 
         public void AddRange(IReadOnlyList<TEntity> items)
@@ -60,13 +60,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
             _collection.InsertBulk(items);
         }
 
-        public Task AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
             AddRange(items);
 
-            return Task.CompletedTask;
+            return new ValueTask();
         }
 
         public void Remove(Guid key)
@@ -78,13 +78,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
             _collection.Delete(key);
         }
 
-        public Task RemoveAsync(Guid key, CancellationToken cancellationToken)
+        public ValueTask RemoveAsync(Guid key, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
             Remove(key);
 
-            return Task.CompletedTask;
+            return new ValueTask();
         }
 
         public void RemoveAll()
@@ -92,13 +92,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
             _collection.DeleteAll();
         }
 
-        public Task RemoveAllAsync(CancellationToken cancellationToken)
+        public ValueTask RemoveAllAsync(CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
             RemoveAll();
 
-            return Task.CompletedTask;
+            return new ValueTask();
         }
 
         public void Update(TEntity item)
@@ -108,13 +108,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
             _collection.Update(item.Id, item);
         }
 
-        public Task UpdateAsync(TEntity item, CancellationToken cancellationToken)
+        public ValueTask UpdateAsync(TEntity item, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
             Update(item);
 
-            return Task.CompletedTask;
+            return new ValueTask();
         }
 
         public void UpdateRange(IReadOnlyList<TEntity> items)
@@ -127,13 +127,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
             }
         }
 
-        public Task UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public ValueTask UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
             UpdateRange(items);
 
-            return Task.CompletedTask;
+            return new ValueTask();
         }
 
         private void UpdatePartial(Guid key, object item)
@@ -141,13 +141,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
             _collection.Upsert(key, (TEntity)item);
         }
 
-        private Task UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken)
+        private ValueTask UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
             UpdatePartial(key, item);
 
-            return Task.CompletedTask;
+            return new ValueTask();
         }
     }
 }

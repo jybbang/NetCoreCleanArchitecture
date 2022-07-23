@@ -6,6 +6,6 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 {
     public interface IEventBus
     {
-        Task PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent;
+        ValueTask PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent;
     }
 }

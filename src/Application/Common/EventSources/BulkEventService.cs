@@ -76,5 +76,15 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
                 }
             }
         }
+
+        public void ClearBuffers()
+        {
+            foreach (var buff in _buffers)
+            {
+                buff.Value.Dispose();
+            }
+
+            _buffers.Clear();
+        }
     }
 }

@@ -31,9 +31,9 @@ namespace NetCoreCleanArchitecture.Interface.Http.Controllers
 
         protected ISender Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<ISender>();
 
-        protected async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
+        protected Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
         {
-            return await Mediator.Send(request, HttpContext.RequestAborted);
+            return Mediator.Send(request, HttpContext.RequestAborted);
         }
     }
 }

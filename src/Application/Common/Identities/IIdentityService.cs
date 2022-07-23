@@ -21,14 +21,14 @@ namespace NetCoreCleanArchitecture.Application.Common.Identities
 {
     public interface IIdentityService
     {
-        Task<string> GetUserNameAsync(string userId);
+        ValueTask<string> GetUserNameAsync(string userId);
 
-        Task<bool> IsInRoleAsync(string userId, string role);
+        ValueTask<bool> IsInRoleAsync(string userId, string role);
 
-        Task<bool> AuthorizeAsync(string userId, string policyName);
+        ValueTask<bool> AuthorizeAsync(string userId, string policyName);
 
-        Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password);
+        ValueTask<(Result Result, string UserId)> CreateUserAsync(string userName, string password);
 
-        Task<Result> DeleteUserAsync(string userId);
+        ValueTask<Result> DeleteUserAsync(string userId);
     }
 }

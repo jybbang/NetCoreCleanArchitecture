@@ -65,6 +65,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
                             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
                             var isInRole = await _identityService.IsInRoleAsync(_currentUserService.UserId, role.Trim());
+
                             if (isInRole)
                             {
                                 authorized = true;

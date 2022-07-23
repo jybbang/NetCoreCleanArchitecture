@@ -12,7 +12,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Common
     public abstract class LiteDbContext
     {
         private readonly ConcurrentDictionary<Guid, BaseEntity> _changeTracker = new ConcurrentDictionary<Guid, BaseEntity>();
-        private readonly ConcurrentDictionary<Guid, Func<Guid, BaseEntity, CancellationToken, Task>> _updateHandlers = new ConcurrentDictionary<Guid, Func<Guid, BaseEntity, CancellationToken, Task>>();
+        private readonly ConcurrentDictionary<Guid, Func<Guid, BaseEntity, CancellationToken, ValueTask>> _updateHandlers = new ConcurrentDictionary<Guid, Func<Guid, BaseEntity, CancellationToken, ValueTask>>();
 
         public ILiteDatabase Database { get; }
 
@@ -63,14 +63,14 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Common
             }
         }
 
-        internal void AddTracking(BaseEntity entity, Func<Guid, BaseEntity, CancellationToken, Task> handler)
+        internal void AddTracking(BaseEntity entity, Func<Guid, BaseEntity, CancellationToken, ValueTask> handler)
         {
             _changeTracker.AddOrUpdate(entity.Id, entity, (k, v) => entity);
 
             _updateHandlers.AddOrUpdate(entity.Id, handler, (k, v) => handler);
         }
 
-        internal void AddTrackingRange(in IReadOnlyList<BaseEntity> entities, in Func<Guid, BaseEntity, CancellationToken, Task> handler, CancellationToken cancellationToken = default)
+        internal void AddTrackingRange(in IReadOnlyList<BaseEntity> entities, in Func<Guid, BaseEntity, CancellationToken, ValueTask> handler, CancellationToken cancellationToken = default)
         {
             foreach (var entity in entities)
             {

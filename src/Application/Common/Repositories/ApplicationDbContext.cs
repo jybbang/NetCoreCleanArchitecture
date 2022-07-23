@@ -57,11 +57,11 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
 
             var eventsToDispatch = GetEventsToDispatch(changedEntities, cancellationToken);
 
-            var result = await _unitOfWork.SaveChangesAsync(cancellationToken);
+            var changes = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await DispatchEvents(eventsToDispatch, timestamp, cancellationToken);
 
-            return result;
+            return changes;
         }
 
         private void UpdateAuditable(in IReadOnlyList<BaseEntity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken = default)
@@ -105,7 +105,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Repositories
             return eventsToDispatch.AsReadOnly();
         }
 
-        private async Task DispatchEvents(IReadOnlyList<BaseEvent> domainEvents, DateTimeOffset timestamp, CancellationToken cancellationToken)
+        private async ValueTask DispatchEvents(IReadOnlyList<BaseEvent> domainEvents, DateTimeOffset timestamp, CancellationToken cancellationToken)
         {
             foreach (var domainEvent in domainEvents)
             {

@@ -38,11 +38,11 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
 
         public void Add(TEntity item) => Set.Add(item);
 
-        public Task AddAsync(TEntity item, CancellationToken cancellationToken) => Set.AddAsync(item, cancellationToken).AsTask();
+        public async ValueTask AddAsync(TEntity item, CancellationToken cancellationToken) => await Set.AddAsync(item, cancellationToken);
 
         public void AddRange(IReadOnlyList<TEntity> items) => Set.AddRange(items);
 
-        public Task AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken) => Set.AddRangeAsync(items, cancellationToken);
+        public async ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken) => await Set.AddRangeAsync(items, cancellationToken);
 
         public void Remove(Guid key)
         {
@@ -53,7 +53,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
             Set.Remove(entity);
         }
 
-        public async Task RemoveAsync(Guid key, CancellationToken cancellationToken)
+        public async ValueTask RemoveAsync(Guid key, CancellationToken cancellationToken)
         {
             var entity = await Set.FindAsync(new object[] { key }, cancellationToken);
 
@@ -69,7 +69,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
             Set.RemoveRange(entities);
         }
 
-        public async Task RemoveAllAsync(CancellationToken cancellationToken)
+        public async ValueTask RemoveAllAsync(CancellationToken cancellationToken)
         {
             var entities = await Set.AsNoTracking().ToListAsync(cancellationToken);
 
@@ -78,22 +78,24 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
 
         public void Update(TEntity item) => Set.Update(item);
 
-        public Task UpdateAsync(TEntity item, CancellationToken cancellationToken)
+        public ValueTask UpdateAsync(TEntity item, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
-            return Task.FromResult(Set.Update(item));
+            Set.Update(item);
+
+            return new ValueTask();
         }
 
         public void UpdateRange(IReadOnlyList<TEntity> items) => Set.UpdateRange(items);
 
-        public Task UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public ValueTask UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
             Set.UpdateRange(items);
 
-            return Task.CompletedTask;
+            return new ValueTask();
         }
     }
 }
