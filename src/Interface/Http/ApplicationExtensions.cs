@@ -28,12 +28,6 @@ namespace NetCoreCleanArchitecture.Interface
 
             app.UseAuthorization();
 
-            app.UseSwaggerUi3(settings =>
-            {
-                settings.Path = "/api";
-                settings.DocumentPath = "/api/specification.json";
-            });
-
             // ASP.NET Core HTTP request metrics
             app.UseHttpMetrics();
 
@@ -89,8 +83,6 @@ namespace NetCoreCleanArchitecture.Interface
                 options.ValueLengthLimit = int.MaxValue;
                 options.MultipartBodyLengthLimit = int.MaxValue;
             });
-
-            services.AddOpenApiDocument();
 
             return services;
         }
