@@ -10,8 +10,9 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
             topic = string.IsNullOrEmpty(topic) ? $"{entitiyName}CreatedEvent" : topic;
 
-            var e = new EntityCreatedEvent(topic)
+            var e = new EntityCreatedEvent()
             {
+                Topic = topic,
                 EntityName = entitiyName,
                 Id = entitiy.Id,
                 Identifier = identifier,
@@ -28,8 +29,9 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
             topic = string.IsNullOrEmpty(topic) ? $"{entitiyName}UpdatedEvent" : topic;
 
-            var e = new EntityUpdatedEvent(topic)
+            var e = new EntityUpdatedEvent()
             {
+                Topic = topic,
                 EntityName = entitiyName,
                 Id = entitiy.Id,
                 OriginalIdentifier = originalIdentifier,
@@ -47,8 +49,9 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
             topic = string.IsNullOrEmpty(topic) ? $"{entitiyName}DeletedEvent" : topic;
 
-            var e = new EntityDeletedEvent(topic)
+            var e = new EntityDeletedEvent()
             {
+                Topic = topic,
                 EntityName = entitiyName,
                 Id = entitiy.Id,
                 Identifier = identifier,
@@ -62,41 +65,29 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
     public class EntityCreatedEvent : BaseEvent
     {
-        public EntityCreatedEvent(string topic) : base(topic)
-        {
-        }
+        public Guid Id { get; set; }
 
         public string EntityName { get; set; } = null!;
-
-        public Guid Id { get; set; }
 
         public object Identifier { get; set; } = null!;
     }
 
     public class EntityUpdatedEvent : BaseEvent
     {
-        public EntityUpdatedEvent(string topic) : base(topic)
-        {
-        }
+        public Guid Id { get; set; }
 
         public string EntityName { get; set; } = null!;
 
-        public Guid Id { get; set; }
+        public object Identifier { get; set; } = null!;
 
         public object OriginalIdentifier { get; set; } = null!;
-
-        public object Identifier { get; set; } = null!;
     }
 
     public class EntityDeletedEvent : BaseEvent
     {
-        public EntityDeletedEvent(string topic) : base(topic)
-        {
-        }
+        public Guid Id { get; set; }
 
         public string EntityName { get; set; } = null!;
-
-        public Guid Id { get; set; }
 
         public object Identifier { get; set; } = null!;
     }

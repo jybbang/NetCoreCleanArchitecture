@@ -63,7 +63,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
                     userName = await _identityService.GetUserNameAsync(userId);
                 }
 
-                _logger.LogWarning("Request long running: {Name} ({ElapsedMilliseconds} milliseconds) - {@UserId} {@UserName} {@Request}",
+                _logger.LogTrace("Request long running: {Name} ({ElapsedMilliseconds} milliseconds) - {@UserId} {@UserName} {@Request}",
                     requestName, elapsedMilliseconds, userId, userName, request);
             }
 

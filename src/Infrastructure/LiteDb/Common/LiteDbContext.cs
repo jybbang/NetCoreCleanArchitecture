@@ -27,8 +27,6 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Common
 
             foreach (var track in _changeTracker)
             {
-                if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
-
                 if (_updateHandlers.TryGetValue(track.Key, out var handler))
                 {
                     if (handler is null) continue;

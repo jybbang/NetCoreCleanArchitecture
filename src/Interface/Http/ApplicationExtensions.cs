@@ -1,22 +1,61 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
-using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.Identities;
 using NetCoreCleanArchitecture.Interface.Http.Filters;
 using NetCoreCleanArchitecture.Interface.Http.Identity;
-using NetCoreCleanArchitecture.Interface.Http.Options;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Prometheus;
+using Results.Fluent;
 
 namespace NetCoreCleanArchitecture.Interface
 {
     public static class ApplicationExtensions
     {
+        public static ActionResult ToActionResult(this Result result)
+        {
+            ActionResult? actionResult;
+
+            if (result.IsFailed)
+            {
+                actionResult = new UnprocessableEntityObjectResult(result.Errors);
+            }
+            else
+            {
+                actionResult = new NoContentResult();
+            }
+
+            return actionResult;
+        }
+
+        public static ActionResult<TContainer> ToActionResult<TContainer>(this Result<TContainer> result) where TContainer : class
+        {
+            ActionResult? actionResult;
+
+            if (result.IsFailed)
+            {
+                actionResult = new UnprocessableEntityObjectResult(result.Errors);
+            }
+            else if (result.IsSucceeded)
+            {
+                actionResult = new OkObjectResult(result.Container);
+            }
+            else
+            {
+                actionResult = new NoContentResult();
+            }
+
+            return new ActionResult<TContainer>(actionResult);
+        }
+
         public static IApplicationBuilder UseNetCleanHttp(this IApplicationBuilder app)
         {
             app.UseStaticFiles();
@@ -41,21 +80,13 @@ namespace NetCoreCleanArchitecture.Interface
             // ASP.NET Core exporter middleware
             endpoints.MapMetrics("/metrics");
 
-            endpoints.MapHealthChecks("/health", new HealthCheckOptions
-            {
-                Predicate = _ => true,
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });
-
             return endpoints;
         }
 
-        public static IServiceCollection AddNetCleanHttp(this IServiceCollection services)
+        public static IServiceCollection AddNetCleanHttp(this IServiceCollection services, IConfiguration configuration)
         {
             // Identity
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
-
-            services.AddOptions<ApiOptions>("Api");
 
             services.AddHttpContextAccessor();
 
@@ -83,6 +114,24 @@ namespace NetCoreCleanArchitecture.Interface
                 options.ValueLengthLimit = int.MaxValue;
                 options.MultipartBodyLengthLimit = int.MaxValue;
             });
+
+            if (Uri.TryCreate(configuration.GetConnectionString("Zipkin"), UriKind.Absolute, out var uri))
+            {
+                var appName = configuration.GetValue<string>("ApplicationName");
+
+                appName = string.IsNullOrEmpty(appName) ? Guid.NewGuid().ToString() : appName;
+
+                services.AddOpenTelemetryTracing(configure =>
+                {
+                    configure
+                    .AddSource(appName)
+                    .SetResourceBuilder(
+                        ResourceBuilder.CreateDefault()
+                            .AddService(appName))
+                    .AddAspNetCoreInstrumentation()
+                    .AddZipkinExporter(configure => configure.Endpoint = uri);
+                });
+            }
 
             return services;
         }

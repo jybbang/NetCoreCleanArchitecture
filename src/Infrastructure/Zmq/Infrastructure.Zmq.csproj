@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="NetMQ" Version="4.0.1.9" />
+    <PackageReference Include="System.Text.Json" Version="6.0.5" />
   </ItemGroup>
 
 	<ItemGroup>

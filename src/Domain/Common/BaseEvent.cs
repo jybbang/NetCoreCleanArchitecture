@@ -16,27 +16,23 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace NetCoreCleanArchitecture.Domain.Common
 {
     public abstract class BaseEvent : IEquatable<BaseEvent?>
     {
-        protected BaseEvent(string topic)
+        protected BaseEvent()
         {
-            Topic = topic;
+            Topic = this.GetType().Name;
         }
 
-        [JsonInclude]
-        public string Topic { get; }
-
-        [JsonInclude]
-        public Guid EventId { get; private set; }
-
-        [JsonInclude]
-        public bool IsPublished { get; private set; }
+        public string Topic { get; set; }
 
         public DateTimeOffset Timestamp { get; set; }
+
+        public Guid EventId { get; private set; }
+
+        public bool IsPublished { get; private set; }
 
         public BaseEvent Publising(DateTimeOffset timestamp = default)
         {

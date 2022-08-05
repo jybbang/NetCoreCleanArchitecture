@@ -4,10 +4,6 @@ namespace NetCoreCleanArchitecture.Domain.Common
 {
     public abstract class BufferedEvent : BaseEvent
     {
-        protected BufferedEvent(string topic) : base(topic)
-        {
-        }
-
         public int BufferCount { get; protected set; } = 1000;
 
         public TimeSpan BufferTime { get; protected set; } = TimeSpan.FromMilliseconds(1000);

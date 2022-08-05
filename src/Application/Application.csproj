@@ -32,13 +32,17 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-		<PackageReference Include="Results.Fluent" Version="1.1.1" />
+		<PackageReference Include="Results.Fluent" Version="1.2.0" />
 		<PackageReference Include="System.Collections" Version="4.3.0" />
 		<PackageReference Include="System.Reactive" Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Domain\Domain.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Common\Results\" />
 	</ItemGroup>
 
 </Project>

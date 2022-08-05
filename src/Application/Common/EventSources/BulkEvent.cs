@@ -5,8 +5,9 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 {
     public class BulkEvent : BaseEvent
     {
-        public BulkEvent(string topic) : base(topic)
+        public BulkEvent(string topic)
         {
+            Topic = topic;
         }
 
         public IList<object> DomainEvents { get; set; } = null!;

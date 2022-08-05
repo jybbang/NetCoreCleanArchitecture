@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Text.Json.Serialization;
 
 namespace NetCoreCleanArchitecture.Domain.Common
 {
@@ -26,7 +25,6 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         private readonly ConcurrentQueue<BaseEvent> _domainEvents = new ConcurrentQueue<BaseEvent>();
 
-        [JsonIgnore]
         public IProducerConsumerCollection<BaseEvent> DomainEvents => _domainEvents;
 
         public void Commit(BaseEvent domainEvent)

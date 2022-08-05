@@ -75,7 +75,7 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 if (elapsedMilliseconds > 1000)
                 {
-                    logger.LogWarning("Publish event long running: {Name} ({ElapsedMilliseconds} milliseconds) - {@Event}",
+                    logger.LogTrace("Publish event long running: {Name} ({ElapsedMilliseconds} milliseconds) - {@Event}",
                         eventName, elapsedMilliseconds, domainEvent);
                 }
             }
