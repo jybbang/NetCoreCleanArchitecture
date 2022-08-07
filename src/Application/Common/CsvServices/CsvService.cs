@@ -24,16 +24,15 @@ namespace NetCoreCleanArchitecture.Application.Common.CsvServices
 {
     public class CsvService : ICsvService
     {
-        public IReadOnlyList<T> ReadCsv<T>(in IReadOnlyList<string> lines, char separator, CancellationToken cancellationToken = default) where T : new()
+        public IReadOnlyList<T> ReadCsv<T>(in IEnumerable<string> lines, char separator, CancellationToken cancellationToken = default) where T : new()
         {
             var items = new List<T>();
 
-            if (lines.Count < 2)
-            {
-                return items;
-            }
+            var titleLine = lines.FirstOrDefault();
 
-            var columns = lines[0].Split(separator);
+            if (titleLine is null) return items;
+
+            var columns = titleLine.Split(separator);
 
             if (columns.Length == 0)
             {
@@ -58,7 +57,9 @@ namespace NetCoreCleanArchitecture.Application.Common.CsvServices
 
                         var type = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
 
-                        var value = Convert.ChangeType(values[i], type, CultureInfo.InvariantCulture);
+                        var value = type.IsEnum
+                            ? Enum.Parse(type, values[i], true)
+                            : Convert.ChangeType(values[i], type, CultureInfo.InvariantCulture);
 
                         property.SetValue(item, value, null);
                     }
@@ -73,7 +74,7 @@ namespace NetCoreCleanArchitecture.Application.Common.CsvServices
             return items;
         }
 
-        public IReadOnlyList<string> WriteCsv<T>(in IReadOnlyList<T> items, char separator)
+        public IReadOnlyList<string> WriteCsv<T>(in IEnumerable<T> items, char separator)
         {
             var lines = new List<string>();
 
