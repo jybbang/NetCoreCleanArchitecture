@@ -21,8 +21,8 @@ namespace NetCoreCleanArchitecture.Application.Common.CsvServices
 {
     public interface ICsvService
     {
-        IReadOnlyList<T> ReadCsv<T>(in IReadOnlyList<string> lines, char separator, CancellationToken cancellationToken = default) where T : new();
+        IReadOnlyList<T> ReadCsv<T>(in IEnumerable<string> lines, char separator, CancellationToken cancellationToken = default) where T : new();
 
-        IReadOnlyList<string> WriteCsv<T>(in IReadOnlyList<T> items, char separator);
+        IReadOnlyList<string> WriteCsv<T>(in IEnumerable<T> items, char separator);
     }
 }

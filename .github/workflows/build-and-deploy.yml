@@ -22,13 +22,13 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
-        uses: actions/checkout@v2.4.2
+        uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
       - name: Setup .NET Core SDK        
-        uses: actions/setup-dotnet@v2.1.0
+        uses: actions/setup-dotnet@v1.7.2
         with:
-          dotnet-version: 5.x
+          dotnet-version: 5.0.103
         
       - name: Install dependencies
         run: dotnet restore
@@ -45,26 +45,17 @@ jobs:
       - name: Application-Pack
         run: dotnet pack --no-build --configuration Release src/Application/Application.csproj --output .  
         
-      - name: Dapr-Pack
+      - name: Infrastructure.Dapr-Pack
         run: dotnet pack --no-build --configuration Release src/Infrastructure/Dapr/Infrastructure.Dapr.csproj --output .     
         
       - name: EFCore-Pack
-        run: dotnet pack --no-build --configuration Release src/Infrastructure/EFCore/Infrastructure.EFCore.csproj --output .     
-                     
-      - name: LiteDb-Pack
-        run: dotnet pack --no-build --configuration Release src/Infrastructure/LiteDb/Infrastructure.LiteDb.csproj --output .     
-                     
-      - name: MemoryCache-Pack
-        run: dotnet pack --no-build --configuration Release src/Infrastructure/MemoryCache/Infrastructure.MemoryCache.csproj --output .     
+        run: dotnet pack --no-build --configuration Release src/Persistence/EFCore/Persistence.EFCore.csproj --output .     
         
       - name: MongoDb-Pack
-        run: dotnet pack --no-build --configuration Release src/Infrastructure/MongoDb/Infrastructure.MongoDb.csproj --output .   
-        
-      - name: Zmq-Pack
-        run: dotnet pack --no-build --configuration Release src/Infrastructure/Zmq/Infrastructure.Zmq.csproj --output .   
+        run: dotnet pack --no-build --configuration Release src/Persistence/MongoDb/Persistence.MongoDb.csproj --output .   
                
-      - name: Http-Pack
-        run: dotnet pack --no-build --configuration Release src/Interface/Http/Interface.Http.csproj --output .
+      - name: WebHosting-Pack
+        run: dotnet pack --no-build --configuration Release src/WebHosting/WebHosting.csproj --output .
     
       - name: Domain-PushNuget
         run: dotnet nuget push *.Domain.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
@@ -72,50 +63,32 @@ jobs:
       - name: Application-PushNuget
         run: dotnet nuget push *.Application.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
                   
-      - name: Dapr-PushNuget
+      - name: Infrastructure.Dapr-PushNuget
         run: dotnet nuget push *.Infrastructure.Dapr.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
-               
-      - name: EFCore-PushNuget
-        run: dotnet nuget push *.Infrastructure.EFCore.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate      
         
-      - name: LiteDb-PushNuget
-        run: dotnet nuget push *.Infrastructure.LiteDb.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate        
-         
-      - name: MemoryCache-PushNuget
-        run: dotnet nuget push *.Infrastructure.MemoryCache.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate        
-         
       - name: MongoDb-PushNuget
-        run: dotnet nuget push *.Infrastructure.MongoDb.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate        
-         
-      - name: Zmq-PushNuget
-        run: dotnet nuget push *.Infrastructure.Zmq.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate        
-         
-      - name: Http-PushNuget
-        run: dotnet nuget push *.Interface.Http.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
+        run: dotnet nuget push *.Persistence.MongoDb.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate        
+                
+      - name: EFCore-PushNuget
+        run: dotnet nuget push *.Persistence.EFCore.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate      
+        
+      - name: WebHosting-PushNuget
+        run: dotnet nuget push *.WebHosting.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
     
-      - name: Domain-github
+      - name: Domain-PushNuget-github
         run: dotnet nuget push *.Domain.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
                   
-      - name: Application-github
+      - name: Application-PushNuget-github
         run: dotnet nuget push *.Application.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
                   
-      - name: Dapr-github
+      - name: Infrastructure.Dapr-PushNuget-github
         run: dotnet nuget push *.Infrastructure.Dapr.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
         
-      - name: EFCore-github
-        run: dotnet nuget push *.Infrastructure.EFCore.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate        
+      - name: EFCore-PushNuget-github
+        run: dotnet nuget push *.Persistence.EFCore.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate        
         
-      - name: LiteDb-github
-        run: dotnet nuget push *.Infrastructure.LiteDb.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate        
+      - name: MongoDb-PushNuget-github
+        run: dotnet nuget push *.Persistence.MongoDb.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate        
         
-      - name: MemoryCache-github
-        run: dotnet nuget push *.Infrastructure.MemoryCache.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate        
-        
-      - name: MongoDb-github
-        run: dotnet nuget push *.Infrastructure.MongoDb.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate        
-        
-      - name: Zmq-github
-        run: dotnet nuget push *.Infrastructure.Zmq.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate        
-        
-      - name: Http-github
-        run: dotnet nuget push *.Interface.Http.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
+      - name: WebHosting-PushNuget-github
+        run: dotnet nuget push *.WebHosting.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate
