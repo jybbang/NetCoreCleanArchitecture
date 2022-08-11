@@ -22,11 +22,11 @@ namespace NetCoreCleanArchitecture.Application.Common.Exceptions
     {
         public string? Entity { get; }
 
-        internal ForbiddenAccessException() : base() { }
+        public ForbiddenAccessException() : base() { }
 
-        internal ForbiddenAccessException(string message) : base(message) { }
+        public ForbiddenAccessException(string message) : base(message) { }
 
-        internal ForbiddenAccessException(string message, Exception innerException) : base(message, innerException) { }
+        public ForbiddenAccessException(string message, Exception innerException) : base(message, innerException) { }
 
         public ForbiddenAccessException(string entity, object key) : base($"{entity} ({key}) was fobidden")
         {
