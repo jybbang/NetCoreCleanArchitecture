@@ -25,6 +25,8 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs
 
         public async ValueTask PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
+            if (!message.AtLeastOnce && _sync.CurrentCount <= 0) return;
+
             await _sync.WaitAsync(cancellationToken);
 
             try

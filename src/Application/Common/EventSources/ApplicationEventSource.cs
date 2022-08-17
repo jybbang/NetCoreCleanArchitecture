@@ -63,6 +63,10 @@ namespace NetCoreCleanArchitecture.Application.Common.EventSources
 
                 await PublishToEventbus(domainEvent, cancellationToken);
             }
+            catch (OperationCanceledException ex)
+            {
+                logger.LogTrace(ex, "Publish event canceled exception: {Name} - {@Event}", eventName, domainEvent);
+            }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Publish event unhandled exception: {Name} - {@Event}", eventName, domainEvent);
