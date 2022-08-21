@@ -3,8 +3,8 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.Behaviours;
-using NetCoreCleanArchitecture.Application.Common.EventSources;
-using NetCoreCleanArchitecture.Application.Common.Repositories;
+using NetCoreCleanArchitecture.Application.EventSources;
+using NetCoreCleanArchitecture.Application.Repositories;
 
 namespace NetCoreCleanArchitecture.Application
 {

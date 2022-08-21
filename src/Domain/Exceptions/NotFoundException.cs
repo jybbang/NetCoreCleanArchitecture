@@ -14,18 +14,23 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using MediatR;
-using NetCoreCleanArchitecture.Domain.Common;
+using System;
 
-namespace NetCoreCleanArchitecture.Application.Common.EventSources
+namespace NetCoreCleanArchitecture.Domain.Exceptions
 {
-    public class DomainEventNotification<TDomainEvent> : INotification where TDomainEvent : BaseEvent
+    public class NotFoundException : Exception
     {
-        public TDomainEvent DomainEvent { get; }
+        public string? Entity { get; }
 
-        public DomainEventNotification(TDomainEvent domainEvent)
+        public NotFoundException() : base() { }
+
+        public NotFoundException(string message) : base(message) { }
+
+        public NotFoundException(string message, Exception innerException) : base(message, innerException) { }
+
+        public NotFoundException(string entity, object key) : base($"{entity} ({key}) was not found")
         {
-            DomainEvent = domainEvent;
+            Entity = entity;
         }
     }
 }

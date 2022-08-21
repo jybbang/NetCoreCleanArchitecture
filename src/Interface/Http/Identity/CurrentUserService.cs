@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-using NetCoreCleanArchitecture.Application.Common.Identities;
+using NetCoreCleanArchitecture.Application.Identities;
 
 namespace NetCoreCleanArchitecture.Interface.Http.Identity
 {

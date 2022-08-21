@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using NetCoreCleanArchitecture.Application.Common.EventSources;
+using NetCoreCleanArchitecture.Application.EventSources;
 using NetCoreCleanArchitecture.Domain.Common;
 using NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs;
 

@@ -15,14 +15,22 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using NetCoreCleanArchitecture.Domain.Common;
 
-namespace NetCoreCleanArchitecture.Application.Common.EventSources
+namespace NetCoreCleanArchitecture.Application.StateStores
 {
-    public interface IApplicationEventSource
+    public interface IStateStore<T> where T : class
     {
-        ValueTask PublishAsync<TDomainEvent>(TDomainEvent domainEvent, DateTimeOffset timestamp, CancellationToken cancellationToken) where TDomainEvent : BaseEvent;
+        ValueTask<T> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken);
+
+        ValueTask<T?> GetAsync(string key, CancellationToken cancellationToken);
+
+        ValueTask<IReadOnlyList<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken);
+
+        ValueTask AddAsync(string key, T item, int ttlSeconds, CancellationToken cancellationToken);
+
+        ValueTask RemoveAsync(string key, CancellationToken cancellationToken);
     }
 }

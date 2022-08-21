@@ -18,7 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
-using NetCoreCleanArchitecture.Application.Common.Identities;
+using NetCoreCleanArchitecture.Application.Identities;
 
 namespace NetCoreCleanArchitecture.Application.Common.Behaviours
 {

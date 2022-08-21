@@ -1,7 +1,7 @@
 ﻿using System;
 using LiteDB;
 using Microsoft.Extensions.DependencyInjection;
-using NetCoreCleanArchitecture.Application.Common.Repositories;
+using NetCoreCleanArchitecture.Application.Repositories;
 using NetCoreCleanArchitecture.Infrastructure.LiteDb.Common;
 
 namespace NetCoreCleanArchitecture.Infrastructure

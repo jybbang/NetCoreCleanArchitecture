@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using NetCoreCleanArchitecture.Application.Common.StateStores;
+using NetCoreCleanArchitecture.Application.StateStores;
 using NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores;
 
 namespace NetCoreCleanArchitecture.Infrastructure

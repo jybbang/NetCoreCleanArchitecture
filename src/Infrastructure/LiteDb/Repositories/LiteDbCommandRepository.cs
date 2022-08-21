@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using LiteDB;
-using NetCoreCleanArchitecture.Application.Common.Repositories;
+using NetCoreCleanArchitecture.Application.Repositories;
 using NetCoreCleanArchitecture.Domain.Common;
 using NetCoreCleanArchitecture.Infrastructure.LiteDb.Common;
 

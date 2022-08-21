@@ -22,7 +22,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using NetCoreCleanArchitecture.Application.Common.Repositories;
+using NetCoreCleanArchitecture.Application.Repositories;
 using NetCoreCleanArchitecture.Domain.Common;
 using NetCoreCleanArchitecture.Infrastructure.MongoDb.Common;
 

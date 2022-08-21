@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NetCoreCleanArchitecture.Domain.Common;
 
-namespace NetCoreCleanArchitecture.Application.Common.EventSources
+namespace NetCoreCleanArchitecture.Application.EventSources
 {
     public class BulkEvent : BaseEvent
     {

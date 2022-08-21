@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using NetCoreCleanArchitecture.Application.Common.Repositories;
+using NetCoreCleanArchitecture.Application.Repositories;
 using NetCoreCleanArchitecture.Domain.Common;
 
 namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories

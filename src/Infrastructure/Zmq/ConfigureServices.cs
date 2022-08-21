@@ -1,5 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using NetCoreCleanArchitecture.Application.Common.EventSources;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using NetCoreCleanArchitecture.Application.EventSources;
 using NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Options;
 using NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs;
 using NetCoreCleanArchitecture.Infrastructure.Zmq.EventBus;
@@ -8,9 +9,10 @@ namespace NetCoreCleanArchitecture.Infrastructure
 {
     public static class ConfigureServices
     {
-        public static IServiceCollection AddNetCleanZmqEventBus(this IServiceCollection services)
+        public static IServiceCollection AddNetCleanZmqEventBus(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddOptions<ZmqOptions>("Api:Zmq");
+            services.Configure<ZmqOptions>(
+                configuration.GetSection("Api:Zmq"));
 
             services.AddSingleton<ZmqPublisher>();
 

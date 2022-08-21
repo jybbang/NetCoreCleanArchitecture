@@ -19,11 +19,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NetCoreCleanArchitecture.Application.Common.EventSources;
-using NetCoreCleanArchitecture.Application.Common.Identities;
+using NetCoreCleanArchitecture.Application.EventSources;
+using NetCoreCleanArchitecture.Application.Identities;
 using NetCoreCleanArchitecture.Domain.Common;
 
-namespace NetCoreCleanArchitecture.Application.Common.Repositories
+namespace NetCoreCleanArchitecture.Application.Repositories
 {
     public class ApplicationDbContext : IApplicationDbContext
     {

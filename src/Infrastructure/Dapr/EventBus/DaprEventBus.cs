@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Dapr.Client;
 using Microsoft.Extensions.Options;
-using NetCoreCleanArchitecture.Application.Common.EventSources;
+using NetCoreCleanArchitecture.Application.EventSources;
 using NetCoreCleanArchitecture.Domain.Common;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.Common.Options;
 

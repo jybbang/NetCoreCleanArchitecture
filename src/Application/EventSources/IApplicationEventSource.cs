@@ -14,10 +14,15 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-namespace NetCoreCleanArchitecture.Application.Common.Identities
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using NetCoreCleanArchitecture.Domain.Common;
+
+namespace NetCoreCleanArchitecture.Application.EventSources
 {
-    public interface ICurrentUserService
+    public interface IApplicationEventSource
     {
-        string? UserId { get; }
+        ValueTask PublishAsync<TDomainEvent>(TDomainEvent domainEvent, DateTimeOffset timestamp, CancellationToken cancellationToken) where TDomainEvent : BaseEvent;
     }
 }

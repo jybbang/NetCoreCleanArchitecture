@@ -19,7 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using NetCoreCleanArchitecture.Application.Common.Identities;
+using NetCoreCleanArchitecture.Application.Identities;
 
 namespace NetCoreCleanArchitecture.Application.Common.Behaviours
 {

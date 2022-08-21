@@ -14,18 +14,23 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Threading;
-using System.Threading.Tasks;
-using NetCoreCleanArchitecture.Domain.Common;
+using System;
 
-namespace NetCoreCleanArchitecture.Application.Common.Repositories
+namespace NetCoreCleanArchitecture.Domain.Exceptions
 {
-    public interface IApplicationDbContext
+    public class ForbiddenAccessException : Exception
     {
-        ICommandRepository<TEntity> CommandSet<TEntity>() where TEntity : BaseEntity;
+        public string? Entity { get; }
 
-        IQueryRepository<TEntity> QuerySet<TEntity>() where TEntity : BaseEntity;
+        public ForbiddenAccessException() : base() { }
 
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        public ForbiddenAccessException(string message) : base(message) { }
+
+        public ForbiddenAccessException(string message, Exception innerException) : base(message, innerException) { }
+
+        public ForbiddenAccessException(string entity, object key) : base($"{entity} ({key}) was fobidden")
+        {
+            Entity = entity;
+        }
     }
 }

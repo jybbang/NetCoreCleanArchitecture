@@ -14,23 +14,10 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace NetCoreCleanArchitecture.Application.Common.StateStores
+namespace NetCoreCleanArchitecture.Application.Identities
 {
-    public interface IStateStore<T> where T : class
+    public interface ICurrentUserService
     {
-        ValueTask<T> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken);
-
-        ValueTask<T?> GetAsync(string key, CancellationToken cancellationToken);
-
-        ValueTask<IReadOnlyList<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken);
-
-        ValueTask AddAsync(string key, T item, int ttlSeconds, CancellationToken cancellationToken);
-
-        ValueTask RemoveAsync(string key, CancellationToken cancellationToken);
+        string? UserId { get; }
     }
 }

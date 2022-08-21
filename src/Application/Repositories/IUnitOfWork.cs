@@ -19,7 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NetCoreCleanArchitecture.Domain.Common;
 
-namespace NetCoreCleanArchitecture.Application.Common.Repositories
+namespace NetCoreCleanArchitecture.Application.Repositories
 {
     public interface IUnitOfWork
     {

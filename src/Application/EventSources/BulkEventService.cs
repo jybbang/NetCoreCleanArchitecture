@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NetCoreCleanArchitecture.Domain.Common;
 
-namespace NetCoreCleanArchitecture.Application.Common.EventSources
+namespace NetCoreCleanArchitecture.Application.EventSources
 {
     public class BulkEventService
     {

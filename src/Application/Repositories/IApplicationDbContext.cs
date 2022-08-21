@@ -14,21 +14,18 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System.Threading;
 using System.Threading.Tasks;
-using Results.Fluent;
+using NetCoreCleanArchitecture.Domain.Common;
 
-namespace NetCoreCleanArchitecture.Application.Common.Identities
+namespace NetCoreCleanArchitecture.Application.Repositories
 {
-    public interface IIdentityService
+    public interface IApplicationDbContext
     {
-        ValueTask<string> GetUserNameAsync(string userId);
+        ICommandRepository<TEntity> CommandSet<TEntity>() where TEntity : BaseEntity;
 
-        ValueTask<bool> IsInRoleAsync(string userId, string role);
+        IQueryRepository<TEntity> QuerySet<TEntity>() where TEntity : BaseEntity;
 
-        ValueTask<bool> AuthorizeAsync(string userId, string policyName);
-
-        ValueTask<(Result Result, string UserId)> CreateUserAsync(string userName, string password);
-
-        ValueTask<Result> DeleteUserAsync(string userId);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

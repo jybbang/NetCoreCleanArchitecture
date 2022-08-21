@@ -14,23 +14,18 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
+using MediatR;
+using NetCoreCleanArchitecture.Domain.Common;
 
-namespace NetCoreCleanArchitecture.Application.Common.Exceptions
+namespace NetCoreCleanArchitecture.Application.EventSources
 {
-    public class ForbiddenAccessException : Exception
+    public class DomainEventNotification<TDomainEvent> : INotification where TDomainEvent : BaseEvent
     {
-        public string? Entity { get; }
+        public TDomainEvent DomainEvent { get; }
 
-        public ForbiddenAccessException() : base() { }
-
-        public ForbiddenAccessException(string message) : base(message) { }
-
-        public ForbiddenAccessException(string message, Exception innerException) : base(message, innerException) { }
-
-        public ForbiddenAccessException(string entity, object key) : base($"{entity} ({key}) was fobidden")
+        public DomainEventNotification(TDomainEvent domainEvent)
         {
-            Entity = entity;
+            DomainEvent = domainEvent;
         }
     }
 }

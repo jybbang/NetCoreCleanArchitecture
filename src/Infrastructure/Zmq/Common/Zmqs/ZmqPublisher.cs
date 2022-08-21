@@ -20,7 +20,9 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs
 
             _pubSocket.Options.SendHighWatermark = options.Value.SendHighWatermark;
 
-            _pubSocket.Bind($"tcp://*:{options.Value.Port}");
+            var uri = $"tcp://*:{options.Value.Port}";
+
+            _pubSocket.Bind(uri);
         }
 
         public async ValueTask PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent

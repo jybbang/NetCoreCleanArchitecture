@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
-using NetCoreCleanArchitecture.Application.Common.StateStores;
+using NetCoreCleanArchitecture.Application.StateStores;
 
 namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
 {

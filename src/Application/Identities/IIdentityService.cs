@@ -14,23 +14,21 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
+using System.Threading.Tasks;
+using Results.Fluent;
 
-namespace NetCoreCleanArchitecture.Application.Common.Exceptions
+namespace NetCoreCleanArchitecture.Application.Identities
 {
-    public class NotFoundException : Exception
+    public interface IIdentityService
     {
-        public string? Entity { get; }
+        ValueTask<string> GetUserNameAsync(string userId);
 
-        public NotFoundException() : base() { }
+        ValueTask<bool> IsInRoleAsync(string userId, string role);
 
-        public NotFoundException(string message) : base(message) { }
+        ValueTask<bool> AuthorizeAsync(string userId, string policyName);
 
-        public NotFoundException(string message, Exception innerException) : base(message, innerException) { }
+        ValueTask<(Result Result, string UserId)> CreateUserAsync(string userName, string password);
 
-        public NotFoundException(string entity, object key) : base($"{entity} ({key}) was not found")
-        {
-            Entity = entity;
-        }
+        ValueTask<Result> DeleteUserAsync(string userId);
     }
 }

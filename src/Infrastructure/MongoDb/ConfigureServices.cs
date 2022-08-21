@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Mongo2Go;
 using MongoDB.Driver;
-using NetCoreCleanArchitecture.Application.Common.Repositories;
+using NetCoreCleanArchitecture.Application.Repositories;
 using NetCoreCleanArchitecture.Infrastructure.MongoDb.Common;
 
 namespace NetCoreCleanArchitecture.Infrastructure

@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NetCoreCleanArchitecture.Application.Common.Exceptions;
+using NetCoreCleanArchitecture.Domain.Exceptions;
 
 namespace NetCoreCleanArchitecture.Interface.Http.Filters
 {

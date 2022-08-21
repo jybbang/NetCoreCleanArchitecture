@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NetCoreCleanArchitecture.Application.Common.Timeseries
+namespace NetCoreCleanArchitecture.Application.Timeseries
 {
     public interface ITimeseriesRepository
     {

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NetCoreCleanArchitecture.Application.Common.Identities;
+using NetCoreCleanArchitecture.Application.Identities;
 using NetCoreCleanArchitecture.Interface.Http.Filters;
 using NetCoreCleanArchitecture.Interface.Http.Identity;
 using OpenTelemetry.Resources;

@@ -21,8 +21,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using NetCoreCleanArchitecture.Application.Common.Attributes;
-using NetCoreCleanArchitecture.Application.Common.Exceptions;
-using NetCoreCleanArchitecture.Application.Common.Identities;
+using NetCoreCleanArchitecture.Application.Identities;
+using NetCoreCleanArchitecture.Domain.Exceptions;
 
 namespace NetCoreCleanArchitecture.Application.Common.Behaviours
 {
