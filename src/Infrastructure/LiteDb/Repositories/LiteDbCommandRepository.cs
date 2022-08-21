@@ -46,7 +46,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
 
         public ValueTask AddAsync(TEntity item, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
 
             Add(item);
 
@@ -62,7 +62,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
 
         public ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
 
             AddRange(items);
 
@@ -80,7 +80,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
 
         public ValueTask RemoveAsync(Guid key, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
 
             Remove(key);
 
@@ -94,7 +94,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
 
         public ValueTask RemoveAllAsync(CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
 
             RemoveAll();
 
@@ -110,7 +110,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
 
         public ValueTask UpdateAsync(TEntity item, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
 
             Update(item);
 
@@ -129,7 +129,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
 
         public ValueTask UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
 
             UpdateRange(items);
 
@@ -143,7 +143,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
 
         private ValueTask UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
 
             UpdatePartial(key, item);
 
