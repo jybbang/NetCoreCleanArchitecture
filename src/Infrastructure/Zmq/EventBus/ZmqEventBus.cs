@@ -17,7 +17,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.EventBus
         private readonly IOptions<ZmqOptions> _options;
         private readonly ZmqPublisher _pubsub;
 
-        private readonly BlockingCollection<(string topic, BaseEvent message)> _bc = new BlockingCollection<(string topic, BaseEvent message)>();
+        private readonly BlockingCollection<(string topic, object message)> _bc = new BlockingCollection<(string topic, object message)>();
 
         public ZmqEventBus(
             ILogger<ZmqEventBus> logger,
@@ -27,8 +27,6 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.EventBus
             _logger = logger;
             _options = options;
             _pubsub = pubsub;
-
-            Task.Run(RunBlockingCollection).ConfigureAwait(false);
         }
 
         private async Task RunBlockingCollection()
@@ -41,7 +39,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.EventBus
 
                     using var cts = new CancellationTokenSource(_options.Value.RequestTimeout);
 
-                    await _pubsub.PublishAsync(item.topic, item.message, cts.Token);
+                    await _pubsub.PublishAsync(item.topic, (BaseEvent)item.message, cts.Token);
                 }
                 catch (OperationCanceledException)
                 {
@@ -53,18 +51,9 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.EventBus
             }
         }
 
-        public ValueTask PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
+        public async ValueTask PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
-            if (message.AtLeastOnce)
-            {
-                _bc.Add((topic, message), cancellationToken);
-            }
-            else
-            {
-                _bc.TryAdd((topic, message), _options.Value.RequestTimeout, cancellationToken);
-            }
-
-            return new ValueTask();
+            await _pubsub.PublishAsync(topic, message, cancellationToken);
         }
     }
 }
