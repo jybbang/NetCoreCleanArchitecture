@@ -34,6 +34,8 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public bool IsPublished { get; private set; }
 
+        public bool AtLeastOnce { get; set; }
+
         public BaseEvent Publising(DateTimeOffset timestamp = default)
         {
             EventId = Guid.NewGuid();

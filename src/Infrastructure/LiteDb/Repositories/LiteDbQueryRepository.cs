@@ -25,7 +25,7 @@ using NetCoreCleanArchitecture.Application.Repositories;
 using NetCoreCleanArchitecture.Domain.Common;
 using NetCoreCleanArchitecture.Infrastructure.LiteDb.Common;
 
-namespace NetCoreCleanArchitecture.Infrastructure.LiteDbDb.Repositories
+namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
 {
     public class LiteDbQueryRepository<TEntity> : IQueryRepository<TEntity> where TEntity : BaseEntity
     {
