@@ -32,7 +32,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
 
         public async ValueTask<T?> GetAsync(string key, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
             var item = _client.Get<T>(key);
 
@@ -41,7 +41,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
 
         public async ValueTask<T> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
             return await _client.GetOrCreateAsync<T>(key, async entry =>
             {
@@ -56,7 +56,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
 
         public ValueTask AddAsync(string key, T item, int ttlSeconds, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
             if (ttlSeconds > 0)
             {
@@ -72,7 +72,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
 
         public ValueTask RemoveAsync(string key, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
 
             _client.Remove(key);
 
