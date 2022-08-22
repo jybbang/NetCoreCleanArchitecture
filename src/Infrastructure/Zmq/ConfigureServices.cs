@@ -11,8 +11,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
     {
         public static IServiceCollection AddNetCleanZmqEventBus(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<ZmqOptions>(
-                configuration.GetSection("Api:Zmq"));
+            services.Configure<ZmqOptions>(configuration.GetSection("Api:Zmq"));
 
             services.AddSingleton<ZmqPublisher>();
 

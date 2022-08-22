@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.EventSources;
 using NetCoreCleanArchitecture.Application.StateStores;
@@ -34,9 +35,9 @@ namespace NetCoreCleanArchitecture.Infrastructure
             return mvcBuilder;
         }
 
-        public static IServiceCollection AddNetCleanDaprEventBus(this IServiceCollection services)
+        public static IServiceCollection AddNetCleanDaprEventBus(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddOptions<DaprOptions>("Api:Dapr");
+            services.Configure<DaprOptions>(configuration.GetSection("Api:Dapr"));
 
             // EventBus
             services.AddScoped<IEventBus, DaprEventBus>();
@@ -44,9 +45,9 @@ namespace NetCoreCleanArchitecture.Infrastructure
             return services;
         }
 
-        public static IServiceCollection AddNetCleanDaprStateStore(this IServiceCollection services)
+        public static IServiceCollection AddNetCleanDaprStateStore(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddOptions<DaprOptions>("Api:Dapr");
+            services.Configure<DaprOptions>(configuration.GetSection("Api:Dapr"));
 
             // StateStore
             services.AddScoped(typeof(IStateStore<>), typeof(DaprStateStore<>));
