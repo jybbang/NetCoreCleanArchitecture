@@ -30,8 +30,6 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public DateTimeOffset Timestamp { get; set; }
 
-        public bool AtLeastOnce { get; set; } = true;
-
         public Guid EventId { get; private set; }
 
         public bool IsPublished { get; private set; }
