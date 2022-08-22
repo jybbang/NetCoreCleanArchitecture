@@ -9,7 +9,7 @@
 		<Product>NetCoreCleanArchitecture.Interface.Http</Product>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
-		<Version>1.2.0</Version>
+		<Version>2.0.0</Version>
 		<AssemblyName>NetCoreCleanArchitecture.Interface.Http</AssemblyName>
 		<RootNamespace>NetCoreCleanArchitecture.Interface.Http</RootNamespace>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
@@ -17,8 +17,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentValidation.AspNetCore" Version="11.1.2" />
-		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.7" />
+		<PackageReference Include="FluentValidation.AspNetCore" Version="11.2.1" />
+		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.8" />
 		<PackageReference Include="prometheus-net.AspNetCore" Version="6.0.0" />
 		<PackageReference Include="prometheus-net.AspNetCore.HealthChecks" Version="6.0.0" />
 		<PackageReference Include="prometheus-net.SystemMetrics" Version="2.0.0" />
