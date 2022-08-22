@@ -24,9 +24,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: trusted-signer-Add
-        run: dotnet nuget trusted-signers Add -Name Microsoft2021 -CertificateFingerprint AA12DA22A49BCE7D5C1AE64CC1F3D892F150DA76140F210ABD2CBFFCA2C18A27 -FingerprintAlgorithm SHA256
-      
       - name: trusted-signer-verify
         run: dotnet nuget verify -Signatures <PackagePath> -CertificateFingerprint "3F9001EA83C560D712C24CF213C3D312CB3BFF51EE89435D3430BD06B5D0EECE;AA12DA22A49BCE7D5C1AE64CC1F3D892F150DA76140F210ABD2CBFFCA2C18A27"
  
@@ -34,7 +31,7 @@ jobs:
       - name: Setup .NET Core SDK        
         uses: actions/setup-dotnet@v1.7.2
         with:
-          dotnet-version: 5.0.103
+          dotnet-version: 5.0.x
         
       - name: Install dependencies
         run: dotnet restore
