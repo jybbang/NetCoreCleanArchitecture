@@ -57,6 +57,9 @@ jobs:
       - name: WebHosting-Pack
         run: dotnet pack --no-build --configuration Release src/WebHosting/WebHosting.csproj --output .
     
+      - name: trusted-signer-Add
+        run: dotnet nuget trusted-signers Add -Name Microsoft2021 -CertificateFingerprint AA12DA22A49BCE7D5C1AE64CC1F3D892F150DA76140F210ABD2CBFFCA2C18A27 -FingerprintAlgorithm SHA256
+    
       - name: Domain-PushNuget
         run: dotnet nuget push *.Domain.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
                   
