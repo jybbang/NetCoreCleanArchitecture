@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using NetCoreCleanArchitecture.Application.Identities;
 using NetCoreCleanArchitecture.Interface.Http.Filters;
 using NetCoreCleanArchitecture.Interface.Http.Identity;
@@ -55,8 +59,13 @@ namespace NetCoreCleanArchitecture.Interface
             return new ActionResult<TContainer>(actionResult);
         }
 
-        public static IApplicationBuilder UseNetCleanHttp(this IApplicationBuilder app)
+        public static IApplicationBuilder UseNetCleanHttp(this IApplicationBuilder app, IWebHostEnvironment env)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -78,6 +87,12 @@ namespace NetCoreCleanArchitecture.Interface
 
             // ASP.NET Core exporter middleware
             endpoints.MapMetrics("/metrics");
+
+            endpoints.MapHealthChecks("/health", new HealthCheckOptions
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
 
             return endpoints;
         }
