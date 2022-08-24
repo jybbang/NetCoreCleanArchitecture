@@ -116,7 +116,7 @@ namespace NetCoreCleanArchitecture.Interface
                     options.JsonSerializerOptions.Converters.Add(enumConverter);
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 })
-                .AddFluentValidation();
+                .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
 
             // Customise default Api behaviour
             services.Configure<ApiBehaviorOptions>(options =>
