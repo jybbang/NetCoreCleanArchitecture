@@ -15,6 +15,7 @@
 //
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -68,7 +69,7 @@ namespace NetCoreCleanArchitecture.Application.Repositories
         {
             foreach (var entity in changedEntities)
             {
-                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                cancellationToken.ThrowIfCancellationRequested();
 
                 if (entity is BaseAuditableEntity auditableEntity)
                 {
@@ -84,9 +85,9 @@ namespace NetCoreCleanArchitecture.Application.Repositories
             }
         }
 
-        private static IReadOnlyList<BaseEvent> GetEventsToDispatch(in IReadOnlyList<BaseEntity> changedEntities, CancellationToken cancellationToken = default)
+        private static IProducerConsumerCollection<BaseEvent> GetEventsToDispatch(in IReadOnlyList<BaseEntity> changedEntities, CancellationToken cancellationToken = default)
         {
-            var eventsToDispatch = new List<BaseEvent>();
+            var eventsToDispatch = new ConcurrentQueue<BaseEvent>();
 
             var domainEventsList = changedEntities
                 .Where(e => e.DomainEvents.Any())
@@ -96,18 +97,18 @@ namespace NetCoreCleanArchitecture.Application.Repositories
             {
                 while (domainEvents.TryTake(out var domainEvent))
                 {
-                    if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    eventsToDispatch.Add(domainEvent);
+                    eventsToDispatch.Enqueue(domainEvent);
                 }
             }
 
-            return eventsToDispatch.AsReadOnly();
+            return eventsToDispatch;
         }
 
-        private async ValueTask DispatchEvents(IReadOnlyList<BaseEvent> domainEvents, DateTimeOffset timestamp, CancellationToken cancellationToken)
+        private async ValueTask DispatchEvents(IProducerConsumerCollection<BaseEvent> domainEvents, DateTimeOffset timestamp, CancellationToken cancellationToken)
         {
-            foreach (var domainEvent in domainEvents)
+            while (domainEvents.TryTake(out var domainEvent))
             {
                 await _eventSource.PublishAsync(domainEvent, timestamp, cancellationToken);
             }

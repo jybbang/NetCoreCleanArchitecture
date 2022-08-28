@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,7 +18,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs
     {
         private readonly ILogger<ZmqEventBus> _logger;
         private readonly IOptions<ZmqOptions> _options;
-        private readonly BlockingCollection<(string topic, BaseEvent message)> _bc = new BlockingCollection<(string topic, BaseEvent message)>();
+        private readonly Channel<(string topic, object message)> _c = Channel.CreateUnbounded<(string topic, object message)>();
         private readonly PublisherSocket _pubSocket;
 
         public ZmqPublisher(
@@ -34,39 +35,35 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs
 
             _pubSocket.Bind(uri);
 
-            Task.Factory.StartNew(RunBlockingCollectionAsync).Unwrap();
+            Task.Run(ConsumingEvent).ConfigureAwait(false);
         }
 
-        public ValueTask PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
+        public async ValueTask PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
-            if (string.IsNullOrEmpty(topic) || message is null) return new ValueTask();
+            if (string.IsNullOrEmpty(topic) || message is null) return;
 
-            if (message.AtLeastOnce)
-            {
-                _bc.Add((topic, message), cancellationToken);
-            }
-            else
-            {
-                _bc.TryAdd((topic, message), _options.Value.RequestTimeout, cancellationToken);
-            }
-
-            return new ValueTask();
+            await _c.Writer.WriteAsync((topic, message), cancellationToken);
         }
 
-        private Task RunBlockingCollectionAsync()
+        private async Task ConsumingEvent()
         {
-            while (true)
+            var options = new JsonSerializerOptions()
+            {
+                IgnoreReadOnlyFields = true,
+                IgnoreReadOnlyProperties = true,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+                UnknownTypeHandling = System.Text.Json.Serialization.JsonUnknownTypeHandling.JsonNode,
+            };
+
+            while (await _c.Reader.WaitToReadAsync())
             {
                 try
                 {
-                    var (topic, message) = _bc.Take();
+                    var (topic, message) = await _c.Reader.ReadAsync();
 
-                    var payload = JsonSerializer.SerializeToUtf8Bytes(message);
+                    var payload = JsonSerializer.SerializeToUtf8Bytes(message, message.GetType(), options);
 
                     _pubSocket.SendMoreFrame(topic).SendFrame(payload);
-                }
-                catch (OperationCanceledException)
-                {
                 }
                 catch (Exception ex)
                 {

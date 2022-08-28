@@ -20,6 +20,7 @@
   <ItemGroup>
     <PackageReference Include="NetMQ" Version="4.0.1.9" />
     <PackageReference Include="System.Text.Json" Version="6.0.5" />
+    <PackageReference Include="System.Threading.Channels" Version="6.0.0" />
   </ItemGroup>
 
 	<ItemGroup>

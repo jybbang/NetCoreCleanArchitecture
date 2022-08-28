@@ -6,7 +6,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
 {
     public static class ConfigureServices
     {
-        public static IServiceCollection AddNetCleanMemoryCacheStateStore(this IServiceCollection services)
+        public static IServiceCollection AddNetCleanStateStore(this IServiceCollection services)
         {
             // StateStore
             services.AddScoped(typeof(IStateStore<>), typeof(MemoryCacheStateStore<>));

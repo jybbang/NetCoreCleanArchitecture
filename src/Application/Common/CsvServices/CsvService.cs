@@ -47,7 +47,7 @@ namespace NetCoreCleanArchitecture.Application.Common.CsvServices
 
                 for (var i = 0; i < columns.Length; i++)
                 {
-                    if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                    cancellationToken.ThrowIfCancellationRequested();
 
                     try
                     {

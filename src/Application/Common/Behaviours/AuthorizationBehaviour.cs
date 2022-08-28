@@ -62,7 +62,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
                     {
                         foreach (var role in roles)
                         {
-                            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                            cancellationToken.ThrowIfCancellationRequested();
 
                             var isInRole = await _identityService.IsInRoleAsync(_currentUserService.UserId, role.Trim());
 
@@ -87,7 +87,7 @@ namespace NetCoreCleanArchitecture.Application.Common.Behaviours
                 {
                     foreach (var policy in authorizeAttributesWithPolicies.Select(a => a.Policy))
                     {
-                        if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                        cancellationToken.ThrowIfCancellationRequested();
 
                         var authorized = await _identityService.AuthorizeAsync(_currentUserService.UserId, policy);
 

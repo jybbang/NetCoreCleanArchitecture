@@ -39,15 +39,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
 
         public void Add(TEntity item)
         {
-            _context.AddTracking(item, UpdatePartialAsync);
+            _context.AddTracking(item);
 
             _collection.Insert(item);
         }
 
         public ValueTask AddAsync(TEntity item, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
             Add(item);
 
             return new ValueTask();
@@ -55,63 +53,60 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
 
         public void AddRange(IReadOnlyList<TEntity> items)
         {
-            _context.AddTrackingRange(items, UpdatePartialAsync);
+            _context.AddTrackingRange(items);
 
             _collection.InsertBulk(items);
         }
 
         public ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
             AddRange(items);
 
             return new ValueTask();
         }
 
-        public void Remove(Guid key)
+        public void Remove(TEntity item, Guid key)
         {
-            var item = _collection.FindById(key);
-
-            if (item is null) return;
+            _context.AddTracking(item);
 
             _collection.Delete(key);
         }
 
-        public ValueTask RemoveAsync(Guid key, CancellationToken cancellationToken)
+        public ValueTask RemoveAsync(TEntity item, Guid key, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+            Remove(item, key);
 
-            Remove(key);
+            return new ValueTask();
+        }
+
+        public void RemoveMany(IReadOnlyList<TEntity> items)
+        {
+            _context.AddTrackingRange(items);
+
+            _collection.DeleteAll();
+        }
+
+        public ValueTask RemoveManyAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        {
+            RemoveMany(items);
 
             return new ValueTask();
         }
 
         public void RemoveAll()
         {
-            _collection.DeleteAll();
-        }
-
-        public ValueTask RemoveAllAsync(CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
-            RemoveAll();
-
-            return new ValueTask();
+            _context.Database.DropCollection(_collection.Name);
         }
 
         public void Update(TEntity item)
         {
-            _context.AddTracking(item, UpdatePartialAsync);
+            _context.AddTracking(item);
 
             _collection.Update(item.Id, item);
         }
 
         public ValueTask UpdateAsync(TEntity item, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
             Update(item);
 
             return new ValueTask();
@@ -119,8 +114,6 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
 
         public void UpdateRange(IReadOnlyList<TEntity> items)
         {
-            _context.AddTrackingRange(items, UpdatePartialAsync);
-
             foreach (var item in items)
             {
                 Update(item);
@@ -129,23 +122,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
 
         public ValueTask UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
             UpdateRange(items);
-
-            return new ValueTask();
-        }
-
-        private void UpdatePartial(Guid key, object item)
-        {
-            _collection.Upsert(key, (TEntity)item);
-        }
-
-        private ValueTask UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
-            UpdatePartial(key, item);
 
             return new ValueTask();
         }

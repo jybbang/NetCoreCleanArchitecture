@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.EventSources;
-using NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Options;
-using NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs;
-using NetCoreCleanArchitecture.Infrastructure.Zmq.EventBus;
+using NetCoreCleanArchitecture.Infrastructure.Orleans.EventBus;
 
 namespace NetCoreCleanArchitecture.Infrastructure
 {
@@ -11,12 +9,8 @@ namespace NetCoreCleanArchitecture.Infrastructure
     {
         public static IServiceCollection AddNetCleanEventBus(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<ZmqOptions>(configuration.GetSection("Api:Zmq"));
-
-            services.AddSingleton<ZmqPublisher>();
-
             // EventBus
-            services.AddScoped<IEventBus, ZmqEventBus>();
+            services.AddScoped<IEventBus, OrleansEventBus>();
 
             return services;
         }

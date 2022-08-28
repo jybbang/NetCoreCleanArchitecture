@@ -32,13 +32,15 @@ namespace NetCoreCleanArchitecture.Application.Repositories
 
         ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken);
 
-        void Remove(Guid key);
+        void Remove(TEntity item, Guid key);
 
-        ValueTask RemoveAsync(Guid key, CancellationToken cancellationToken);
+        ValueTask RemoveAsync(TEntity item, Guid key, CancellationToken cancellationToken);
+
+        void RemoveMany(IReadOnlyList<TEntity> items);
+
+        ValueTask RemoveManyAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken);
 
         void RemoveAll();
-
-        ValueTask RemoveAllAsync(CancellationToken cancellationToken);
 
         void Update(TEntity item);
 

@@ -45,18 +45,10 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
             => _collection.Exists(where);
 
         public ValueTask<bool> AnyAsync(CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
-            return new ValueTask<bool>(Any());
-        }
+            => new ValueTask<bool>(Any());
 
         public ValueTask<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
-            return new ValueTask<bool>(Any(where));
-        }
+            => new ValueTask<bool>(Any(where));
 
         public long Count()
             => _collection.LongCount();
@@ -65,18 +57,10 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
             => _collection.LongCount(where);
 
         public ValueTask<long> CountAsync(CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
-            return new ValueTask<long>(Count());
-        }
+            => new ValueTask<long>(Count());
 
         public ValueTask<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
-            return new ValueTask<long>(Count(where));
-        }
+            => new ValueTask<long>(Count(where));
 
         public TEntity? Find(Guid key)
             => _collection.FindById(key);
@@ -85,18 +69,10 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
             => _collection.Find(where).SingleOrDefault();
 
         public ValueTask<TEntity?> FindAsync(Guid key, CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
-            return new ValueTask<TEntity?>(Find(key));
-        }
+            => new ValueTask<TEntity?>(Find(key));
 
         public ValueTask<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
-            return new ValueTask<TEntity?>(Find(where));
-        }
+            => new ValueTask<TEntity?>(Find(where));
 
         public List<TEntity> FindMany()
             => _collection.FindAll().ToList();
@@ -105,17 +81,9 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
             => _collection.Find(where).ToList();
 
         public ValueTask<List<TEntity>> FindManyAsync(CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
-            return new ValueTask<List<TEntity>>(FindMany());
-        }
+            => new ValueTask<List<TEntity>>(FindMany());
 
         public ValueTask<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-
-            return new ValueTask<List<TEntity>>(FindMany(where));
-        }
+            => new ValueTask<List<TEntity>>(FindMany(where));
     }
 }
