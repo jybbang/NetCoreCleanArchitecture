@@ -28,7 +28,8 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.Common.Callfilters
                 await context.Invoke();
             }
 
-            var requestName = context.InterfaceMethod.Name;
+            var requestName = context.ImplementationMethod.Name;
+            var grainName = context.Grain.GetType().Name;
             var userId = _currentUserService.UserId ?? string.Empty;
             var userName = string.Empty;
 
@@ -44,6 +45,8 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.Common.Callfilters
                 span.SetAttribute("userId", userId);
 
                 span.SetAttribute("userName", userName);
+
+                span.SetAttribute("grainName", grainName);
 
                 await context.Invoke();
 

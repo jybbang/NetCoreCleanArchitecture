@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
@@ -101,6 +102,8 @@ namespace NetCoreCleanArchitecture.Interface
 
         public static IServiceCollection AddNetCleanHttp(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+
             // Identity
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
@@ -150,10 +153,21 @@ namespace NetCoreCleanArchitecture.Interface
                 .AddAspNetCoreInstrumentation()
                 .AddHttpClientInstrumentation();
 
-                if (Uri.TryCreate(configuration.GetConnectionString("Zipkin"), UriKind.Absolute, out var uri))
+                if (Uri.TryCreate(configuration.GetConnectionString("Zipkin"), UriKind.Absolute, out var zipkinEndpoint))
                 {
                     builder
-                    .AddZipkinExporter(configure => configure.Endpoint = uri);
+                    .AddZipkinExporter(configure => configure.Endpoint = zipkinEndpoint);
+                }
+                else if (Uri.TryCreate(configuration.GetConnectionString("Jaeger"), UriKind.Absolute, out var jaegerEndpoint))
+                {
+                    builder
+                    .AddJaegerExporter(configure =>
+                    {
+                        configure.Protocol = OpenTelemetry.Exporter.JaegerExportProtocol.UdpCompactThrift;
+                        configure.AgentHost = jaegerEndpoint.Host;
+                        configure.AgentPort = jaegerEndpoint.Port;
+                        //configure.Endpoint = jaegerEndpoint.Port;
+                    });
                 }
 
                 services.AddSingleton<Tracer>(services => services.GetRequiredService<TracerProvider>().GetTracer(appName));

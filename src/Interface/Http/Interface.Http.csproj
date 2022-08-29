@@ -18,6 +18,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.4.0-alpha.2" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9.6" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.5" />
 		<PackageReference Include="FluentValidation.AspNetCore" Version="11.2.1" />
