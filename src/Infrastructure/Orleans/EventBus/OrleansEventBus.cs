@@ -17,7 +17,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.EventBus
     {
         private readonly IClusterClient _clusterClient;
 
-        private IEventHandlerGrain? _eventBusGrain;
+        private INetCleanHandlerGrain? _handler;
 
         public OrleansEventBus(IClusterClient clusterClient)
         {
@@ -28,7 +28,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.EventBus
         {
             if (!_clusterClient.IsInitialized) return new ValueTask();
 
-            _eventBusGrain ??= _clusterClient.GetGrain<IEventHandlerGrain>(Guid.Empty);
+            _handler ??= _clusterClient.GetGrain<INetCleanHandlerGrain>(Guid.Empty);
 
             try
             {
@@ -44,11 +44,11 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.EventBus
 
                 if(payload is null) return new ValueTask();
 
-                return _eventBusGrain.HandleAsync(topic, payload, message.Timestamp);
+                return _handler.HandleEventAsync(topic, payload, message.Timestamp);
             }
             catch (Exception)
             {
-                _eventBusGrain = null;
+                _handler = null;
 
                 throw;
             }

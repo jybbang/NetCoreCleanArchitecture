@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.EventSources;
+using NetCoreCleanArchitecture.Application.StateStores;
 using NetCoreCleanArchitecture.Infrastructure.Orleans.EventBus;
+using NetCoreCleanArchitecture.Infrastructure.Orleans.StateStores;
 
 namespace NetCoreCleanArchitecture.Infrastructure
 {
@@ -11,6 +13,14 @@ namespace NetCoreCleanArchitecture.Infrastructure
         {
             // EventBus
             services.AddScoped<IEventBus, OrleansEventBus>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddNetCleanStateStore(this IServiceCollection services, IConfiguration configuration)
+        {
+            // StateStore
+            services.AddScoped(typeof(IStateStore<>), typeof(OrleansStateStore<>));
 
             return services;
         }
