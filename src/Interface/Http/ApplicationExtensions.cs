@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetCoreCleanArchitecture.Application.Identities;
+using NetCoreCleanArchitecture.Interface.Http.Behaviours;
 using NetCoreCleanArchitecture.Interface.Http.Filters;
 using NetCoreCleanArchitecture.Interface.Http.Identity;
 using OpenTelemetry.Resources;
@@ -129,23 +131,35 @@ namespace NetCoreCleanArchitecture.Interface
                 options.MultipartBodyLengthLimit = int.MaxValue;
             });
 
-            if (Uri.TryCreate(configuration.GetConnectionString("Zipkin"), UriKind.Absolute, out var uri))
+            return services;
+        }
+
+        public static IServiceCollection AddNetCleanHttpTracing(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddOpenTelemetryTracing(configure =>
             {
                 var appName = configuration.GetValue<string>("ApplicationName");
+                var appVersion = configuration.GetValue<string>("ApplicationVersion");
+                var appId = configuration.GetValue<string>("ApplicationInstanceId");
 
-                appName = string.IsNullOrEmpty(appName) ? Guid.NewGuid().ToString() : appName;
+                var builder = configure
+                .AddSource(appName)
+                .SetResourceBuilder(
+                    ResourceBuilder.CreateDefault()
+                    .AddService(appName, serviceVersion: appVersion, serviceInstanceId: appId))
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation();
 
-                services.AddOpenTelemetryTracing(configure =>
+                if (Uri.TryCreate(configuration.GetConnectionString("Zipkin"), UriKind.Absolute, out var uri))
                 {
-                    configure
-                    .AddSource(appName)
-                    .SetResourceBuilder(
-                        ResourceBuilder.CreateDefault()
-                            .AddService(appName))
-                    .AddAspNetCoreInstrumentation()
+                    builder
                     .AddZipkinExporter(configure => configure.Endpoint = uri);
-                });
-            }
+                }
+
+                services.AddSingleton<Tracer>(services => services.GetRequiredService<TracerProvider>().GetTracer(appName));
+            });
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ActivityPropagationBehaviour<,>));
 
             return services;
         }
