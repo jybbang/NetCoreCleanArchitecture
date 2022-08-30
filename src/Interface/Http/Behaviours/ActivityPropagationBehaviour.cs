@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using NetCoreCleanArchitecture.Application.Identities;
 using OpenTelemetry.Trace;
 
@@ -12,50 +14,45 @@ namespace NetCoreCleanArchitecture.Interface.Http.Behaviours
 {
     public class ActivityPropagationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly Tracer _tracer;
-        private readonly ICurrentUserService _currentUserService;
-        private readonly IIdentityService _identityService;
+        private readonly ActivitySource _activitySource;
 
-        public ActivityPropagationBehaviour(Tracer tracer, ICurrentUserService currentUserService, IIdentityService identityService)
+        public ActivityPropagationBehaviour(ActivitySource activitySource)
         {
-            _tracer = tracer;
-            _currentUserService = currentUserService;
-            _identityService = identityService;
+            _activitySource = activitySource;
         }
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            if (_tracer is null)
-            {
-                return await next();
-            }
+            var activity = _activitySource.CreateActivity(typeof(TRequest).Name, ActivityKind.Internal);
 
-            var requestName = typeof(TRequest).Name;
-            var userId = _currentUserService.UserId ?? string.Empty;
-            var userName = string.Empty;
+            if (activity is null) return await next();
 
-            if (!string.IsNullOrEmpty(userId))
-            {
-                userName = await _identityService.GetUserNameAsync(userId);
-            }
-
-            using var span = _tracer!.StartActiveSpan(requestName);
+            activity.Start();
 
             try
             {
-                span.SetAttribute("userId", userId);
+                var result = await next();
 
-                span.SetAttribute("userName", userName);
+                if (activity.IsAllDataRequested)
+                {
+                    activity.SetStatus(Status.Ok);
+                }
 
-                return await next();
+                return result;
             }
             catch (Exception ex)
             {
-                span.SetStatus(Status.Error);
-
-                span.RecordException(ex);
+                if (activity.IsAllDataRequested)
+                {
+                    activity.SetStatus(Status.Error);
+                    activity.RecordException(ex);
+                }
 
                 throw;
+            }
+            finally
+            {
+                activity?.Stop();
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
@@ -170,7 +171,9 @@ namespace NetCoreCleanArchitecture.Interface
                     });
                 }
 
-                services.AddSingleton<Tracer>(services => services.GetRequiredService<TracerProvider>().GetTracer(appName));
+                services.AddSingleton(services => new ActivitySource(appName, appVersion));
+
+                //services.AddSingleton<Tracer>(services => services.GetRequiredService<TracerProvider>().GetTracer(appName));
             });
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ActivityPropagationBehaviour<,>));
