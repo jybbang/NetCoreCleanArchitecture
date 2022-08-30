@@ -6,7 +6,7 @@ using NetCoreCleanArchitecture.Application.Identities;
 using OpenTelemetry.Trace;
 using Orleans;
 
-namespace NetCoreCleanArchitecture.Infrastructure.Orleans.Common.Callfilters
+namespace NetCoreCleanArchitecture.Infrastructure.Orleans.Common.CallFilters
 {
     public class ActivityPropagationGrainCallFilter : IIncomingGrainCallFilter
     {
@@ -46,7 +46,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.Common.Callfilters
 
                 span.SetAttribute("userName", userName);
 
-                span.SetAttribute("grainName", grainName);
+                span.SetAttribute("grain", grainName);
 
                 await context.Invoke();
 
