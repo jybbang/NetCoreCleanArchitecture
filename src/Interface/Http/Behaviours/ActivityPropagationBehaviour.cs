@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -12,11 +13,11 @@ namespace NetCoreCleanArchitecture.Interface.Http.Behaviours
 {
     public class ActivityPropagationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly Tracer _tracer;
+        private readonly ActivitySource _tracer;
         private readonly ICurrentUserService _currentUserService;
         private readonly IIdentityService _identityService;
 
-        public ActivityPropagationBehaviour(Tracer tracer, ICurrentUserService currentUserService, IIdentityService identityService)
+        public ActivityPropagationBehaviour(ActivitySource tracer, ICurrentUserService currentUserService, IIdentityService identityService)
         {
             _tracer = tracer;
             _currentUserService = currentUserService;
@@ -39,21 +40,25 @@ namespace NetCoreCleanArchitecture.Interface.Http.Behaviours
                 userName = await _identityService.GetUserNameAsync(userId);
             }
 
-            using var span = _tracer!.StartActiveSpan(requestName);
+            using var span = _tracer!.StartActivity(requestName);
 
             try
             {
-                span.SetAttribute("userId", userId);
+                span?.SetTag("userId", userId);
 
-                span.SetAttribute("userName", userName);
+                span?.SetTag("userName", userName);
 
-                return await next();
+                var response = await next();
+
+                span?.SetStatus(Status.Ok);
+
+                return response;
             }
             catch (Exception ex)
             {
-                span.SetStatus(Status.Error);
+                span?.SetStatus(Status.Error);
 
-                span.RecordException(ex);
+                span?.RecordException(ex);
 
                 throw;
             }

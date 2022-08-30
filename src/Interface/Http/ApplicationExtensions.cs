@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
@@ -145,35 +146,54 @@ namespace NetCoreCleanArchitecture.Interface
                 var appVersion = configuration.GetValue<string>("ApplicationVersion");
                 var appId = configuration.GetValue<string>("ApplicationInstanceId");
 
-                var builder = configure
-                .AddSource(appName)
-                .SetResourceBuilder(
-                    ResourceBuilder.CreateDefault()
-                    .AddService(appName, serviceVersion: appVersion, serviceInstanceId: appId))
-                .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation();
-
                 if (Uri.TryCreate(configuration.GetConnectionString("Zipkin"), UriKind.Absolute, out var zipkinEndpoint))
                 {
-                    builder
+                    configure
+                    .AddSource(appName)
+                    .SetResourceBuilder(
+                        ResourceBuilder.CreateDefault()
+                        .AddService(appName, serviceVersion: appVersion, serviceInstanceId: appId))
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
                     .AddZipkinExporter(configure => configure.Endpoint = zipkinEndpoint);
                 }
                 else if (Uri.TryCreate(configuration.GetConnectionString("Jaeger"), UriKind.Absolute, out var jaegerEndpoint))
                 {
-                    builder
-                    .AddJaegerExporter(configure =>
+                    var builder = configure
+                    .AddSource(appName)
+                    .SetResourceBuilder(
+                        ResourceBuilder.CreateDefault()
+                        .AddService(appName, serviceVersion: appVersion, serviceInstanceId: appId))
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation();
+
+                    if (string.Equals(jaegerEndpoint.Scheme, "udp", StringComparison.CurrentCultureIgnoreCase))
                     {
-                        configure.Protocol = OpenTelemetry.Exporter.JaegerExportProtocol.UdpCompactThrift;
-                        configure.AgentHost = jaegerEndpoint.Host;
-                        configure.AgentPort = jaegerEndpoint.Port;
-                        //configure.Endpoint = jaegerEndpoint.Port;
-                    });
+                        builder
+                        .AddJaegerExporter(configure =>
+                        {
+                            configure.Protocol = OpenTelemetry.Exporter.JaegerExportProtocol.UdpCompactThrift;
+                            configure.AgentHost = jaegerEndpoint.Host;
+                            configure.AgentPort = jaegerEndpoint.Port;
+                        });
+                    }
+                    else
+                    {
+                        builder
+                        .AddJaegerExporter(configure =>
+                        {
+                            configure.Protocol = OpenTelemetry.Exporter.JaegerExportProtocol.HttpBinaryThrift;
+                            configure.Endpoint = jaegerEndpoint;
+                        });
+                    }
                 }
 
-                services.AddSingleton<Tracer>(services => services.GetRequiredService<TracerProvider>().GetTracer(appName));
-            });
+                var MyActivitySource = new ActivitySource(appName, appVersion);
 
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ActivityPropagationBehaviour<,>));
+                services.AddSingleton(MyActivitySource);
+
+                services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ActivityPropagationBehaviour<,>));
+            });
 
             return services;
         }
