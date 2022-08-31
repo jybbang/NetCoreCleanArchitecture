@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using NetCoreCleanArchitecture.Application.Identities;
 using OpenTelemetry.Trace;
 
@@ -13,54 +14,45 @@ namespace NetCoreCleanArchitecture.Interface.Http.Behaviours
 {
     public class ActivityPropagationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly ActivitySource _tracer;
-        private readonly ICurrentUserService _currentUserService;
-        private readonly IIdentityService _identityService;
+        private readonly ActivitySource _activitySource;
 
-        public ActivityPropagationBehaviour(ActivitySource tracer, ICurrentUserService currentUserService, IIdentityService identityService)
+        public ActivityPropagationBehaviour(ActivitySource activitySource)
         {
-            _tracer = tracer;
-            _currentUserService = currentUserService;
-            _identityService = identityService;
+            _activitySource = activitySource;
         }
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            if (_tracer is null)
-            {
-                return await next();
-            }
+            var activity = _activitySource.CreateActivity(typeof(TRequest).Name, ActivityKind.Internal);
 
-            var requestName = typeof(TRequest).Name;
-            var userId = _currentUserService.UserId ?? string.Empty;
-            var userName = string.Empty;
+            if (activity is null) return await next();
 
-            if (!string.IsNullOrEmpty(userId))
-            {
-                userName = await _identityService.GetUserNameAsync(userId);
-            }
-
-            using var span = _tracer!.StartActivity(requestName);
+            activity.Start();
 
             try
             {
-                span?.SetTag("userId", userId);
+                var result = await next();
 
-                span?.SetTag("userName", userName);
+                if (activity.IsAllDataRequested)
+                {
+                    activity.SetStatus(Status.Ok);
+                }
 
-                var response = await next();
-
-                span?.SetStatus(Status.Ok);
-
-                return response;
+                return result;
             }
             catch (Exception ex)
             {
-                span?.SetStatus(Status.Error);
-
-                span?.RecordException(ex);
+                if (activity.IsAllDataRequested)
+                {
+                    activity.SetStatus(Status.Error);
+                    activity.RecordException(ex);
+                }
 
                 throw;
+            }
+            finally
+            {
+                activity?.Stop();
             }
         }
     }
