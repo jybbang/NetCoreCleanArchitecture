@@ -156,6 +156,7 @@ namespace NetCoreCleanArchitecture.Interface
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddZipkinExporter(configure => configure.Endpoint = zipkinEndpoint);
+                    //.SetSampler(new TraceIdRatioBasedSampler(0.25));
                 }
                 else if (Uri.TryCreate(configuration.GetConnectionString("Jaeger"), UriKind.Absolute, out var jaegerEndpoint))
                 {
@@ -166,6 +167,7 @@ namespace NetCoreCleanArchitecture.Interface
                         .AddService(appName, serviceVersion: appVersion, serviceInstanceId: appId))
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation();
+                    //.SetSampler(new TraceIdRatioBasedSampler(0.25));
 
                     if (string.Equals(jaegerEndpoint.Scheme, "udp", StringComparison.CurrentCultureIgnoreCase))
                     {
