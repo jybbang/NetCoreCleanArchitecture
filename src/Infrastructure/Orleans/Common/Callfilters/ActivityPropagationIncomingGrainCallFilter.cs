@@ -42,21 +42,6 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.Common.CallFilters
                 activity.SetTag("net.peer.name", context.Grain?.ToString());
 
                 await context.Invoke();
-
-                if (activity.IsAllDataRequested)
-                {
-                    activity.SetStatus(Status.Ok);
-                }
-            }
-            catch (Exception ex)
-            {
-                if (activity.IsAllDataRequested)
-                {
-                    activity.SetStatus(Status.Error);
-                    activity.RecordException(ex);
-                }
-
-                throw;
             }
             finally
             {

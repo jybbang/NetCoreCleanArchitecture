@@ -9,31 +9,22 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using NetCoreCleanArchitecture.Application.Identities;
 using OpenTelemetry.Trace;
+using Polly;
 
 namespace NetCoreCleanArchitecture.Interface.Http.Behaviours
 {
-    public class ActivityPropagationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    public class ActivityExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly ActivitySource _activitySource;
-
-        public ActivityPropagationBehaviour(ActivitySource activitySource)
-        {
-            _activitySource = activitySource;
-        }
-
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            var activity = _activitySource.CreateActivity(typeof(TRequest).Name, ActivityKind.Internal);
-
-            if (activity is null) return await next();
-
-            activity.Start();
-
             try
             {
                 var result = await next();
 
-                if (activity.IsAllDataRequested)
+                using var activity = Activity.Current;
+
+                if (activity?.IsAllDataRequested == true
+                    && activity.GetStatus() == Status.Unset)
                 {
                     activity.SetStatus(Status.Ok);
                 }
@@ -42,17 +33,17 @@ namespace NetCoreCleanArchitecture.Interface.Http.Behaviours
             }
             catch (Exception ex)
             {
-                if (activity.IsAllDataRequested)
+                using var activity = Activity.Current;
+
+                if (activity?.IsAllDataRequested == true
+                    && activity.GetStatus() != Status.Error)
                 {
+                    activity.SetTag("exception.peer.name", typeof(TRequest).Name);
                     activity.SetStatus(Status.Error);
                     activity.RecordException(ex);
                 }
 
                 throw;
-            }
-            finally
-            {
-                activity?.Stop();
             }
         }
     }

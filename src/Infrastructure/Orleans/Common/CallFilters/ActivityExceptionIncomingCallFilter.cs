@@ -10,15 +10,8 @@ using Orleans.Runtime;
 
 namespace NetCoreCleanArchitecture.Infrastructure.Orleans.Common.CallFilters
 {
-    public class ActivityExceptionPropagationIncomingCallFilter : IIncomingGrainCallFilter
+    public class ActivityExceptionIncomingCallFilter : IIncomingGrainCallFilter
     {
-        private readonly ActivitySource activitySource;
-
-        public ActivityExceptionPropagationIncomingCallFilter(ActivitySource activitySource)
-        {
-            this.activitySource = activitySource;
-        }
-
         public async Task Invoke(IIncomingGrainCallContext context)
         {
             try
@@ -31,8 +24,6 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.Common.CallFilters
                     && activity.GetStatus() == Status.Unset)
                 {
                     activity.SetTag("rpc.system", "orleans");
-                    activity.SetTag("rpc.service", context.InterfaceMethod?.DeclaringType?.FullName);
-                    activity.SetTag("rpc.method", context.InterfaceMethod?.Name);
                     activity.SetStatus(Status.Ok);
                 }
             }
@@ -44,8 +35,9 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.Common.CallFilters
                     && activity.GetStatus() != Status.Error)
                 {
                     activity.SetTag("rpc.system", "orleans");
-                    activity.SetTag("rpc.service", context.InterfaceMethod?.DeclaringType?.FullName);
-                    activity.SetTag("rpc.method", context.InterfaceMethod?.Name);
+                    activity.SetTag("exception.service", context.InterfaceMethod?.DeclaringType?.FullName);
+                    activity.SetTag("exception.method", context.InterfaceMethod?.Name);
+                    activity.SetTag("exception.peer.name", context.Grain?.ToString());
                     activity.SetStatus(Status.Error);
                     activity.RecordException(ex);
                 }

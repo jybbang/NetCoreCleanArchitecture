@@ -145,6 +145,8 @@ namespace NetCoreCleanArchitecture.Interface
                 var appName = configuration.GetValue<string>("ApplicationName");
                 var appVersion = configuration.GetValue<string>("ApplicationVersion");
                 var appId = configuration.GetValue<string>("ApplicationInstanceId");
+                var smapling = configuration.GetValue<int>("TracingSampling");
+                smapling = smapling <= 0 ? 1 : 0;
 
                 if (Uri.TryCreate(configuration.GetConnectionString("Zipkin"), UriKind.Absolute, out var zipkinEndpoint))
                 {
@@ -153,10 +155,10 @@ namespace NetCoreCleanArchitecture.Interface
                     .SetResourceBuilder(
                         ResourceBuilder.CreateDefault()
                         .AddService(appName, serviceVersion: appVersion, serviceInstanceId: appId))
+                    .SetSampler(new TraceIdRatioBasedSampler(smapling))
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddZipkinExporter(configure => configure.Endpoint = zipkinEndpoint);
-                    //.SetSampler(new TraceIdRatioBasedSampler(0.25));
                 }
                 else if (Uri.TryCreate(configuration.GetConnectionString("Jaeger"), UriKind.Absolute, out var jaegerEndpoint))
                 {
@@ -165,9 +167,9 @@ namespace NetCoreCleanArchitecture.Interface
                     .SetResourceBuilder(
                         ResourceBuilder.CreateDefault()
                         .AddService(appName, serviceVersion: appVersion, serviceInstanceId: appId))
+                    .SetSampler(new TraceIdRatioBasedSampler(smapling))
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation();
-                    //.SetSampler(new TraceIdRatioBasedSampler(0.25));
 
                     if (string.Equals(jaegerEndpoint.Scheme, "udp", StringComparison.CurrentCultureIgnoreCase))
                     {
@@ -194,7 +196,7 @@ namespace NetCoreCleanArchitecture.Interface
 
                 services.AddSingleton(MyActivitySource);
 
-                services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ActivityPropagationBehaviour<,>));
+                services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ActivityExceptionBehaviour<,>));
             });
 
             return services;
