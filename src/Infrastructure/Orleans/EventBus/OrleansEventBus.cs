@@ -26,7 +26,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.EventBus
             _clusterClient = clusterClient;
         }
 
-        public ValueTask PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
+        public ValueTask PublishAsync<TDomainEvent>(TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
             if (!_clusterClient.IsInitialized) return new ValueTask();
 
@@ -36,7 +36,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.EventBus
 
             var handler = _clusterClient.GetGrain<INetCleanHandlerGrain>(Guid.Empty);
 
-            return handler.HandleEventAsync(topic, payload);
+            return handler.HandleEventAsync(message.Topic, payload);
         }
     }
 }

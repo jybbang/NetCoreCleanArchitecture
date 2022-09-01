@@ -16,10 +16,11 @@
 
 using System;
 using System.Collections.Generic;
+using MediatR;
 
 namespace NetCoreCleanArchitecture.Domain.Common
 {
-    public abstract class BaseEvent : IEquatable<BaseEvent?>
+    public abstract class BaseEvent : INotification
     {
         protected BaseEvent()
         {
@@ -34,8 +35,6 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public bool IsPublished { get; private set; }
 
-        public bool AtLeastOnce { get; set; }
-
         public BaseEvent Publising(DateTimeOffset timestamp = default)
         {
             EventId = Guid.NewGuid();
@@ -47,26 +46,6 @@ namespace NetCoreCleanArchitecture.Domain.Common
                 : Timestamp;
 
             return this;
-        }
-
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as BaseEvent);
-        }
-
-        public bool Equals(BaseEvent? other)
-        {
-            return other != null &&
-                   Topic == other.Topic &&
-                   Timestamp.Equals(other.Timestamp);
-        }
-
-        public override int GetHashCode()
-        {
-            var hashCode = 63862983;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Topic);
-            hashCode = hashCode * -1521134295 + Timestamp.GetHashCode();
-            return hashCode;
         }
     }
 }

@@ -13,8 +13,6 @@ namespace NetCoreCleanArchitecture.Application
     {
         public static IServiceCollection AddNetCleanApplication(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<BulkEventService>();
-
             services.AddScoped<IApplicationEventSource, ApplicationEventSource>();
 
             services.AddScoped<IApplicationDbContext, ApplicationDbContext>();

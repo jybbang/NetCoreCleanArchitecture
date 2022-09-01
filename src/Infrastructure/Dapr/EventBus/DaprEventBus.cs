@@ -19,9 +19,9 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.EventBus
             _client = client;
         }
 
-        public async ValueTask PublishAsync<TDomainEvent>(string topic, TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
+        public async ValueTask PublishAsync<TDomainEvent>(TDomainEvent message, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
-            await _client.PublishEventAsync(_options.PubSubName, topic, message, cancellationToken);
+            await _client.PublishEventAsync(_options.PubSubName, message.Topic, message, cancellationToken);
         }
     }
 }

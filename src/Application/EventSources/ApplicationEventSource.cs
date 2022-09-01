@@ -29,86 +29,55 @@ namespace NetCoreCleanArchitecture.Application.EventSources
         private readonly ILoggerFactory _logFactory;
         private readonly IEventBus _eventBus;
         private readonly IPublisher _mediator;
-        private readonly BulkEventService _bulkEvent;
 
         public ApplicationEventSource(
             ILoggerFactory logFactory,
             IEventBus eventBus,
-            IPublisher mediator,
-            BulkEventService eventBuffer)
+            IPublisher mediator)
         {
             _logFactory = logFactory;
             _eventBus = eventBus;
             _mediator = mediator;
-            _bulkEvent = eventBuffer;
         }
 
         public async ValueTask PublishAsync<TDomainEvent>(TDomainEvent domainEvent, DateTimeOffset timestamp, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
-            var eventName = domainEvent.GetType().Name;
-
-            var logger = _logFactory.CreateLogger(eventName);
-
-            var timer = new Stopwatch();
-
             try
             {
-                timer.Start();
-
                 domainEvent.Publising(timestamp);
 
                 await PublishEventNotification(domainEvent, cancellationToken);
 
                 await PublishToEventbus(domainEvent, cancellationToken);
             }
-            catch (InvalidOperationException ex)
-            {
-                logger.LogTrace(ex, "Publish event invalid exception: {Name}", eventName);
-            }
             catch (OperationCanceledException ex)
             {
-                logger.LogTrace(ex, "Publish event canceled exception: {Name}", eventName);
+                var eventName = domainEvent.GetType().Name;
+
+                var logger = _logFactory.CreateLogger(eventName);
+
+                logger.LogDebug(ex, "Publish event canceled exception: {Name}", eventName);
             }
             catch (Exception ex)
             {
+                var eventName = domainEvent.GetType().Name;
+
+                var logger = _logFactory.CreateLogger(eventName);
+
                 logger.LogError(ex, "Publish event unhandled exception: {Name}", eventName);
-            }
-            finally
-            {
-                timer.Stop();
-
-                var elapsedMilliseconds = timer.ElapsedMilliseconds;
-
-                if (elapsedMilliseconds > 2000)
-                {
-                    logger.LogDebug("Publish event long running: {Name} ({ElapsedMilliseconds} milliseconds)",
-                        eventName, elapsedMilliseconds);
-                }
             }
         }
 
         private Task PublishEventNotification<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
-            var notification = (INotification?)Activator.CreateInstance(
-                typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), domainEvent);
-
-            return notification is null
-                ? Task.CompletedTask
-                : _mediator.Publish(notification, cancellationToken);
+            return _mediator.Publish(domainEvent, cancellationToken);
         }
 
         private ValueTask PublishToEventbus<TDomainEvent>(TDomainEvent domainEvent, CancellationToken cancellationToken) where TDomainEvent : BaseEvent
         {
             if (_eventBus is null) return new ValueTask();
 
-            if (domainEvent is BufferedEvent bufferedEvent && bufferedEvent.BufferCount > 0)
-            {
-                _bulkEvent.BufferPublish(domainEvent.Topic, bufferedEvent);
-
-                return new ValueTask();
-            }
-
-            return _eventBus.PublishAsync(domainEvent.Topic, domainEvent, cancellationToken);
+            return _eventBus.PublishAsync(domainEvent, cancellationToken);
         }
     }
 }

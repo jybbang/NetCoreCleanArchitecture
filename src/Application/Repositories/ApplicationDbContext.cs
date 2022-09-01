@@ -56,16 +56,14 @@ namespace NetCoreCleanArchitecture.Application.Repositories
 
             UpdateAuditable(changedEntities, timestamp, cancellationToken);
 
-            var eventsToDispatch = GetEventsToDispatch(changedEntities, cancellationToken);
-
             var changes = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await DispatchEvents(eventsToDispatch, timestamp, cancellationToken);
+            await DispatchEvents(changedEntities, timestamp, cancellationToken);
 
             return changes;
         }
 
-        private void UpdateAuditable(in IReadOnlyList<BaseEntity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken = default)
+        private void UpdateAuditable(in IEnumerable<BaseEntity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken = default)
         {
             foreach (var entity in changedEntities)
             {
@@ -85,10 +83,8 @@ namespace NetCoreCleanArchitecture.Application.Repositories
             }
         }
 
-        private static IProducerConsumerCollection<BaseEvent> GetEventsToDispatch(in IReadOnlyList<BaseEntity> changedEntities, CancellationToken cancellationToken = default)
+        private async ValueTask DispatchEvents(IEnumerable<BaseEntity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken)
         {
-            var eventsToDispatch = new ConcurrentQueue<BaseEvent>();
-
             var domainEventsList = changedEntities
                 .Where(e => e.DomainEvents.Any())
                 .Select(e => e.DomainEvents);
@@ -99,18 +95,8 @@ namespace NetCoreCleanArchitecture.Application.Repositories
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    eventsToDispatch.Enqueue(domainEvent);
+                    await _eventSource.PublishAsync(domainEvent, timestamp, cancellationToken);
                 }
-            }
-
-            return eventsToDispatch;
-        }
-
-        private async ValueTask DispatchEvents(IProducerConsumerCollection<BaseEvent> domainEvents, DateTimeOffset timestamp, CancellationToken cancellationToken)
-        {
-            while (domainEvents.TryTake(out var domainEvent))
-            {
-                await _eventSource.PublishAsync(domainEvent, timestamp, cancellationToken);
             }
         }
     }
