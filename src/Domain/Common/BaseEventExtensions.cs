@@ -17,6 +17,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
                 Id = entitiy.Id,
                 Identifier = identifier,
                 Etag = etag,
+                Entity = entitiy,
             };
 
             entitiy.Commit(e);
@@ -38,6 +39,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
                 Identifier = identifier,
                 OriginalIdentifier = originalIdentifier,
                 Etag = etag,
+                Entity = entitiy,
             };
 
             entitiy.Commit(e);
@@ -58,6 +60,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
                 Id = entitiy.Id,
                 Identifier = identifier,
                 Etag = etag,
+                Entity = entitiy,
             };
 
             entitiy.Commit(e);
@@ -75,6 +78,8 @@ namespace NetCoreCleanArchitecture.Domain.Common
         public string Identifier { get; set; } = null!;
 
         public string? Etag { get; set; }
+
+        public object? Entity { get; set; }
     }
 
     public class EntityUpdatedEvent : BaseEvent
@@ -88,6 +93,8 @@ namespace NetCoreCleanArchitecture.Domain.Common
         public string OriginalIdentifier { get; set; } = null!;
 
         public string? Etag { get; set; }
+
+        public object? Entity { get; set; }
     }
 
     public class EntityDeletedEvent : BaseEvent
@@ -99,5 +106,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
         public string Identifier { get; set; } = null!;
 
         public string? Etag { get; set; }
+
+        public object? Entity { get; set; }
     }
 }
