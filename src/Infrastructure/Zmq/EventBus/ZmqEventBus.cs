@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.EventSources;
 using NetCoreCleanArchitecture.Domain.Common;
-using NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Options;
 using NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs;
 
 namespace NetCoreCleanArchitecture.Infrastructure.Zmq.EventBus

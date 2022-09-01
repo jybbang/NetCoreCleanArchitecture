@@ -34,7 +34,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.0" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
 		<PackageReference Include="Results.Fluent" Version="1.2.0" />

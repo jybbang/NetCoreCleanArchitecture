@@ -24,7 +24,7 @@ namespace NetCoreCleanArchitecture.Application.StateStores
     public interface IStateStore<T> where T : class
     {
         ValueTask<T?> GetOrCreateAsync(string key, object? etag, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken);
-        
+
         ValueTask<T?> GetOrCreateAsync(string key, object? etag, Func<ValueTask<T>> factory, CancellationToken cancellationToken);
 
         ValueTask<T?> GetAsync(string key, object? etag, CancellationToken cancellationToken);

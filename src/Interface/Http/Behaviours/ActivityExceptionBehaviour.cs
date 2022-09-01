@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using NetCoreCleanArchitecture.Application.Identities;
 using OpenTelemetry.Trace;
-using Polly;
 
 namespace NetCoreCleanArchitecture.Interface.Http.Behaviours
 {

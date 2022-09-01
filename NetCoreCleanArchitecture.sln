@@ -51,7 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.MongoDb", "s
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Orleans", "Orleans", "{A8D6F611-B9C3-4C58-9012-931C9EB0BFCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Orleans", "src\Infrastructure\Orleans\Infrastructure.Orleans.csproj", "{914FF692-CF87-4DCB-9AA3-55B8D4A346C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Orleans", "src\Infrastructure\Orleans\Infrastructure.Orleans.csproj", "{914FF692-CF87-4DCB-9AA3-55B8D4A346C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

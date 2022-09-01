@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using NetCoreCleanArchitecture.Application.Identities;
-using OpenTelemetry.Trace;
 using Orleans;
-using Orleans.Runtime;
 
 namespace NetCoreCleanArchitecture.Infrastructure.Orleans.Common.CallFilters
 {

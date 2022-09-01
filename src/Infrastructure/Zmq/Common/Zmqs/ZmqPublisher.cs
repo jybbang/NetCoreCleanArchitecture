@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Channels;
@@ -22,6 +20,14 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs
 
         private readonly Channel<(string topic, object message)> _c = Channel.CreateUnbounded<(string topic, object message)>();
         private readonly PublisherSocket _pubSocket;
+
+        private static readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions()
+        {
+            IgnoreReadOnlyFields = true,
+            IgnoreReadOnlyProperties = true,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+            UnknownTypeHandling = System.Text.Json.Serialization.JsonUnknownTypeHandling.JsonNode,
+        };
 
         public ZmqPublisher(
             ILogger<ZmqEventBus> logger,
@@ -49,21 +55,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs
 
         private async Task ConsumingEvent()
         {
-            var options = new JsonSerializerOptions()
-            {
-                IgnoreReadOnlyFields = true,
-                IgnoreReadOnlyProperties = true,
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-                UnknownTypeHandling = System.Text.Json.Serialization.JsonUnknownTypeHandling.JsonNode,
-            };
-
             while (await _c.Reader.WaitToReadAsync())
             {
                 try
                 {
                     var (topic, message) = await _c.Reader.ReadAsync();
 
-                    var payload = JsonSerializer.SerializeToUtf8Bytes(message, message.GetType(), options);
+                    var payload = JsonSerializer.SerializeToUtf8Bytes(message, message.GetType(), _serializerOptions);
 
                     _pubSocket.SendMoreFrame(topic).SendFrame(payload);
                 }

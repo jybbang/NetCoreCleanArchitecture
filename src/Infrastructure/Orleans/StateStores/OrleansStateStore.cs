@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.StateStores;
 using NetCoreCleanArchitecture.Infrastructure.Orleans.Common.Contracts;
 using Orleans;
@@ -15,7 +13,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.StateStores
     {
         private readonly IClusterClient _clusterClient;
 
-        private static JsonSerializerOptions _options = new JsonSerializerOptions()
+        private static readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions()
         {
             IgnoreReadOnlyFields = true,
             IgnoreReadOnlyProperties = true,
@@ -36,7 +34,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.StateStores
 
             var response = await handler.GetStateAsync(typeof(T).Name, key, etag?.ToString());
 
-            return JsonSerializer.Deserialize<T>(response, _options);
+            return JsonSerializer.Deserialize<T>(response, _serializerOptions);
         }
 
         public async ValueTask<IReadOnlyList<T>?> GetBulkAsync(IEnumerable<(string key, object? etag)> keys, CancellationToken cancellationToken)
@@ -66,7 +64,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.StateStores
 
             var item = await factory.Invoke();
 
-            var payload = JsonSerializer.SerializeToUtf8Bytes(item, _options);
+            var payload = JsonSerializer.SerializeToUtf8Bytes(item, _serializerOptions);
 
             if (payload is null) return default(T);
 
@@ -74,7 +72,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.StateStores
 
             var response = await handler.GetOrCreateStateAsync(typeof(T).Name, key, etag?.ToString(), payload);
 
-            return JsonSerializer.Deserialize<T>(response, _options);
+            return JsonSerializer.Deserialize<T>(response, _serializerOptions);
         }
 
         public ValueTask RemoveAsync(string key, object? etag, CancellationToken cancellationToken)
@@ -97,7 +95,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.StateStores
         {
             if (!_clusterClient.IsInitialized) return new ValueTask();
 
-            var payload = JsonSerializer.SerializeToUtf8Bytes(item, _options);
+            var payload = JsonSerializer.SerializeToUtf8Bytes(item, _serializerOptions);
 
             if (payload is null) return new ValueTask();
 

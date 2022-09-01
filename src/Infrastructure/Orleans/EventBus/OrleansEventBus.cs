@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.EventSources;
 using NetCoreCleanArchitecture.Domain.Common;
-using NetCoreCleanArchitecture.Domain;
 using NetCoreCleanArchitecture.Infrastructure.Orleans.Common.Contracts;
 using Orleans;
-using System.Text.Json;
 
 namespace NetCoreCleanArchitecture.Infrastructure.Orleans.EventBus
 {
