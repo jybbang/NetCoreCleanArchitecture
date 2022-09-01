@@ -55,17 +55,23 @@ namespace NetCoreCleanArchitecture.Application.EventSources
             {
                 timer.Start();
 
-                logger.LogTrace("Publish event: {Name} - {@Event}", eventName, domainEvent);
-
                 domainEvent.Publising(timestamp);
 
                 await PublishEventNotification(domainEvent, cancellationToken);
 
                 await PublishToEventbus(domainEvent, cancellationToken);
             }
+            catch (InvalidOperationException ex)
+            {
+                logger.LogTrace(ex, "Publish event invalid exception: {Name}", eventName);
+            }
+            catch (OperationCanceledException ex)
+            {
+                logger.LogTrace(ex, "Publish event canceled exception: {Name}", eventName);
+            }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Publish event unhandled exception: {Name} - {@Event}", eventName, domainEvent);
+                logger.LogError(ex, "Publish event unhandled exception: {Name}", eventName);
             }
             finally
             {
@@ -73,10 +79,10 @@ namespace NetCoreCleanArchitecture.Application.EventSources
 
                 var elapsedMilliseconds = timer.ElapsedMilliseconds;
 
-                if (elapsedMilliseconds > 1000)
+                if (elapsedMilliseconds > 2000)
                 {
-                    logger.LogTrace("Publish event long running: {Name} ({ElapsedMilliseconds} milliseconds) - {@Event}",
-                        eventName, elapsedMilliseconds, domainEvent);
+                    logger.LogDebug("Publish event long running: {Name} ({ElapsedMilliseconds} milliseconds)",
+                        eventName, elapsedMilliseconds);
                 }
             }
         }

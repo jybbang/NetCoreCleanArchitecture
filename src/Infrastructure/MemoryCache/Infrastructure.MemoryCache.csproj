@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
 		<LangVersion>8.0</LangVersion>
 		<Nullable>enable</Nullable>
 		<RootNamespace>NetCoreCleanArchitecture.Infrastructure.MemoryCache</RootNamespace>
@@ -11,7 +11,7 @@
 		<Product>NetCoreCleanArchitecture.Infrastructure.MemoryCache</Product>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
-		<Version>2.0.0</Version>
+		<Version>2.1.0</Version>
 		<AssemblyName>NetCoreCleanArchitecture.Infrastructure.MemoryCache</AssemblyName>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>

@@ -15,9 +15,11 @@
 //
 
 using System;
+using System.Runtime.Serialization;
 
 namespace NetCoreCleanArchitecture.Domain.Exceptions
 {
+    [Serializable]
     public class NotFoundException : Exception
     {
         public string? Entity { get; }
@@ -32,5 +34,8 @@ namespace NetCoreCleanArchitecture.Domain.Exceptions
         {
             Entity = entity;
         }
+
+        protected NotFoundException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
     }
 }

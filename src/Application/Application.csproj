@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
 		<LangVersion>8.0</LangVersion>
 		<Nullable>enable</Nullable>
 		<RootNamespace>NetCoreCleanArchitecture.Application</RootNamespace>
@@ -12,30 +12,29 @@
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
 		<AssemblyName>NetCoreCleanArchitecture.Application</AssemblyName>
-		<Version>2.0.0</Version>
+		<Version>2.1.0</Version>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.0" />
 		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.0.3" />
 		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Common\Results\**" />
-	  <EmbeddedResource Remove="Common\Results\**" />
-	  <None Remove="Common\Results\**" />
+		<Compile Remove="Common\Results\**" />
+		<EmbeddedResource Remove="Common\Results\**" />
+		<None Remove="Common\Results\**" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
 		<PackageReference Include="Results.Fluent" Version="1.2.0" />

@@ -9,7 +9,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
 {
     public static class ConfigureServices
     {
-        public static IServiceCollection AddNetCleanZmqEventBus(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddNetCleanEventBus(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<ZmqOptions>(configuration.GetSection("Api:Zmq"));
 

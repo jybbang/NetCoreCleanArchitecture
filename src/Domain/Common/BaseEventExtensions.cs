@@ -4,7 +4,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 {
     public static class BaseEventExtensions
     {
-        public static T WithCreatedEvent<T>(this T entitiy, object identifier, string topic = "") where T : BaseEntity
+        public static T WithCreatedEvent<T>(this T entitiy, string identifier, string? etag = null, string topic = "") where T : BaseEntity
         {
             var entitiyName = entitiy.GetType().Name;
 
@@ -16,6 +16,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
                 EntityName = entitiyName,
                 Id = entitiy.Id,
                 Identifier = identifier,
+                Etag = etag,
             };
 
             entitiy.Commit(e);
@@ -23,7 +24,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
             return entitiy;
         }
 
-        public static T WithUpdatedEvent<T>(this T entitiy, object originalIdentifier, object identifier, string topic = "") where T : BaseEntity
+        public static T WithUpdatedEvent<T>(this T entitiy, string originalIdentifier, string identifier, string? etag = null, string topic = "") where T : BaseEntity
         {
             var entitiyName = entitiy.GetType().Name;
 
@@ -34,8 +35,9 @@ namespace NetCoreCleanArchitecture.Domain.Common
                 Topic = topic,
                 EntityName = entitiyName,
                 Id = entitiy.Id,
-                OriginalIdentifier = originalIdentifier,
                 Identifier = identifier,
+                OriginalIdentifier = originalIdentifier,
+                Etag = etag,
             };
 
             entitiy.Commit(e);
@@ -43,7 +45,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
             return entitiy;
         }
 
-        public static T WithDeletedEvent<T>(this T entitiy, object identifier, string topic = "") where T : BaseEntity
+        public static T WithDeletedEvent<T>(this T entitiy, string identifier, string? etag = null, string topic = "") where T : BaseEntity
         {
             var entitiyName = entitiy.GetType().Name;
 
@@ -55,6 +57,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
                 EntityName = entitiyName,
                 Id = entitiy.Id,
                 Identifier = identifier,
+                Etag = etag,
             };
 
             entitiy.Commit(e);
@@ -69,7 +72,9 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public string EntityName { get; set; } = null!;
 
-        public object Identifier { get; set; } = null!;
+        public string Identifier { get; set; } = null!;
+
+        public string? Etag { get; set; }
     }
 
     public class EntityUpdatedEvent : BaseEvent
@@ -78,9 +83,11 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public string EntityName { get; set; } = null!;
 
-        public object Identifier { get; set; } = null!;
+        public string Identifier { get; set; } = null!;
 
-        public object OriginalIdentifier { get; set; } = null!;
+        public string OriginalIdentifier { get; set; } = null!;
+
+        public string? Etag { get; set; }
     }
 
     public class EntityDeletedEvent : BaseEvent
@@ -89,6 +96,8 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public string EntityName { get; set; } = null!;
 
-        public object Identifier { get; set; } = null!;
+        public string Identifier { get; set; } = null!;
+
+        public string? Etag { get; set; }
     }
 }

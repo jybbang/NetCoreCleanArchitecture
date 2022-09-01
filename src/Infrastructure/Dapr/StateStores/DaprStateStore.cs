@@ -22,27 +22,27 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             _client = client;
         }
 
-        public async ValueTask<IReadOnlyList<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken)
+        public async ValueTask<IReadOnlyList<T>?> GetBulkAsync(IEnumerable<(string key, object? etag)> keys, CancellationToken cancellationToken)
         {
-            var stream = await _client.GetBulkStateAsync(_options.StoreName, keys, null, cancellationToken: cancellationToken);
+            var stream = await _client.GetBulkStateAsync(_options.StoreName, keys.Select(x => x.key).ToList(), null, cancellationToken: cancellationToken);
 
             if (stream.Count == 0) return null;
 
             return stream.OfType<T>().ToList();
         }
 
-        public async ValueTask<T?> GetAsync(string key, CancellationToken cancellationToken)
+        public async ValueTask<T?> GetAsync(string key, object? etag, CancellationToken cancellationToken)
             => await _client.GetStateAsync<T>(_options.StoreName, key, cancellationToken: cancellationToken);
 
-        public async ValueTask<T> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken)
+        public async ValueTask<T?> GetOrCreateAsync(string key, object? etag, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken)
         {
-            var result = await GetAsync(key, cancellationToken);
+            var result = await GetAsync(key, etag, cancellationToken);
 
             if (result is null)
             {
                 var item = await factory();
 
-                await AddAsync(key, item, ttlSeconds, cancellationToken);
+                await SetAsync(key, etag, item, ttlSeconds, cancellationToken);
 
                 result = item;
             }
@@ -50,17 +50,30 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             return result;
         }
 
-        public async ValueTask AddAsync(string key, T item, int ttlSeconds, CancellationToken cancellationToken)
+        public ValueTask<T?> GetOrCreateAsync(string key, object? etag, Func<ValueTask<T>> factory, CancellationToken cancellationToken)
         {
-            var metadata = new Dictionary<string, string>
-            {
-                {"ttlInSeconds",ttlSeconds.ToString() },
-            };
+            return GetOrCreateAsync(key, etag, factory, 0, cancellationToken);
+        }
+
+        public async ValueTask SetAsync(string key, object? etag, T item, int ttlSeconds, CancellationToken cancellationToken)
+        {
+            var metadata = ttlSeconds > 0
+                ? new Dictionary<string, string>
+                {
+                    { "ttlInSeconds", ttlSeconds.ToString() },
+                    { "etag", etag?.ToString() ?? string.Empty },
+                }
+                : null;
 
             await _client.SaveStateAsync(_options.StoreName, key, item, metadata: metadata, cancellationToken: cancellationToken);
         }
 
-        public async ValueTask RemoveAsync(string key, CancellationToken cancellationToken)
+        public ValueTask SetAsync(string key, object? etag, T item, CancellationToken cancellationToken)
+        {
+            return SetAsync(key, etag, item, 0, cancellationToken);
+        }
+
+        public async ValueTask RemoveAsync(string key, object? etag, CancellationToken cancellationToken)
             => await _client.DeleteStateAsync(_options.StoreName, key, cancellationToken: cancellationToken);
     }
 }

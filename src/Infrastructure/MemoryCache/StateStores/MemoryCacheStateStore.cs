@@ -16,13 +16,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
             _client = client;
         }
 
-        public async ValueTask<IReadOnlyList<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken)
+        public async ValueTask<IReadOnlyList<T>?> GetBulkAsync(IEnumerable<(string key, object? etag)> keys, CancellationToken cancellationToken)
         {
             var result = new List<T>();
 
             foreach (var key in keys)
             {
-                var state = await GetAsync(key, cancellationToken);
+                var state = await GetAsync(key.key, key.etag, cancellationToken);
 
                 if (!(state is null)) result.Add(state);
             }
@@ -30,19 +30,15 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
             return result;
         }
 
-        public async ValueTask<T?> GetAsync(string key, CancellationToken cancellationToken)
+        public async ValueTask<T?> GetAsync(string key, object? etag, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
-
             var item = _client.Get<T>(key);
 
             return await Task.FromResult(item);
         }
 
-        public async ValueTask<T> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken)
+        public async ValueTask<T?> GetOrCreateAsync(string key, object? etag, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
-
             return await _client.GetOrCreateAsync<T>(key, async entry =>
             {
                 if (ttlSeconds > 0)
@@ -54,10 +50,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
             });
         }
 
-        public ValueTask AddAsync(string key, T item, int ttlSeconds, CancellationToken cancellationToken)
+        public ValueTask<T?> GetOrCreateAsync(string key, object? etag, Func<ValueTask<T>> factory, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+            return GetOrCreateAsync(key, etag, factory, 0, cancellationToken);
+        }
 
+        public ValueTask SetAsync(string key, object? etag, T item, int ttlSeconds, CancellationToken cancellationToken)
+        {
             if (ttlSeconds > 0)
             {
                 _client.Set<T>(key, item, TimeSpan.FromSeconds(ttlSeconds));
@@ -70,10 +69,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
             return new ValueTask();
         }
 
-        public ValueTask RemoveAsync(string key, CancellationToken cancellationToken)
+        public ValueTask SetAsync(string key, object? etag, T item, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+            return SetAsync(key, etag, item, 0, cancellationToken);
+        }
 
+        public ValueTask RemoveAsync(string key, object? etag, CancellationToken cancellationToken)
+        {
             _client.Remove(key);
 
             return new ValueTask();

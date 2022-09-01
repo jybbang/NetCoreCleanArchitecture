@@ -39,96 +39,91 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
 
         public void Add(TEntity item)
         {
-            _context.AddTracking(item, UpdatePartialAsync);
+            _context.AddTracking(item);
 
             _collection.InsertOne(item);
         }
 
         public async ValueTask AddAsync(TEntity item, CancellationToken cancellationToken)
         {
-            _context.AddTracking(item, UpdatePartialAsync);
+            _context.AddTracking(item);
 
             await _collection.InsertOneAsync(item, cancellationToken: cancellationToken);
         }
 
         public void AddRange(IReadOnlyList<TEntity> items)
         {
-            _context.AddTrackingRange(items, UpdatePartialAsync);
+            _context.AddTrackingRange(items);
 
             _collection.InsertMany(items);
         }
 
         public async ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
-            _context.AddTrackingRange(items, UpdatePartialAsync, cancellationToken);
+            _context.AddTrackingRange(items, cancellationToken);
 
             await _collection.InsertManyAsync(items, cancellationToken: cancellationToken);
         }
 
-        public void Remove(Guid key)
+        public void Remove(TEntity item, Guid key)
         {
-            var item = _collection.Find(item => item.Id == key).SingleOrDefault();
-
-            if (item is null) return;
+            _context.AddTracking(item);
 
             _collection.DeleteOne(Id(key));
         }
 
-        public async ValueTask RemoveAsync(Guid key, CancellationToken cancellationToken)
+        public async ValueTask RemoveAsync(TEntity item, Guid key, CancellationToken cancellationToken)
         {
-            var item = await _collection.Find(item => item.Id == key).SingleOrDefaultAsync(cancellationToken);
-
-            if (item is null) return;
+            _context.AddTracking(item);
 
             await _collection.DeleteOneAsync(Id(key), cancellationToken: cancellationToken);
         }
 
-        public void RemoveAll()
+        public void RemoveMany(IReadOnlyList<TEntity> items)
         {
-            _collection.DeleteMany(NotId(Guid.Empty));
+            _context.AddTrackingRange(items);
+
+            _collection.BulkWrite(CreateDeletes(items));
         }
 
-        public async ValueTask RemoveAllAsync(CancellationToken cancellationToken)
+        public async ValueTask RemoveManyAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
-            await _collection.DeleteManyAsync(NotId(Guid.Empty), cancellationToken);
+            _context.AddTrackingRange(items);
+
+            await _collection.BulkWriteAsync(CreateDeletes(items, cancellationToken), cancellationToken: cancellationToken);
+        }
+
+        public void RemoveAll()
+        {
+            _context.Database.DropCollection(typeof(TEntity).Name);
         }
 
         public void Update(TEntity item)
         {
-            _context.AddTracking(item, UpdatePartialAsync);
+            _context.AddTracking(item);
 
             _collection.ReplaceOne(Id(item.Id), item);
         }
 
         public async ValueTask UpdateAsync(TEntity item, CancellationToken cancellationToken)
         {
-            _context.AddTracking(item, UpdatePartialAsync);
+            _context.AddTracking(item);
 
             await _collection.ReplaceOneAsync(Id(item.Id), item, cancellationToken: cancellationToken);
         }
 
         public void UpdateRange(IReadOnlyList<TEntity> items)
         {
-            _context.AddTrackingRange(items, UpdatePartialAsync);
+            _context.AddTrackingRange(items);
 
             _collection.BulkWrite(CreateUpdates(items));
         }
 
         public async ValueTask UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
-            _context.AddTrackingRange(items, UpdatePartialAsync, cancellationToken);
+            _context.AddTrackingRange(items, cancellationToken);
 
             await _collection.BulkWriteAsync(CreateUpdates(items, cancellationToken), cancellationToken: cancellationToken);
-        }
-
-        private void UpdatePartial(Guid key, object item)
-        {
-            _collection.ReplaceOne(Id(key), (TEntity)item);
-        }
-
-        private async ValueTask UpdatePartialAsync(Guid key, object item, CancellationToken cancellationToken)
-        {
-            await _collection.ReplaceOneAsync(Id(key), (TEntity)item, cancellationToken: cancellationToken);
         }
 
         private IEnumerable<WriteModel<TEntity>> CreateUpdates(in IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
@@ -137,7 +132,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
 
             foreach (var item in items)
             {
-                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                cancellationToken.ThrowIfCancellationRequested();
 
                 if (item.Id == Guid.Empty) continue;
 
@@ -145,6 +140,22 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
             }
 
             return updates;
+        }
+
+        private IEnumerable<WriteModel<TEntity>> CreateDeletes(in IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
+        {
+            var deletes = new List<WriteModel<TEntity>>();
+
+            foreach (var item in items)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (item.Id == Guid.Empty) continue;
+
+                deletes.Add(new DeleteOneModel<TEntity>(Id(item.Id)));
+            }
+
+            return deletes;
         }
 
         private FilterDefinition<TEntity> Id(Guid value)

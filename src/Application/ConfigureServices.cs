@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Common.Behaviours;
 using NetCoreCleanArchitecture.Application.EventSources;
@@ -10,7 +11,7 @@ namespace NetCoreCleanArchitecture.Application
 {
     public static class ConfigureServices
     {
-        public static IServiceCollection AddNetCleanApplication(this IServiceCollection services)
+        public static IServiceCollection AddNetCleanApplication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<BulkEventService>();
 
