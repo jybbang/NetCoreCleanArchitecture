@@ -62,6 +62,9 @@ jobs:
         
       - name: Infrastructure.Zmq-Pack
         run: dotnet pack --no-build --configuration Release src/Infrastructure/Zmq/Infrastructure.Zmq.csproj --output .   
+        
+      - name: Infrastructure.Orleans-Pack
+        run: dotnet pack --no-build --configuration Release src/Infrastructure/Orleans/Infrastructure.Orleans.csproj --output .   
                
       - name: Interface.Http-Pack
         run: dotnet pack --no-build --configuration Release src/Interface/Http/Interface.Http.csproj --output .
@@ -89,7 +92,10 @@ jobs:
                 
       - name: Infrastructure.Zmq-PushNuget
         run: dotnet nuget push *.Infrastructure.Zmq.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate        
-                
+               
+      - name: Infrastructure.Orleans-PushNuget
+        run: dotnet nuget push *.Infrastructure.Orleans.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate        
+               
       - name: Interface.Http-PushNuget
         run: dotnet nuget push *.Interface.Http.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate     
             
@@ -116,6 +122,9 @@ jobs:
                 
       - name: Infrastructure.Zmq-PushNuget-github
         run: dotnet nuget push *.Infrastructure.Zmq.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate   
+                
+      - name: Infrastructure.Orleans-PushNuget-github
+        run: dotnet nuget push *.Infrastructure.Orleans.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate   
                 
       - name: Interface.Http-PushNuget-github
         run: dotnet nuget push *.Interface.Http.*.nupkg --source https://nuget.pkg.github.com/jyb.bang/index.json --api-key ${{secrets.PUBLISH_TO_GITHUB_COM}} --skip-duplicate   
