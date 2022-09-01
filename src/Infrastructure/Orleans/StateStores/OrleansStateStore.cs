@@ -15,9 +15,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.StateStores
     {
         private readonly IClusterClient _clusterClient;
 
-        private INetCleanHandlerGrain? _handler;
-
-        private JsonSerializerOptions _options = new JsonSerializerOptions()
+        private static JsonSerializerOptions _options = new JsonSerializerOptions()
         {
             IgnoreReadOnlyFields = true,
             IgnoreReadOnlyProperties = true,
@@ -34,20 +32,11 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.StateStores
         {
             if (!_clusterClient.IsInitialized) return default(T);
 
-            _handler ??= _clusterClient.GetGrain<INetCleanHandlerGrain>(Guid.Empty);
+            var handler = _clusterClient.GetGrain<INetCleanHandlerGrain>(Guid.Empty);
 
-            try
-            {
-                var response = await _handler.GetStateAsync(typeof(T).Name, key, etag?.ToString());
+            var response = await handler.GetStateAsync(typeof(T).Name, key, etag?.ToString());
 
-                return JsonSerializer.Deserialize<T>(response, _options);
-            }
-            catch (Exception)
-            {
-                _handler = null;
-
-                throw;
-            }
+            return JsonSerializer.Deserialize<T>(response, _options);
         }
 
         public async ValueTask<IReadOnlyList<T>?> GetBulkAsync(IEnumerable<(string key, object? etag)> keys, CancellationToken cancellationToken)
@@ -66,7 +55,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.StateStores
 
         public ValueTask<T?> GetOrCreateAsync(string key, object? etag, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken)
         {
-            if (ttlSeconds > 0) throw new NotSupportedException($"OrleansStateStore is not support ttl");
+            if (ttlSeconds > 0) throw new NotSupportedException($"OrleansStateStore is not supporting ttl action");
 
             return GetOrCreateAsync(key, etag, factory, cancellationToken);
         }
@@ -75,47 +64,31 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.StateStores
         {
             if (!_clusterClient.IsInitialized) return default(T);
 
-            _handler ??= _clusterClient.GetGrain<INetCleanHandlerGrain>(Guid.Empty);
+            var item = await factory.Invoke();
 
-            try
-            {
-                var item = await factory.Invoke();
+            var payload = JsonSerializer.SerializeToUtf8Bytes(item, _options);
 
-                var payload = JsonSerializer.SerializeToUtf8Bytes(item, _options);
+            if (payload is null) return default(T);
 
-                var response = await _handler.GetOrCreateStateAsync(typeof(T).Name, key, etag?.ToString(), payload);
+            var handler = _clusterClient.GetGrain<INetCleanHandlerGrain>(Guid.Empty);
 
-                return JsonSerializer.Deserialize<T>(response, _options);
-            }
-            catch (Exception)
-            {
-                _handler = null;
+            var response = await handler.GetOrCreateStateAsync(typeof(T).Name, key, etag?.ToString(), payload);
 
-                throw;
-            }
+            return JsonSerializer.Deserialize<T>(response, _options);
         }
 
         public ValueTask RemoveAsync(string key, object? etag, CancellationToken cancellationToken)
         {
             if (!_clusterClient.IsInitialized) return new ValueTask();
 
-            _handler ??= _clusterClient.GetGrain<INetCleanHandlerGrain>(Guid.Empty);
+            var handler = _clusterClient.GetGrain<INetCleanHandlerGrain>(Guid.Empty);
 
-            try
-            {
-                return _handler.RemoveStateAsync(typeof(T).Name, key, etag?.ToString());
-            }
-            catch (Exception)
-            {
-                _handler = null;
-
-                throw;
-            }
+            return handler.RemoveStateAsync(typeof(T).Name, key, etag?.ToString());
         }
 
         public ValueTask SetAsync(string key, object? etag, T item, int ttlSeconds, CancellationToken cancellationToken)
         {
-            if (ttlSeconds > 0) throw new NotSupportedException($"OrleansStateStore is not support ttl");
+            if (ttlSeconds > 0) throw new NotSupportedException($"OrleansStateStore is not supporting ttl action");
 
             return SetAsync(key, etag, item, cancellationToken);
         }
@@ -124,20 +97,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.StateStores
         {
             if (!_clusterClient.IsInitialized) return new ValueTask();
 
-            _handler ??= _clusterClient.GetGrain<INetCleanHandlerGrain>(Guid.Empty);
+            var payload = JsonSerializer.SerializeToUtf8Bytes(item, _options);
 
-            try
-            {
-                var payload = JsonSerializer.SerializeToUtf8Bytes(item, _options);
+            if (payload is null) return new ValueTask();
 
-                return _handler.SetStateAsync(typeof(T).Name, key, etag?.ToString(), payload);
-            }
-            catch (Exception)
-            {
-                _handler = null;
+            var handler = _clusterClient.GetGrain<INetCleanHandlerGrain>(Guid.Empty);
 
-                throw;
-            }
+            return handler.SetStateAsync(typeof(T).Name, key, etag?.ToString(), payload);
         }
     }
 }

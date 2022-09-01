@@ -9,7 +9,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.Common.Contracts
 {
     public interface INetCleanHandlerGrain : IGrainWithGuidKey
     {
-        ValueTask HandleEventAsync(string topic, byte[] payload, DateTimeOffset timestamp);
+        ValueTask HandleEventAsync(string topic, byte[] payload);
 
         ValueTask RemoveStateAsync(string typeName, string key, string? etag);
 

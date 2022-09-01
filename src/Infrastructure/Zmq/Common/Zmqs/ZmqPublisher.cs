@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Channels;
@@ -18,6 +19,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs
     {
         private readonly ILogger<ZmqEventBus> _logger;
         private readonly IOptions<ZmqOptions> _options;
+
         private readonly Channel<(string topic, object message)> _c = Channel.CreateUnbounded<(string topic, object message)>();
         private readonly PublisherSocket _pubSocket;
 

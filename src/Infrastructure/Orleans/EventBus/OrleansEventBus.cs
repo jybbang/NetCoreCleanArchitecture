@@ -17,7 +17,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.EventBus
     {
         private readonly IClusterClient _clusterClient;
 
-        private INetCleanHandlerGrain? _handler;
+        private static JsonSerializerOptions options = new JsonSerializerOptions()
+        {
+            IgnoreReadOnlyFields = true,
+            IgnoreReadOnlyProperties = true,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+            UnknownTypeHandling = System.Text.Json.Serialization.JsonUnknownTypeHandling.JsonNode,
+        };
 
         public OrleansEventBus(IClusterClient clusterClient)
         {
@@ -28,30 +34,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.Orleans.EventBus
         {
             if (!_clusterClient.IsInitialized) return new ValueTask();
 
-            _handler ??= _clusterClient.GetGrain<INetCleanHandlerGrain>(Guid.Empty);
+            var payload = JsonSerializer.SerializeToUtf8Bytes(message, message.GetType(), options);
 
-            try
-            {
-                var options = new JsonSerializerOptions()
-                {
-                    IgnoreReadOnlyFields = true,
-                    IgnoreReadOnlyProperties = true,
-                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-                    UnknownTypeHandling = System.Text.Json.Serialization.JsonUnknownTypeHandling.JsonNode,
-                };
+            if (payload is null) return new ValueTask();
 
-                var payload = JsonSerializer.SerializeToUtf8Bytes(message, message.GetType(), options);
+            var handler = _clusterClient.GetGrain<INetCleanHandlerGrain>(Guid.Empty);
 
-                if(payload is null) return new ValueTask();
-
-                return _handler.HandleEventAsync(topic, payload, message.Timestamp);
-            }
-            catch (Exception)
-            {
-                _handler = null;
-
-                throw;
-            }
+            return handler.HandleEventAsync(topic, payload);
         }
     }
 }
