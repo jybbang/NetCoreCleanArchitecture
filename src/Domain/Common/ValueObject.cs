@@ -39,6 +39,12 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         protected abstract IEnumerable<object?> GetEqualityComponents();
 
+        public static bool operator ==(ValueObject? left, ValueObject? right)
+            => EqualOperator(left, right);
+
+        public static bool operator !=(ValueObject? left, ValueObject? right)
+            => NotEqualOperator(left, right);
+
         public override bool Equals(object? obj)
         {
             if (obj == null || obj.GetType() != GetType())

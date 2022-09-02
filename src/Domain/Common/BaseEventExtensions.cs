@@ -79,7 +79,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public string? Etag { get; set; }
 
-        public object? Entity { get; set; }
+        public object Entity { get; set; } = null!;
     }
 
     public class EntityUpdatedEvent : BaseEvent
@@ -94,7 +94,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public string? Etag { get; set; }
 
-        public object? Entity { get; set; }
+        public object Entity { get; set; } = null!;
     }
 
     public class EntityDeletedEvent : BaseEvent
@@ -107,6 +107,6 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public string? Etag { get; set; }
 
-        public object? Entity { get; set; }
+        public object Entity { get; set; } = null!;
     }
 }
