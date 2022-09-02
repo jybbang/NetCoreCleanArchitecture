@@ -16,15 +16,19 @@
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+		<PackageReference Include="MediatR" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
+		<PackageReference Include="MediatR" Version="10.0.1" />
+	</ItemGroup>
 	
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>NetCoreCleanArchitecture.Application</_Parameter1>
 		</AssemblyAttribute>
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <PackageReference Include="MediatR.Contracts" Version="1.0.1" />
 	</ItemGroup>
 
 </Project>
