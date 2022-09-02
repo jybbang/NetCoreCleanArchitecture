@@ -12,14 +12,10 @@
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
 		<AssemblyName>NetCoreCleanArchitecture.Domain</AssemblyName>
-		<Version>2.1.1.1</Version>
+		<Version>2.1.1.2</Version>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-		<PackageReference Include="MediatR" Version="9.0.0" />
-	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
 		<PackageReference Include="MediatR" Version="10.0.1" />
@@ -29,6 +25,10 @@
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>NetCoreCleanArchitecture.Application</_Parameter1>
 		</AssemblyAttribute>
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <PackageReference Include="MediatR.Contracts" Version="1.0.1" />
 	</ItemGroup>
 
 </Project>

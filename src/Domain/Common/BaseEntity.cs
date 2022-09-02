@@ -19,7 +19,7 @@ using System.Collections.Concurrent;
 
 namespace NetCoreCleanArchitecture.Domain.Common
 {
-    public abstract class BaseEntity
+    public abstract class BaseEntity : IHasId
     {
         public Guid Id { get; set; }
 
