@@ -29,16 +29,18 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
     public class DbContextQueryRepository<TEntity> : IQueryRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly DbContext _context;
-
+        private readonly DbSet<TEntity> _set;
         private readonly IQueryable<TEntity> _queryableAsNoTracking;
 
         public DbContextQueryRepository(DbContext context)
         {
             _context = context;
 
-            _queryableAsNoTracking = _context.Set<TEntity>().AsNoTracking();
+            _set = _context.Set<TEntity>();
 
-            Queryable = _context.Set<TEntity>();
+            _queryableAsNoTracking = _set.AsNoTracking();
+
+            Queryable = _set;
         }
 
         public IQueryable<TEntity> Queryable { get; }
@@ -68,10 +70,10 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
             => await _queryableAsNoTracking.LongCountAsync(where, cancellationToken);
 
         public TEntity? Find(Guid key)
-            => _context.Set<TEntity>().Find(key);
+            => _set.Find(key);
 
         public async ValueTask<TEntity?> FindAsync(Guid key, CancellationToken cancellationToken)
-            => await _context.Set<TEntity>().FindAsync(new object[] { key }, cancellationToken);
+            => await _set.FindAsync(new object[] { key }, cancellationToken);
 
         public TEntity? Find(Expression<Func<TEntity, bool>> where)
             => _queryableAsNoTracking.Where(where).SingleOrDefault();

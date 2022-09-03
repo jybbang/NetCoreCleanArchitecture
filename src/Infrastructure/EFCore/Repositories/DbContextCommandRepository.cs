@@ -28,42 +28,43 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
     public class DbContextCommandRepository<TEntity> : ICommandRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly DbContext _context;
+        private readonly DbSet<TEntity> _set;
 
         public DbContextCommandRepository(DbContext context)
         {
             _context = context;
+
+            _set = _context.Set<TEntity>();
         }
 
-        private DbSet<TEntity> Set => _context.Set<TEntity>();
+        public void Add(TEntity item) => _set.Add(item);
 
-        public void Add(TEntity item) => Set.Add(item);
+        public async ValueTask AddAsync(TEntity item, CancellationToken cancellationToken) => await _set.AddAsync(item, cancellationToken);
 
-        public async ValueTask AddAsync(TEntity item, CancellationToken cancellationToken) => await Set.AddAsync(item, cancellationToken);
+        public void AddRange(IReadOnlyList<TEntity> items) => _set.AddRange(items);
 
-        public void AddRange(IReadOnlyList<TEntity> items) => Set.AddRange(items);
-
-        public async ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken) => await Set.AddRangeAsync(items, cancellationToken);
+        public async ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken) => await _set.AddRangeAsync(items, cancellationToken);
 
         public void Remove(TEntity item, Guid key)
         {
-            Set.Remove(item);
+            _set.Remove(item);
         }
 
         public ValueTask RemoveAsync(TEntity item, Guid key, CancellationToken cancellationToken)
         {
-            Set.Remove(item);
+            _set.Remove(item);
 
             return new ValueTask();
         }
 
         public void RemoveMany(IReadOnlyList<TEntity> items)
         {
-            Set.RemoveRange(items);
+            _set.RemoveRange(items);
         }
 
         public ValueTask RemoveManyAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
-            Set.RemoveRange(items);
+            _set.RemoveRange(items);
 
             return new ValueTask();
         }
@@ -77,24 +78,24 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
 
         public void Update(TEntity item)
         {
-            Set.Update(item);
+            _set.Update(item);
         }
 
         public ValueTask UpdateAsync(TEntity item, CancellationToken cancellationToken)
         {
-            Set.Update(item);
+            _set.Update(item);
 
             return new ValueTask();
         }
 
         public void UpdateRange(IReadOnlyList<TEntity> items)
         {
-            Set.UpdateRange(items);
+            _set.UpdateRange(items);
         }
 
         public ValueTask UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
         {
-            Set.UpdateRange(items);
+            _set.UpdateRange(items);
 
             return new ValueTask();
         }
