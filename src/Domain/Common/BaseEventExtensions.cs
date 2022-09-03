@@ -4,7 +4,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 {
     public static class BaseEventExtensions
     {
-        public static T WithCreatedEvent<T>(this T entitiy, string identifier, string? etag = null, string topic = "") where T : BaseEntity
+        public static T WithCreatedEvent<T>(this T entitiy, string identifier, object? etag = null, string topic = "") where T : BaseEntity
         {
             var entitiyName = entitiy.GetType().Name;
 
@@ -25,7 +25,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
             return entitiy;
         }
 
-        public static T WithUpdatedEvent<T>(this T entitiy, string originalIdentifier, string identifier, string? etag = null, string topic = "") where T : BaseEntity
+        public static T WithUpdatedEvent<T>(this T entitiy, string originalIdentifier, string identifier, object? etag = null, string topic = "") where T : BaseEntity
         {
             var entitiyName = entitiy.GetType().Name;
 
@@ -47,7 +47,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
             return entitiy;
         }
 
-        public static T WithDeletedEvent<T>(this T entitiy, string identifier, string? etag = null, string topic = "") where T : BaseEntity
+        public static T WithDeletedEvent<T>(this T entitiy, string identifier, object? etag = null, string topic = "") where T : BaseEntity
         {
             var entitiyName = entitiy.GetType().Name;
 
@@ -77,7 +77,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public string Identifier { get; set; } = null!;
 
-        public string? Etag { get; set; }
+        public object? Etag { get; set; }
 
         public object Entity { get; set; } = null!;
     }
@@ -92,7 +92,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public string OriginalIdentifier { get; set; } = null!;
 
-        public string? Etag { get; set; }
+        public object? Etag { get; set; }
 
         public object Entity { get; set; } = null!;
     }
@@ -105,7 +105,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public string Identifier { get; set; } = null!;
 
-        public string? Etag { get; set; }
+        public object? Etag { get; set; }
 
         public object Entity { get; set; } = null!;
     }

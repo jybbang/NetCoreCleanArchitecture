@@ -23,18 +23,20 @@ namespace NetCoreCleanArchitecture.Application.StateStores
 {
     public interface IStateStore<T> where T : class
     {
-        ValueTask<T?> GetOrCreateAsync(string key, object? etag, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken);
+        ValueTask<T?> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, int ttlSeconds, object? etag = default, CancellationToken cancellationToken = default);
 
-        ValueTask<T?> GetOrCreateAsync(string key, object? etag, Func<ValueTask<T>> factory, CancellationToken cancellationToken);
+        ValueTask<T?> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, object? etag = default, CancellationToken cancellationToken = default);
 
-        ValueTask<T?> GetAsync(string key, object? etag, CancellationToken cancellationToken);
+        ValueTask<T?> GetAsync(string key, object? etag = default, CancellationToken cancellationToken = default);
 
-        ValueTask<IReadOnlyList<T>?> GetBulkAsync(IEnumerable<(string key, object? etag)> keys, CancellationToken cancellationToken);
+        ValueTask<IReadOnlyList<T>?> GetBulkAsync(IEnumerable<string> keys, CancellationToken cancellationToken = default);
 
-        ValueTask SetAsync(string key, object? etag, T item, int ttlSeconds, CancellationToken cancellationToken);
+        ValueTask<IReadOnlyList<T>?> GetBulkAsync(IEnumerable<(string key, object? etag)> keys, CancellationToken cancellationToken = default);
 
-        ValueTask SetAsync(string key, object? etag, T item, CancellationToken cancellationToken);
+        ValueTask SetAsync(string key, T item, int ttlSeconds, object? etag = default, CancellationToken cancellationToken = default);
 
-        ValueTask RemoveAsync(string key, object? etag, CancellationToken cancellationToken);
+        ValueTask SetAsync(string key, T item, object? etag = default, CancellationToken cancellationToken = default);
+
+        ValueTask RemoveAsync(string key, object? etag = default, CancellationToken cancellationToken = default);
     }
 }
