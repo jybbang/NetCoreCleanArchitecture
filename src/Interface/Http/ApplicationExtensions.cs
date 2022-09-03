@@ -23,7 +23,7 @@ using OpenTelemetry.Trace;
 using Prometheus;
 using Results.Fluent;
 
-namespace NetCoreCleanArchitecture.Interface
+namespace NetCoreCleanArchitecture.Interface.Http
 {
     public static class ApplicationExtensions
     {
@@ -32,9 +32,7 @@ namespace NetCoreCleanArchitecture.Interface
             ActionResult? actionResult;
 
             if (result.IsFailed)
-            {
                 actionResult = new UnprocessableEntityObjectResult(result.Errors);
-            }
             else
             {
                 actionResult = new NoContentResult();
@@ -48,9 +46,7 @@ namespace NetCoreCleanArchitecture.Interface
             ActionResult? actionResult;
 
             if (result.IsFailed)
-            {
                 actionResult = new UnprocessableEntityObjectResult(result.Errors);
-            }
             else if (result.IsSucceeded)
             {
                 actionResult = new OkObjectResult(result.Container);
@@ -66,9 +62,7 @@ namespace NetCoreCleanArchitecture.Interface
         public static IApplicationBuilder UseNetCleanHttp(this IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
 
             app.UseStaticFiles();
 

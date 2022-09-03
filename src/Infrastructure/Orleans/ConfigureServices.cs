@@ -5,7 +5,7 @@ using NetCoreCleanArchitecture.Application.StateStores;
 using NetCoreCleanArchitecture.Infrastructure.Orleans.EventBus;
 using NetCoreCleanArchitecture.Infrastructure.Orleans.StateStores;
 
-namespace NetCoreCleanArchitecture.Infrastructure
+namespace NetCoreCleanArchitecture.Infrastructure.Orleans
 {
     public static class ConfigureServices
     {

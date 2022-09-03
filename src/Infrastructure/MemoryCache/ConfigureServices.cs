@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.StateStores;
-using NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores;
+using NetCoreCleanArchitecture.Infrastructure.MemoryCache.StateStores;
 
-namespace NetCoreCleanArchitecture.Infrastructure
+namespace NetCoreCleanArchitecture.Infrastructure.MemoryCache
 {
     public static class ConfigureServices
     {

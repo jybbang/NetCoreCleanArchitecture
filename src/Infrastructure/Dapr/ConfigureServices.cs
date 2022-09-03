@@ -8,7 +8,7 @@ using NetCoreCleanArchitecture.Infrastructure.Dapr.Common.Options;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.EventBus;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores;
 
-namespace NetCoreCleanArchitecture.Infrastructure
+namespace NetCoreCleanArchitecture.Infrastructure.Dapr
 {
     public static class ConfigureServices
     {

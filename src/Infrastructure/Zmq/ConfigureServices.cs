@@ -5,7 +5,7 @@ using NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Options;
 using NetCoreCleanArchitecture.Infrastructure.Zmq.Common.Zmqs;
 using NetCoreCleanArchitecture.Infrastructure.Zmq.EventBus;
 
-namespace NetCoreCleanArchitecture.Infrastructure
+namespace NetCoreCleanArchitecture.Infrastructure.Zmq
 {
     public static class ConfigureServices
     {

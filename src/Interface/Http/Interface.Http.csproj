@@ -10,7 +10,7 @@
 		<Product>NetCoreCleanArchitecture.Interface.Http</Product>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
-		<Version>2.1.1</Version>
+		<Version>2.1.2</Version>
 		<AssemblyName>NetCoreCleanArchitecture.Interface.Http</AssemblyName>
 		<RootNamespace>NetCoreCleanArchitecture.Interface.Http</RootNamespace>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>

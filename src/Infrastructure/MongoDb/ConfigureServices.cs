@@ -5,7 +5,7 @@ using MongoDB.Driver;
 using NetCoreCleanArchitecture.Application.Repositories;
 using NetCoreCleanArchitecture.Infrastructure.MongoDb.Common;
 
-namespace NetCoreCleanArchitecture.Infrastructure
+namespace NetCoreCleanArchitecture.Infrastructure.MongoDb
 {
     public enum MigrationOptions
     {
@@ -21,9 +21,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
             MigrationOptions migration = MigrationOptions.EnsureCreated) where T : MongoContext
         {
             if (string.IsNullOrEmpty(connectionString))
-            {
                 throw new ArgumentNullException(nameof(connectionString), $"'{nameof(connectionString)}' is required.");
-            }
 
             var databaseName = new MongoUrl(connectionString).DatabaseName;
 
@@ -32,11 +30,11 @@ namespace NetCoreCleanArchitecture.Infrastructure
             if (!(Activator.CreateInstance(typeof(T), database) is T context))
                 throw new NullReferenceException("Could not resolve MongoContext");
 
-            services.AddSingleton<T>(context);
+            services.AddSingleton(context);
 
             services.AddScoped<MongoContext>(provider => provider.GetRequiredService<T>());
 
-            services.AddScoped<IUnitOfWork>(provider => (IUnitOfWork)provider.GetRequiredService<T>());
+            services.AddScoped(provider => (IUnitOfWork)provider.GetRequiredService<T>());
 
             switch (migration)
             {
@@ -59,11 +57,11 @@ namespace NetCoreCleanArchitecture.Infrastructure
             if (!(Activator.CreateInstance(typeof(T), database) is T context))
                 throw new NullReferenceException("Could not resolve MongoContext");
 
-            services.AddSingleton<T>(context);
+            services.AddSingleton(context);
 
             services.AddScoped<MongoContext>(provider => provider.GetRequiredService<T>());
 
-            services.AddScoped<IUnitOfWork>(provider => (IUnitOfWork)provider.GetRequiredService<T>());
+            services.AddScoped(provider => (IUnitOfWork)provider.GetRequiredService<T>());
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using NetCoreCleanArchitecture.Application.Identities;
 
-namespace NetCoreCleanArchitecture.Interface.Http.Identity
+namespace NetCoreCleanArchitecture.Application.Common.Dummies
 {
     public class DummyUserService : ICurrentUserService
     {

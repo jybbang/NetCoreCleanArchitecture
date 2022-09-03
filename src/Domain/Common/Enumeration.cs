@@ -56,23 +56,11 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         public override int GetHashCode() => Id.GetHashCode();
 
-        public static int AbsoluteDifference(Enumeration firstValue, Enumeration secondValue)
-        {
-            var absoluteDifference = Math.Abs(firstValue.Id - secondValue.Id);
-            return absoluteDifference;
-        }
+        public static int AbsoluteDifference(Enumeration firstValue, Enumeration secondValue) => Math.Abs(firstValue.Id - secondValue.Id);
 
-        public static T FromValue<T>(int value) where T : Enumeration
-        {
-            var matchingItem = Parse<T, int>(value, "value", item => item.Id == value);
-            return matchingItem;
-        }
+        public static T FromValue<T>(int value) where T : Enumeration => Parse<T, int>(value, "value", item => item.Id == value);
 
-        public static T FromDisplayName<T>(string displayName) where T : Enumeration
-        {
-            var matchingItem = Parse<T, string>(displayName, "display name", item => item.Name == displayName);
-            return matchingItem;
-        }
+        public static T FromDisplayName<T>(string displayName) where T : Enumeration => Parse<T, string>(displayName, "display name", item => item.Name == displayName);
 
         protected static T Parse<T, K>(K value, string description, Func<T, bool> predicate) where T : Enumeration
         {

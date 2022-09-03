@@ -11,7 +11,7 @@
 		<Product>NetCoreCleanArchitecture.Infrastructure.Dapr</Product>
 		<RepositoryUrl>https://github.com/jybbang/NetCoreCleanArchitecture</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/jybbang/NetCoreCleanArchitecture</PackageProjectUrl>
-		<Version>2.1.1</Version>
+		<Version>2.1.2</Version>
 		<AssemblyName>NetCoreCleanArchitecture.Infrastructure.Dapr</AssemblyName>
 		<PackageTags>NetCore, CleanArchitecture, Architecture, Dapr, DDD, CQRS, Hexagon, HexagonArchitecture</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>

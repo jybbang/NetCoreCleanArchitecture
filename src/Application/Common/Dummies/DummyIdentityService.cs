@@ -2,7 +2,7 @@
 using NetCoreCleanArchitecture.Application.Identities;
 using Results.Fluent;
 
-namespace NetCoreCleanArchitecture.Interface.Http.Identity
+namespace NetCoreCleanArchitecture.Application.Common.Dummies
 {
     public class DummyIdentityService : IIdentityService
     {

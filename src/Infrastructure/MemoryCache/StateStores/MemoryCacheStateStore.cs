@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using NetCoreCleanArchitecture.Application.StateStores;
 
-namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
+namespace NetCoreCleanArchitecture.Infrastructure.MemoryCache.StateStores
 {
     public class MemoryCacheStateStore<T> : IStateStore<T> where T : class
     {
@@ -39,12 +39,10 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
 
         public async ValueTask<T?> GetOrCreateAsync(string key, object? etag, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken)
         {
-            return await _client.GetOrCreateAsync<T>(key, async entry =>
+            return await _client.GetOrCreateAsync(key, async entry =>
             {
                 if (ttlSeconds > 0)
-                {
                     entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(ttlSeconds);
-                }
 
                 return await factory();
             });
@@ -58,12 +56,10 @@ namespace NetCoreCleanArchitecture.Infrastructure.InMemory.StateStores
         public ValueTask SetAsync(string key, object? etag, T item, int ttlSeconds, CancellationToken cancellationToken)
         {
             if (ttlSeconds > 0)
-            {
-                _client.Set<T>(key, item, TimeSpan.FromSeconds(ttlSeconds));
-            }
+                _client.Set(key, item, TimeSpan.FromSeconds(ttlSeconds));
             else
             {
-                _client.Set<T>(key, item);
+                _client.Set(key, item);
             }
 
             return new ValueTask();
