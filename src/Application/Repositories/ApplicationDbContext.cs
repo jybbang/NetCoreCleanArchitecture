@@ -86,8 +86,7 @@ namespace NetCoreCleanArchitecture.Application.Repositories
         private async ValueTask DispatchEvents(IEnumerable<BaseEntity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken)
         {
             var domainEventsList = changedEntities
-                .Where(e => e.DomainEvents.Any())
-                .Select(e => e.DomainEvents);
+                .Select(e => e.GetDomainEvents());
 
             foreach (var domainEvents in domainEventsList)
             {

@@ -25,7 +25,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 
         private readonly ConcurrentQueue<BaseEvent> _domainEvents = new ConcurrentQueue<BaseEvent>();
 
-        public IProducerConsumerCollection<BaseEvent> DomainEvents => _domainEvents;
+        public IProducerConsumerCollection<BaseEvent> GetDomainEvents() => _domainEvents;
 
         public void Commit(BaseEvent domainEvent)
         {
