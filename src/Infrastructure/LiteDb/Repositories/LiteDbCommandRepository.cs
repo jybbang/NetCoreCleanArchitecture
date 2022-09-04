@@ -51,14 +51,14 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
             return new ValueTask();
         }
 
-        public void AddRange(IReadOnlyList<TEntity> items)
+        public void AddRange(IEnumerable<TEntity> items)
         {
             _context.AddTrackingRange(items);
 
             _collection.InsertBulk(items);
         }
 
-        public ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public ValueTask AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
         {
             AddRange(items);
 
@@ -79,14 +79,14 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
             return new ValueTask();
         }
 
-        public void RemoveMany(IReadOnlyList<TEntity> items)
+        public void RemoveMany(IEnumerable<TEntity> items)
         {
             _context.AddTrackingRange(items);
 
             _collection.DeleteAll();
         }
 
-        public ValueTask RemoveManyAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public ValueTask RemoveManyAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
         {
             RemoveMany(items);
 
@@ -112,7 +112,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
             return new ValueTask();
         }
 
-        public void UpdateRange(IReadOnlyList<TEntity> items)
+        public void UpdateRange(IEnumerable<TEntity> items)
         {
             foreach (var item in items)
             {
@@ -120,7 +120,7 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
             }
         }
 
-        public ValueTask UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public ValueTask UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
         {
             UpdateRange(items);
 

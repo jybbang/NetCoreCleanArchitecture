@@ -77,16 +77,16 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
         public async ValueTask<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
             => await _collection.Find(where).SingleOrDefaultAsync(cancellationToken);
 
-        public List<TEntity> FindMany()
+        public IReadOnlyList<TEntity> FindMany()
             => Queryable.ToList();
 
-        public List<TEntity> FindMany(Expression<Func<TEntity, bool>> where)
+        public IReadOnlyList<TEntity> FindMany(Expression<Func<TEntity, bool>> where)
             => Queryable.Where(where).ToList();
 
-        public async ValueTask<List<TEntity>> FindManyAsync(CancellationToken cancellationToken)
+        public async ValueTask<IReadOnlyList<TEntity>> FindManyAsync(CancellationToken cancellationToken)
             => await _collection.Find(NotId(Guid.Empty)).ToListAsync(cancellationToken);
 
-        public async ValueTask<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+        public async ValueTask<IReadOnlyList<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
             => await _collection.Find(where).ToListAsync(cancellationToken);
 
         private FilterDefinition<TEntity> Id(Guid value)

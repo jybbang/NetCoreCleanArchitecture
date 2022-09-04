@@ -74,16 +74,16 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Repositories
         public ValueTask<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
             => new ValueTask<TEntity?>(Find(where));
 
-        public List<TEntity> FindMany()
+        public IReadOnlyList<TEntity> FindMany()
             => _collection.FindAll().ToList();
 
-        public List<TEntity> FindMany(Expression<Func<TEntity, bool>> where)
+        public IReadOnlyList<TEntity> FindMany(Expression<Func<TEntity, bool>> where)
             => _collection.Find(where).ToList();
 
-        public ValueTask<List<TEntity>> FindManyAsync(CancellationToken cancellationToken)
-            => new ValueTask<List<TEntity>>(FindMany());
+        public ValueTask<IReadOnlyList<TEntity>> FindManyAsync(CancellationToken cancellationToken)
+            => new ValueTask<IReadOnlyList<TEntity>>(FindMany());
 
-        public ValueTask<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
-            => new ValueTask<List<TEntity>>(FindMany(where));
+        public ValueTask<IReadOnlyList<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+            => new ValueTask<IReadOnlyList<TEntity>>(FindMany(where));
     }
 }

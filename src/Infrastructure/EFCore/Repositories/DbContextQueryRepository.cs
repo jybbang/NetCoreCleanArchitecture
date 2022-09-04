@@ -81,16 +81,16 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
         public async ValueTask<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
             => await _queryableAsNoTracking.Where(where).SingleOrDefaultAsync(cancellationToken);
 
-        public List<TEntity> FindMany(Expression<Func<TEntity, bool>> where)
+        public IReadOnlyList<TEntity> FindMany(Expression<Func<TEntity, bool>> where)
             => _queryableAsNoTracking.Where(where).ToList();
 
-        public async ValueTask<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
+        public async ValueTask<IReadOnlyList<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
             => await _queryableAsNoTracking.Where(where).ToListAsync(cancellationToken);
 
-        public List<TEntity> FindMany()
+        public IReadOnlyList<TEntity> FindMany()
             => _queryableAsNoTracking.ToList();
 
-        public async ValueTask<List<TEntity>> FindManyAsync(CancellationToken cancellationToken)
+        public async ValueTask<IReadOnlyList<TEntity>> FindManyAsync(CancellationToken cancellationToken)
             => await _queryableAsNoTracking.ToListAsync(cancellationToken);
     }
 }

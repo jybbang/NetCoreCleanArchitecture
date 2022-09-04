@@ -51,14 +51,14 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
             await _collection.InsertOneAsync(item, cancellationToken: cancellationToken);
         }
 
-        public void AddRange(IReadOnlyList<TEntity> items)
+        public void AddRange(IEnumerable<TEntity> items)
         {
             _context.AddTrackingRange(items);
 
             _collection.InsertMany(items);
         }
 
-        public async ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public async ValueTask AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
         {
             _context.AddTrackingRange(items, cancellationToken);
 
@@ -79,14 +79,14 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
             await _collection.DeleteOneAsync(Id(key), cancellationToken: cancellationToken);
         }
 
-        public void RemoveMany(IReadOnlyList<TEntity> items)
+        public void RemoveMany(IEnumerable<TEntity> items)
         {
             _context.AddTrackingRange(items);
 
             _collection.BulkWrite(CreateDeletes(items));
         }
 
-        public async ValueTask RemoveManyAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public async ValueTask RemoveManyAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
         {
             _context.AddTrackingRange(items);
 
@@ -112,14 +112,14 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
             await _collection.ReplaceOneAsync(Id(item.Id), item, cancellationToken: cancellationToken);
         }
 
-        public void UpdateRange(IReadOnlyList<TEntity> items)
+        public void UpdateRange(IEnumerable<TEntity> items)
         {
             _context.AddTrackingRange(items);
 
             _collection.BulkWrite(CreateUpdates(items));
         }
 
-        public async ValueTask UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public async ValueTask UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
         {
             _context.AddTrackingRange(items, cancellationToken);
 

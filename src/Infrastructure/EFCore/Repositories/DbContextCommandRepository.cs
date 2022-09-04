@@ -41,9 +41,9 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
 
         public async ValueTask AddAsync(TEntity item, CancellationToken cancellationToken) => await _set.AddAsync(item, cancellationToken);
 
-        public void AddRange(IReadOnlyList<TEntity> items) => _set.AddRange(items);
+        public void AddRange(IEnumerable<TEntity> items) => _set.AddRange(items);
 
-        public async ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken) => await _set.AddRangeAsync(items, cancellationToken);
+        public async ValueTask AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken) => await _set.AddRangeAsync(items, cancellationToken);
 
         public void Remove(TEntity item, Guid key)
         {
@@ -57,12 +57,12 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
             return new ValueTask();
         }
 
-        public void RemoveMany(IReadOnlyList<TEntity> items)
+        public void RemoveMany(IEnumerable<TEntity> items)
         {
             _set.RemoveRange(items);
         }
 
-        public ValueTask RemoveManyAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public ValueTask RemoveManyAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
         {
             _set.RemoveRange(items);
 
@@ -88,12 +88,12 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
             return new ValueTask();
         }
 
-        public void UpdateRange(IReadOnlyList<TEntity> items)
+        public void UpdateRange(IEnumerable<TEntity> items)
         {
             _set.UpdateRange(items);
         }
 
-        public ValueTask UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public ValueTask UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
         {
             _set.UpdateRange(items);
 

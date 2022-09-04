@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using NetCoreCleanArchitecture.Application.EventSources;
 using NetCoreCleanArchitecture.Application.Identities;
 using NetCoreCleanArchitecture.Domain.Common;
@@ -41,6 +42,12 @@ namespace NetCoreCleanArchitecture.Application.Repositories
             _eventSource = eventSource;
             _currentUser = currentUser;
         }
+
+        public ICommandRepository<BaseEntity> CommandSet(Type entityType)
+            => _unitOfWork.CommandSet(entityType);
+
+        public IQueryRepository<BaseEntity> QuerySet(Type entityType)
+            => _unitOfWork.QuerySet(entityType);
 
         public ICommandRepository<TEntity> CommandSet<TEntity>() where TEntity : BaseEntity
             => _unitOfWork.CommandSet<TEntity>();
