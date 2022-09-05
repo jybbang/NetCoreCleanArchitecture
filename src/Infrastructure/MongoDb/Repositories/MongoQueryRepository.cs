@@ -89,6 +89,18 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
         public async ValueTask<IReadOnlyList<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken)
             => await _collection.Find(where).ToListAsync(cancellationToken);
 
+        public T? Find<T>(Guid key) where T : BaseEntity
+            => (T)(BaseEntity)_collection.Find(item => item.Id == key).SingleOrDefault();
+
+        public async ValueTask<T?> FindAsync<T>(Guid key, CancellationToken cancellationToken) where T : BaseEntity
+            => (T)(BaseEntity)(await _collection.Find(item => item.Id == key).SingleOrDefaultAsync(cancellationToken));
+
+        public IReadOnlyList<T> FindMany<T>() where T : BaseEntity
+            => Queryable.OfType<T>().ToList();
+
+        public ValueTask<IReadOnlyList<T>> FindManyAsync<T>(CancellationToken cancellationToken) where T : BaseEntity
+            => new ValueTask<IReadOnlyList<T>>(FindMany<T>());
+
         private FilterDefinition<TEntity> Id(Guid value)
         {
             return Builders<TEntity>.Filter.Eq(nameof(Id), value);

@@ -43,10 +43,10 @@ namespace NetCoreCleanArchitecture.Application.Repositories
             _currentUser = currentUser;
         }
 
-        public ICommandRepository<BaseEntity> CommandSet(Type entityType)
+        public ICommandRepository CommandSet(Type entityType)
             => _unitOfWork.CommandSet(entityType);
 
-        public IQueryRepository<BaseEntity> QuerySet(Type entityType)
+        public IQueryRepository QuerySet(Type entityType)
             => _unitOfWork.QuerySet(entityType);
 
         public ICommandRepository<TEntity> CommandSet<TEntity>() where TEntity : BaseEntity

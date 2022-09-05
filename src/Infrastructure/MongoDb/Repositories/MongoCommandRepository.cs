@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
@@ -125,6 +126,30 @@ namespace NetCoreCleanArchitecture.Infrastructure.MongoDb.Repositories
 
             await _collection.BulkWriteAsync(CreateUpdates(items, cancellationToken), cancellationToken: cancellationToken);
         }
+
+        public void Add<T>(T item) where T : BaseEntity => Add((TEntity)(BaseEntity)item);
+
+        public ValueTask AddAsync<T>(T item, CancellationToken cancellationToken) where T : BaseEntity => AddAsync((TEntity)(BaseEntity)item, cancellationToken);
+
+        public void AddRange<T>(IEnumerable<T> items) where T : BaseEntity => AddRange(items.OfType<TEntity>());
+
+        public ValueTask AddRangeAsync<T>(IEnumerable<T> items, CancellationToken cancellationToken) where T : BaseEntity => AddRangeAsync(items.OfType<TEntity>(), cancellationToken);
+
+        public void Remove<T>(T item, Guid key) where T : BaseEntity => Remove((TEntity)(BaseEntity)item, key);
+
+        public ValueTask RemoveAsync<T>(T item, Guid key, CancellationToken cancellationToken) where T : BaseEntity => RemoveAsync((TEntity)(BaseEntity)item, key, cancellationToken);
+
+        public void RemoveMany<T>(IEnumerable<T> items) where T : BaseEntity => RemoveMany(items.OfType<TEntity>());
+
+        public ValueTask RemoveManyAsync<T>(IEnumerable<T> items, CancellationToken cancellationToken) where T : BaseEntity => RemoveManyAsync(items.OfType<TEntity>(), cancellationToken);
+
+        public void Update<T>(T item) where T : BaseEntity => Update((TEntity)(BaseEntity)item);
+
+        public ValueTask UpdateAsync<T>(T item, CancellationToken cancellationToken) where T : BaseEntity => UpdateAsync((TEntity)(BaseEntity)item, cancellationToken);
+
+        public void UpdateRange<T>(IEnumerable<T> items) where T : BaseEntity => UpdateRange(items.OfType<TEntity>());
+
+        public ValueTask UpdateRangeAsync<T>(IEnumerable<T> items, CancellationToken cancellationToken) where T : BaseEntity => UpdateRangeAsync(items.OfType<TEntity>(), cancellationToken);
 
         private IEnumerable<WriteModel<TEntity>> CreateUpdates(in IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
         {

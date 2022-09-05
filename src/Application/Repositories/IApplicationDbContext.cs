@@ -23,9 +23,9 @@ namespace NetCoreCleanArchitecture.Application.Repositories
 {
     public interface IApplicationDbContext
     {
-        ICommandRepository<BaseEntity> CommandSet(Type entityType);
+        ICommandRepository CommandSet(Type entityType);
 
-        IQueryRepository<BaseEntity> QuerySet(Type entityType);
+        IQueryRepository QuerySet(Type entityType);
 
         ICommandRepository<TEntity> CommandSet<TEntity>() where TEntity : BaseEntity;
 

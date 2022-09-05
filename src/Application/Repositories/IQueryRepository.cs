@@ -24,23 +24,15 @@ using NetCoreCleanArchitecture.Domain.Common;
 
 namespace NetCoreCleanArchitecture.Application.Repositories
 {
-    public interface IQueryRepository<TEntity> where TEntity : BaseEntity
+    public interface IQueryRepository<TEntity> : IQueryRepository where TEntity : BaseEntity
     {
         IQueryable<TEntity> Queryable { get; }
 
-        bool Any();
-
         bool Any(Expression<Func<TEntity, bool>> where);
-
-        ValueTask<bool> AnyAsync(CancellationToken cancellationToken);
 
         ValueTask<bool> AnyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
 
-        long Count();
-
         long Count(Expression<Func<TEntity, bool>> where);
-
-        ValueTask<long> CountAsync(CancellationToken cancellationToken);
 
         ValueTask<long> CountAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
 
@@ -59,5 +51,24 @@ namespace NetCoreCleanArchitecture.Application.Repositories
         ValueTask<IReadOnlyList<TEntity>> FindManyAsync(CancellationToken cancellationToken);
 
         ValueTask<IReadOnlyList<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
+    }
+
+    public interface IQueryRepository
+    {
+        bool Any();
+
+        ValueTask<bool> AnyAsync(CancellationToken cancellationToken);
+
+        long Count();
+
+        ValueTask<long> CountAsync(CancellationToken cancellationToken);
+
+        TEntity? Find<TEntity>(Guid key) where TEntity : BaseEntity;
+
+        ValueTask<TEntity?> FindAsync<TEntity>(Guid key, CancellationToken cancellationToken) where TEntity : BaseEntity;
+
+        IReadOnlyList<TEntity> FindMany<TEntity>() where TEntity : BaseEntity;
+
+        ValueTask<IReadOnlyList<TEntity>> FindManyAsync<TEntity>(CancellationToken cancellationToken) where TEntity : BaseEntity;
     }
 }

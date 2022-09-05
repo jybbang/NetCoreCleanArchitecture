@@ -21,6 +21,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using NetCoreCleanArchitecture.Application.Repositories;
 using NetCoreCleanArchitecture.Domain.Common;
 
@@ -92,5 +93,17 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
 
         public async ValueTask<IReadOnlyList<TEntity>> FindManyAsync(CancellationToken cancellationToken)
             => await _queryableAsNoTracking.ToListAsync(cancellationToken);
+
+        public T? Find<T>(Guid key) where T : BaseEntity
+            => (T)(BaseEntity)_set.Find(key);
+
+        public async ValueTask<T?> FindAsync<T>(Guid key, CancellationToken cancellationToken) where T : BaseEntity
+            => (T)(BaseEntity)(await _set.FindAsync(new object[] { key }, cancellationToken));
+
+        public IReadOnlyList<T> FindMany<T>() where T : BaseEntity
+            => _queryableAsNoTracking.OfType<T>().ToList();
+
+        public async ValueTask<IReadOnlyList<T>> FindManyAsync<T>(CancellationToken cancellationToken) where T : BaseEntity
+            => await _queryableAsNoTracking.OfType<T>().ToListAsync(cancellationToken);
     }
 }

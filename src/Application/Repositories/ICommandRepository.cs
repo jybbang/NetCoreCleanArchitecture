@@ -22,7 +22,7 @@ using NetCoreCleanArchitecture.Domain.Common;
 
 namespace NetCoreCleanArchitecture.Application.Repositories
 {
-    public interface ICommandRepository<TEntity> where TEntity : BaseEntity
+    public interface ICommandRepository<TEntity> : ICommandRepository where TEntity : BaseEntity
     {
         void Add(TEntity item);
 
@@ -40,8 +40,6 @@ namespace NetCoreCleanArchitecture.Application.Repositories
 
         ValueTask RemoveManyAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken);
 
-        void RemoveAll();
-
         void Update(TEntity item);
 
         ValueTask UpdateAsync(TEntity item, CancellationToken cancellationToken);
@@ -49,5 +47,34 @@ namespace NetCoreCleanArchitecture.Application.Repositories
         void UpdateRange(IEnumerable<TEntity> items);
 
         ValueTask UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken);
+    }
+
+    public interface ICommandRepository
+    {
+        void Add<TEntity>(TEntity item) where TEntity : BaseEntity;
+
+        ValueTask AddAsync<TEntity>(TEntity item, CancellationToken cancellationToken) where TEntity : BaseEntity;
+
+        void AddRange<TEntity>(IEnumerable<TEntity> items) where TEntity : BaseEntity;
+
+        ValueTask AddRangeAsync<TEntity>(IEnumerable<TEntity> items, CancellationToken cancellationToken) where TEntity : BaseEntity;
+
+        void Remove<TEntity>(TEntity item, Guid key) where TEntity : BaseEntity;
+
+        ValueTask RemoveAsync<TEntity>(TEntity item, Guid key, CancellationToken cancellationToken) where TEntity : BaseEntity;
+
+        void RemoveMany<TEntity>(IEnumerable<TEntity> items) where TEntity : BaseEntity;
+
+        ValueTask RemoveManyAsync<TEntity>(IEnumerable<TEntity> items, CancellationToken cancellationToken) where TEntity : BaseEntity;
+
+        void RemoveAll();
+
+        void Update<TEntity>(TEntity item) where TEntity : BaseEntity;
+
+        ValueTask UpdateAsync<TEntity>(TEntity item, CancellationToken cancellationToken) where TEntity : BaseEntity;
+
+        void UpdateRange<TEntity>(IEnumerable<TEntity> items) where TEntity : BaseEntity;
+
+        ValueTask UpdateRangeAsync<TEntity>(IEnumerable<TEntity> items, CancellationToken cancellationToken) where TEntity : BaseEntity;
     }
 }
