@@ -8,7 +8,7 @@ using NetCoreCleanArchitecture.Infrastructure.Dapr.Common.Options;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.EventBus;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores;
 
-namespace NetCoreCleanArchitecture.Infrastructure
+namespace NetCoreCleanArchitecture.Infrastructure.Dapr
 {
     public static class ConfigureServices
     {
@@ -35,7 +35,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
             return mvcBuilder;
         }
 
-        public static IServiceCollection AddNetCleanDaprEventBus(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddNetCleanEventBus(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<DaprOptions>(configuration.GetSection("Api:Dapr"));
 
@@ -45,7 +45,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
             return services;
         }
 
-        public static IServiceCollection AddNetCleanDaprStateStore(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddNetCleanStateStore(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<DaprOptions>(configuration.GetSection("Api:Dapr"));
 

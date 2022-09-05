@@ -28,24 +28,26 @@ namespace NetCoreCleanArchitecture.Application.Repositories
 
         ValueTask AddAsync(TEntity item, CancellationToken cancellationToken);
 
-        void AddRange(IReadOnlyList<TEntity> items);
+        void AddRange(IEnumerable<TEntity> items);
 
-        ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken);
+        ValueTask AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken);
 
-        void Remove(Guid key);
+        void Remove(TEntity item, Guid key);
 
-        ValueTask RemoveAsync(Guid key, CancellationToken cancellationToken);
+        ValueTask RemoveAsync(TEntity item, Guid key, CancellationToken cancellationToken);
+
+        void RemoveMany(IEnumerable<TEntity> items);
+
+        ValueTask RemoveManyAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken);
 
         void RemoveAll();
-
-        ValueTask RemoveAllAsync(CancellationToken cancellationToken);
 
         void Update(TEntity item);
 
         ValueTask UpdateAsync(TEntity item, CancellationToken cancellationToken);
 
-        void UpdateRange(IReadOnlyList<TEntity> items);
+        void UpdateRange(IEnumerable<TEntity> items);
 
-        ValueTask UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken);
+        ValueTask UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken);
     }
 }

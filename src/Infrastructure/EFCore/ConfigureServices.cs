@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCleanArchitecture.Application.Repositories;
 
-namespace NetCoreCleanArchitecture.Infrastructure
+namespace NetCoreCleanArchitecture.Infrastructure.EFCore
 {
     public enum MigrationOptions
     {
@@ -24,7 +24,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
 
             services.AddScoped<DbContext>(provider => provider.GetRequiredService<T>());
 
-            services.AddScoped<IUnitOfWork>(provider => (IUnitOfWork)provider.GetRequiredService<T>());
+            services.AddScoped(provider => (IUnitOfWork)provider.GetRequiredService<T>());
 
             switch (migration)
             {
@@ -51,7 +51,7 @@ namespace NetCoreCleanArchitecture.Infrastructure
 
             services.AddScoped<DbContext>(provider => provider.GetRequiredService<T>());
 
-            services.AddScoped<IUnitOfWork>(provider => (IUnitOfWork)provider.GetRequiredService<T>());
+            services.AddScoped(provider => (IUnitOfWork)provider.GetRequiredService<T>());
 
             services.BuildServiceProvider().GetRequiredService<T>().Database.EnsureCreated();
         }

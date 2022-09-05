@@ -22,7 +22,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
 {
     public abstract class ValueObject
     {
-        protected static bool EqualOperator(ValueObject left, ValueObject right)
+        protected static bool EqualOperator(ValueObject? left, ValueObject? right)
         {
             if (left is null ^ right is null)
             {
@@ -32,12 +32,18 @@ namespace NetCoreCleanArchitecture.Domain.Common
             return left?.Equals(right!) != false;
         }
 
-        protected static bool NotEqualOperator(ValueObject left, ValueObject right)
+        protected static bool NotEqualOperator(ValueObject? left, ValueObject? right)
         {
             return !(EqualOperator(left, right));
         }
 
-        protected abstract IReadOnlyList<object> GetEqualityComponents();
+        protected abstract IEnumerable<object?> GetEqualityComponents();
+
+        public static bool operator ==(ValueObject? left, ValueObject? right)
+            => EqualOperator(left, right);
+
+        public static bool operator !=(ValueObject? left, ValueObject? right)
+            => NotEqualOperator(left, right);
 
         public override bool Equals(object? obj)
         {
@@ -47,6 +53,7 @@ namespace NetCoreCleanArchitecture.Domain.Common
             }
 
             var other = (ValueObject)obj;
+
             return GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
         }
 

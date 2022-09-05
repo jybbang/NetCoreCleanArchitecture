@@ -19,33 +19,17 @@ using System.Collections.Concurrent;
 
 namespace NetCoreCleanArchitecture.Domain.Common
 {
-    public abstract class BaseEntity : IEquatable<BaseEntity?>
+    public abstract class BaseEntity : IHasId
     {
         public Guid Id { get; set; }
 
         private readonly ConcurrentQueue<BaseEvent> _domainEvents = new ConcurrentQueue<BaseEvent>();
 
-        public IProducerConsumerCollection<BaseEvent> DomainEvents => _domainEvents;
+        public IProducerConsumerCollection<BaseEvent> GetDomainEvents() => _domainEvents;
 
         public void Commit(BaseEvent domainEvent)
         {
             _domainEvents.Enqueue(domainEvent);
-        }
-
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as BaseEntity);
-        }
-
-        public bool Equals(BaseEntity? other)
-        {
-            return other != null &&
-                   Id.Equals(other.Id);
-        }
-
-        public override int GetHashCode()
-        {
-            return 2108858624 + Id.GetHashCode();
         }
     }
 }

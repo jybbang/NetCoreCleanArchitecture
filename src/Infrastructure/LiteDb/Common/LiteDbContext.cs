@@ -12,7 +12,6 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Common
     public abstract class LiteDbContext
     {
         private readonly ConcurrentDictionary<Guid, BaseEntity> _changeTracker = new ConcurrentDictionary<Guid, BaseEntity>();
-        private readonly ConcurrentDictionary<Guid, Func<Guid, BaseEntity, CancellationToken, ValueTask>> _updateHandlers = new ConcurrentDictionary<Guid, Func<Guid, BaseEntity, CancellationToken, ValueTask>>();
 
         public ILiteDatabase Database { get; }
 
@@ -21,25 +20,13 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Common
             Database = database;
         }
 
-        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var result = _changeTracker.Count;
 
-            foreach (var track in _changeTracker)
-            {
-                if (_updateHandlers.TryGetValue(track.Key, out var handler))
-                {
-                    if (handler is null) continue;
-
-                    await handler.Invoke(track.Key, track.Value, cancellationToken);
-                }
-            }
-
             _changeTracker.Clear();
 
-            _updateHandlers.Clear();
-
-            return result;
+            return Task.FromResult(result);
         }
 
         public IReadOnlyList<BaseEntity> ChangeTracking()
@@ -55,26 +42,24 @@ namespace NetCoreCleanArchitecture.Infrastructure.LiteDb.Common
 
             foreach (var collection in collections)
             {
-                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                cancellationToken.ThrowIfCancellationRequested();
 
                 Database.DropCollection(collection);
             }
         }
 
-        internal void AddTracking(BaseEntity entity, Func<Guid, BaseEntity, CancellationToken, ValueTask> handler)
+        internal void AddTracking<TEntity>(TEntity entity) where TEntity : BaseEntity
         {
             _changeTracker.AddOrUpdate(entity.Id, entity, (k, v) => entity);
-
-            _updateHandlers.AddOrUpdate(entity.Id, handler, (k, v) => handler);
         }
 
-        internal void AddTrackingRange(in IReadOnlyList<BaseEntity> entities, in Func<Guid, BaseEntity, CancellationToken, ValueTask> handler, CancellationToken cancellationToken = default)
+        internal void AddTrackingRange<TEntity>(in IEnumerable<TEntity> entities, CancellationToken cancellationToken = default) where TEntity : BaseEntity
         {
             foreach (var entity in entities)
             {
-                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                cancellationToken.ThrowIfCancellationRequested();
 
-                AddTracking(entity, handler);
+                AddTracking(entity);
             }
         }
     }

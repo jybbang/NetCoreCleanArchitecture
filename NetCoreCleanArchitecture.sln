@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31019.35
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E072DC40-1E7A-4260-8E6B-C78F0117E9A9}"
 EndProject
@@ -49,6 +49,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.LiteDb", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.MongoDb", "src\Infrastructure\MongoDb\Infrastructure.MongoDb.csproj", "{B52601B3-330B-40A2-BE7A-69BF85F5C12B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Orleans", "Orleans", "{A8D6F611-B9C3-4C58-9012-931C9EB0BFCE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Orleans", "src\Infrastructure\Orleans\Infrastructure.Orleans.csproj", "{914FF692-CF87-4DCB-9AA3-55B8D4A346C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +95,10 @@ Global
 		{B52601B3-330B-40A2-BE7A-69BF85F5C12B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B52601B3-330B-40A2-BE7A-69BF85F5C12B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B52601B3-330B-40A2-BE7A-69BF85F5C12B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{914FF692-CF87-4DCB-9AA3-55B8D4A346C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{914FF692-CF87-4DCB-9AA3-55B8D4A346C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{914FF692-CF87-4DCB-9AA3-55B8D4A346C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{914FF692-CF87-4DCB-9AA3-55B8D4A346C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +124,8 @@ Global
 		{A5996D87-03B9-4E99-9C73-16E6DC6B4F03} = {2561245E-D880-48EF-ACEF-977B624F6D95}
 		{B398E4F7-D2CC-46C6-888D-015DA506523B} = {323A440A-A37B-44E8-8394-CB58F6366280}
 		{B52601B3-330B-40A2-BE7A-69BF85F5C12B} = {9E8715C9-C6E3-4622-8432-7428CECA596D}
+		{A8D6F611-B9C3-4C58-9012-931C9EB0BFCE} = {382055ED-7CA2-4275-B474-B75C146F3099}
+		{914FF692-CF87-4DCB-9AA3-55B8D4A346C7} = {A8D6F611-B9C3-4C58-9012-931C9EB0BFCE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD5A63E8-A7FA-42E9-A75E-5F279699E9A7}

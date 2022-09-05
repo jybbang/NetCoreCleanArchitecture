@@ -52,12 +52,12 @@ namespace NetCoreCleanArchitecture.Application.Repositories
 
         ValueTask<TEntity?> FindAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
 
-        List<TEntity> FindMany();
+        IReadOnlyList<TEntity> FindMany();
 
-        List<TEntity> FindMany(Expression<Func<TEntity, bool>> where);
+        IReadOnlyList<TEntity> FindMany(Expression<Func<TEntity, bool>> where);
 
-        ValueTask<List<TEntity>> FindManyAsync(CancellationToken cancellationToken);
+        ValueTask<IReadOnlyList<TEntity>> FindManyAsync(CancellationToken cancellationToken);
 
-        ValueTask<List<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
+        ValueTask<IReadOnlyList<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> where, CancellationToken cancellationToken);
     }
 }

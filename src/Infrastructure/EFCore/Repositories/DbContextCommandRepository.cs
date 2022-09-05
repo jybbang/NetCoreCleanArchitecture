@@ -28,72 +28,74 @@ namespace NetCoreCleanArchitecture.Infrastructure.EFCore.Repositories
     public class DbContextCommandRepository<TEntity> : ICommandRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly DbContext _context;
+        private readonly DbSet<TEntity> _set;
 
         public DbContextCommandRepository(DbContext context)
         {
             _context = context;
+
+            _set = _context.Set<TEntity>();
         }
 
-        private DbSet<TEntity> Set => _context.Set<TEntity>();
+        public void Add(TEntity item) => _set.Add(item);
 
-        public void Add(TEntity item) => Set.Add(item);
+        public async ValueTask AddAsync(TEntity item, CancellationToken cancellationToken) => await _set.AddAsync(item, cancellationToken);
 
-        public async ValueTask AddAsync(TEntity item, CancellationToken cancellationToken) => await Set.AddAsync(item, cancellationToken);
+        public void AddRange(IEnumerable<TEntity> items) => _set.AddRange(items);
 
-        public void AddRange(IReadOnlyList<TEntity> items) => Set.AddRange(items);
+        public async ValueTask AddRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken) => await _set.AddRangeAsync(items, cancellationToken);
 
-        public async ValueTask AddRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken) => await Set.AddRangeAsync(items, cancellationToken);
-
-        public void Remove(Guid key)
+        public void Remove(TEntity item, Guid key)
         {
-            var entity = Set.Find(key);
-
-            if (entity is null) return;
-
-            Set.Remove(entity);
+            _set.Remove(item);
         }
 
-        public async ValueTask RemoveAsync(Guid key, CancellationToken cancellationToken)
+        public ValueTask RemoveAsync(TEntity item, Guid key, CancellationToken cancellationToken)
         {
-            var entity = await Set.FindAsync(new object[] { key }, cancellationToken);
-
-            if (entity is null) return;
-
-            Set.Remove(entity);
-        }
-
-        public void RemoveAll()
-        {
-            var entities = Set.AsNoTracking().ToList();
-
-            Set.RemoveRange(entities);
-        }
-
-        public async ValueTask RemoveAllAsync(CancellationToken cancellationToken)
-        {
-            var entities = await Set.AsNoTracking().ToListAsync(cancellationToken);
-
-            Set.RemoveRange(entities);
-        }
-
-        public void Update(TEntity item) => Set.Update(item);
-
-        public ValueTask UpdateAsync(TEntity item, CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
-
-            Set.Update(item);
+            _set.Remove(item);
 
             return new ValueTask();
         }
 
-        public void UpdateRange(IReadOnlyList<TEntity> items) => Set.UpdateRange(items);
-
-        public ValueTask UpdateRangeAsync(IReadOnlyList<TEntity> items, CancellationToken cancellationToken)
+        public void RemoveMany(IEnumerable<TEntity> items)
         {
-            if (cancellationToken.IsCancellationRequested) throw new TaskCanceledException();
+            _set.RemoveRange(items);
+        }
 
-            Set.UpdateRange(items);
+        public ValueTask RemoveManyAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
+        {
+            _set.RemoveRange(items);
+
+            return new ValueTask();
+        }
+
+        public void RemoveAll()
+        {
+            var list = _context.Set<TEntity>().AsNoTracking().ToList();
+
+            _context.RemoveRange(list);
+        }
+
+        public void Update(TEntity item)
+        {
+            _set.Update(item);
+        }
+
+        public ValueTask UpdateAsync(TEntity item, CancellationToken cancellationToken)
+        {
+            _set.Update(item);
+
+            return new ValueTask();
+        }
+
+        public void UpdateRange(IEnumerable<TEntity> items)
+        {
+            _set.UpdateRange(items);
+        }
+
+        public ValueTask UpdateRangeAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken)
+        {
+            _set.UpdateRange(items);
 
             return new ValueTask();
         }

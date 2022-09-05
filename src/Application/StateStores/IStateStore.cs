@@ -23,14 +23,20 @@ namespace NetCoreCleanArchitecture.Application.StateStores
 {
     public interface IStateStore<T> where T : class
     {
-        ValueTask<T> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken);
+        ValueTask<T?> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, int ttlSeconds, object? etag = default, CancellationToken cancellationToken = default);
 
-        ValueTask<T?> GetAsync(string key, CancellationToken cancellationToken);
+        ValueTask<T?> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, object? etag = default, CancellationToken cancellationToken = default);
 
-        ValueTask<IReadOnlyList<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken);
+        ValueTask<T?> GetAsync(string key, object? etag = default, CancellationToken cancellationToken = default);
 
-        ValueTask AddAsync(string key, T item, int ttlSeconds, CancellationToken cancellationToken);
+        ValueTask<IReadOnlyList<T>?> GetBulkAsync(IEnumerable<string> keys, CancellationToken cancellationToken = default);
 
-        ValueTask RemoveAsync(string key, CancellationToken cancellationToken);
+        ValueTask<IReadOnlyList<T>?> GetBulkAsync(IEnumerable<(string key, object? etag)> keys, CancellationToken cancellationToken = default);
+
+        ValueTask SetAsync(string key, T item, int ttlSeconds, object? etag = default, CancellationToken cancellationToken = default);
+
+        ValueTask SetAsync(string key, T item, object? etag = default, CancellationToken cancellationToken = default);
+
+        ValueTask RemoveAsync(string key, object? etag = default, CancellationToken cancellationToken = default);
     }
 }

@@ -15,10 +15,12 @@
 //
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using NetCoreCleanArchitecture.Application.EventSources;
 using NetCoreCleanArchitecture.Application.Identities;
 using NetCoreCleanArchitecture.Domain.Common;
@@ -41,6 +43,12 @@ namespace NetCoreCleanArchitecture.Application.Repositories
             _currentUser = currentUser;
         }
 
+        public ICommandRepository<BaseEntity> CommandSet(Type entityType)
+            => _unitOfWork.CommandSet(entityType);
+
+        public IQueryRepository<BaseEntity> QuerySet(Type entityType)
+            => _unitOfWork.QuerySet(entityType);
+
         public ICommandRepository<TEntity> CommandSet<TEntity>() where TEntity : BaseEntity
             => _unitOfWork.CommandSet<TEntity>();
 
@@ -55,20 +63,18 @@ namespace NetCoreCleanArchitecture.Application.Repositories
 
             UpdateAuditable(changedEntities, timestamp, cancellationToken);
 
-            var eventsToDispatch = GetEventsToDispatch(changedEntities, cancellationToken);
-
             var changes = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await DispatchEvents(eventsToDispatch, timestamp, cancellationToken);
+            await DispatchEvents(changedEntities, timestamp, cancellationToken);
 
             return changes;
         }
 
-        private void UpdateAuditable(in IReadOnlyList<BaseEntity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken = default)
+        private void UpdateAuditable(in IEnumerable<BaseEntity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken = default)
         {
             foreach (var entity in changedEntities)
             {
-                if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                cancellationToken.ThrowIfCancellationRequested();
 
                 if (entity is BaseAuditableEntity auditableEntity)
                 {
@@ -84,32 +90,19 @@ namespace NetCoreCleanArchitecture.Application.Repositories
             }
         }
 
-        private static IReadOnlyList<BaseEvent> GetEventsToDispatch(in IReadOnlyList<BaseEntity> changedEntities, CancellationToken cancellationToken = default)
+        private async ValueTask DispatchEvents(IEnumerable<BaseEntity> changedEntities, DateTimeOffset timestamp, CancellationToken cancellationToken)
         {
-            var eventsToDispatch = new List<BaseEvent>();
-
             var domainEventsList = changedEntities
-                .Where(e => e.DomainEvents.Any())
-                .Select(e => e.DomainEvents);
+                .Select(e => e.GetDomainEvents());
 
             foreach (var domainEvents in domainEventsList)
             {
                 while (domainEvents.TryTake(out var domainEvent))
                 {
-                    if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException();
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    eventsToDispatch.Add(domainEvent);
+                    await _eventSource.PublishAsync(domainEvent, timestamp, cancellationToken);
                 }
-            }
-
-            return eventsToDispatch.AsReadOnly();
-        }
-
-        private async ValueTask DispatchEvents(IReadOnlyList<BaseEvent> domainEvents, DateTimeOffset timestamp, CancellationToken cancellationToken)
-        {
-            foreach (var domainEvent in domainEvents)
-            {
-                await _eventSource.PublishAsync(domainEvent, timestamp, cancellationToken);
             }
         }
     }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapr.Client;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Options;
 using NetCoreCleanArchitecture.Application.StateStores;
 using NetCoreCleanArchitecture.Infrastructure.Dapr.Common.Options;
@@ -22,27 +23,36 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             _client = client;
         }
 
-        public async ValueTask<IReadOnlyList<T>?> GetBulkAsync(IReadOnlyList<string> keys, CancellationToken cancellationToken)
+        public async ValueTask<IReadOnlyList<T>?> GetBulkAsync(IEnumerable<string> keys, CancellationToken cancellationToken = default)
         {
-            var stream = await _client.GetBulkStateAsync(_options.StoreName, keys, null, cancellationToken: cancellationToken);
+            var stream = await _client.GetBulkStateAsync(_options.StoreName, keys.ToList(), null, cancellationToken: cancellationToken);
 
             if (stream.Count == 0) return null;
 
             return stream.OfType<T>().ToList();
         }
 
-        public async ValueTask<T?> GetAsync(string key, CancellationToken cancellationToken)
+        public async ValueTask<IReadOnlyList<T>?> GetBulkAsync(IEnumerable<(string key, object? etag)> keys, CancellationToken cancellationToken = default)
+        {
+            var stream = await _client.GetBulkStateAsync(_options.StoreName, keys.Select(x => x.key).ToList(), null, cancellationToken: cancellationToken);
+
+            if (stream.Count == 0) return null;
+
+            return stream.OfType<T>().ToList();
+        }
+
+        public async ValueTask<T?> GetAsync(string key, object? etag = default, CancellationToken cancellationToken = default)
             => await _client.GetStateAsync<T>(_options.StoreName, key, cancellationToken: cancellationToken);
 
-        public async ValueTask<T> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, int ttlSeconds, CancellationToken cancellationToken)
+        public async ValueTask<T?> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, int ttlSeconds, object? etag = default, CancellationToken cancellationToken = default)
         {
-            var result = await GetAsync(key, cancellationToken);
+            var result = await GetAsync(key, etag, cancellationToken);
 
             if (result is null)
             {
                 var item = await factory();
 
-                await AddAsync(key, item, ttlSeconds, cancellationToken);
+                await SetAsync(key, item, ttlSeconds, etag, cancellationToken);
 
                 result = item;
             }
@@ -50,17 +60,30 @@ namespace NetCoreCleanArchitecture.Infrastructure.Dapr.StateStores
             return result;
         }
 
-        public async ValueTask AddAsync(string key, T item, int ttlSeconds, CancellationToken cancellationToken)
+        public ValueTask<T?> GetOrCreateAsync(string key, Func<ValueTask<T>> factory, object? etag = default, CancellationToken cancellationToken = default)
         {
-            var metadata = new Dictionary<string, string>
-            {
-                {"ttlInSeconds",ttlSeconds.ToString() },
-            };
+            return GetOrCreateAsync(key, factory, 0, etag, cancellationToken);
+        }
+
+        public async ValueTask SetAsync(string key, T item, int ttlSeconds, object? etag = default, CancellationToken cancellationToken = default)
+        {
+            var metadata = ttlSeconds > 0
+                ? new Dictionary<string, string>
+                {
+                    { "ttlInSeconds", ttlSeconds.ToString() },
+                    { "etag", etag?.ToString() ?? string.Empty },
+                }
+                : null;
 
             await _client.SaveStateAsync(_options.StoreName, key, item, metadata: metadata, cancellationToken: cancellationToken);
         }
 
-        public async ValueTask RemoveAsync(string key, CancellationToken cancellationToken)
+        public ValueTask SetAsync(string key, T item, object? etag = default, CancellationToken cancellationToken = default)
+        {
+            return SetAsync(key, item, 0, etag, cancellationToken);
+        }
+
+        public async ValueTask RemoveAsync(string key, object? etag = default, CancellationToken cancellationToken = default)
             => await _client.DeleteStateAsync(_options.StoreName, key, cancellationToken: cancellationToken);
     }
 }
