@@ -140,15 +140,15 @@ namespace NetCoreCleanArchitecture.Interface
 
         public static IServiceCollection AddNetCleanHttpTracing(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddOpenTelemetryTracing(configure =>
-            {
-                var appName = configuration.GetValue<string>("ApplicationName");
-                var appVersion = configuration.GetValue<string>("ApplicationVersion");
-                var appId = configuration.GetValue<string>("ApplicationInstanceId");
-                var smapling = configuration.GetValue<int>("TracingSampling");
-                smapling = smapling <= 0 ? 1 : 0;
+            var appName = configuration.GetValue<string>("ApplicationName");
+            var appVersion = configuration.GetValue<string>("ApplicationVersion");
+            var appId = configuration.GetValue<string>("ApplicationInstanceId");
+            var smapling = configuration.GetValue<int>("TracingSampling");
+            smapling = smapling <= 0 ? 1 : 0;
 
-                if (Uri.TryCreate(configuration.GetConnectionString("Zipkin"), UriKind.Absolute, out var zipkinEndpoint))
+            if (Uri.TryCreate(configuration.GetConnectionString("Zipkin"), UriKind.Absolute, out var zipkinEndpoint))
+            {
+                services.AddOpenTelemetryTracing(configure =>
                 {
                     configure
                     .AddSource(appName)
@@ -159,8 +159,13 @@ namespace NetCoreCleanArchitecture.Interface
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddZipkinExporter(configure => configure.Endpoint = zipkinEndpoint);
-                }
-                else if (Uri.TryCreate(configuration.GetConnectionString("Jaeger"), UriKind.Absolute, out var jaegerEndpoint))
+                });
+
+                services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ActivityExceptionBehaviour<,>));
+            }
+            else if (Uri.TryCreate(configuration.GetConnectionString("Jaeger"), UriKind.Absolute, out var jaegerEndpoint))
+            {
+                services.AddOpenTelemetryTracing(configure =>
                 {
                     var builder = configure
                     .AddSource(appName)
@@ -190,14 +195,12 @@ namespace NetCoreCleanArchitecture.Interface
                             configure.Endpoint = jaegerEndpoint;
                         });
                     }
-                }
-
-                var MyActivitySource = new ActivitySource(appName, appVersion);
-
-                services.AddSingleton(MyActivitySource);
+                });
 
                 services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ActivityExceptionBehaviour<,>));
-            });
+            }
+
+            services.AddSingleton(new ActivitySource(appName, appVersion));
 
             return services;
         }
